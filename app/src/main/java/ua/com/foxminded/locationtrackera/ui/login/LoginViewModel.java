@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera;
+package ua.com.foxminded.locationtrackera.ui.login;
 
 import android.util.Patterns;
 
@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import ua.com.foxminded.locationtrackera.R;
 
 public class LoginViewModel extends ViewModel {
 

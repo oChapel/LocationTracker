@@ -1,8 +1,10 @@
-package ua.com.foxminded.locationtrackera;
+package ua.com.foxminded.locationtrackera.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import ua.com.foxminded.locationtrackera.R;
 
 public class MainActivity extends AppCompatActivity {
 

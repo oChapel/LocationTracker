@@ -1,10 +1,12 @@
-package ua.com.foxminded.locationtrackera;
+package ua.com.foxminded.locationtrackera.ui.registration;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import ua.com.foxminded.locationtrackera.ui.registration.RegistrationViewModel;
 
 /**
  * ViewModel provider factory to instantiate RegistrationViewModel.

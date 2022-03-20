@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera;
+package ua.com.foxminded.locationtrackera.ui.login;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.LoginFragmentBinding;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {

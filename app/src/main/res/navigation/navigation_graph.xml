@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="ua.com.foxminded.locationtrackera.WelcomeFragment"
+        android:name="ua.com.foxminded.locationtrackera.ui.WelcomeFragment"
         android:label="welcome_fragment"
         tools:layout="@layout/welcome_fragment" >
         <action
@@ -23,7 +23,7 @@
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="ua.com.foxminded.locationtrackera.RegistrationFragment"
+        android:name="ua.com.foxminded.locationtrackera.ui.registration.RegistrationFragment"
         android:label="registration_fragment"
         tools:layout="@layout/registration_fragment" >
         <action
@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="ua.com.foxminded.locationtrackera.LoginFragment"
+        android:name="ua.com.foxminded.locationtrackera.ui.login.LoginFragment"
         android:label="login_fragment"
         tools:layout="@layout/login_fragment" >
         <action

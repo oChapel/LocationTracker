@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera;
+package ua.com.foxminded.locationtrackera.ui.registration;
 
 import android.util.Patterns;
 
@@ -8,6 +8,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+
+import ua.com.foxminded.locationtrackera.R;
+import ua.com.foxminded.locationtrackera.data.model.User;
 
 public class RegistrationViewModel extends ViewModel {
 
