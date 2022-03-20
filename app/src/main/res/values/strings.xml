@@ -1,26 +1,31 @@
 <resources>
     <string name="app_name">Location Tracker A</string>
     <string name="app_name_short">Location Tracker</string>
-    <string name="log_in">LOG IN</string>
-    <string name="log_in_underlined"><u>Log in</u></string>
+
+    <string name="login_uppercase">LOG IN</string>
+    <string name="login_underlined"><u>Log in</u></string>
+    <string name="sign_up_underlined"><u>Sign Up</u></string>
+    <string name="register_uppercase">REGISTER</string>
+
     <string name="user_name">User Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+
     <string name="forgot_password">Forgot password?</string>
     <string name="no_account">Don\'t have an account?</string>
     <string name="have_account">Already have an account?</string>
-    <string name="sign_up"><u>Sign Up</u></string>
-    <string name="register">REGISTER</string>
+
     <string name="welcome_message">Welcome to Location Tracker App</string>
     <string name="welcome_description">Track your location whenever you want wherever you are</string>
 
-    <string name="title_activity_login2">LoginActivity2</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
+    <!-- Errors -->
+    <string name="empty_field">This field cannot be empty</string>
+    <string name="invalid_email">Not a valid email</string>
     <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="enter_password">Please enter password</string>
+
+    <!-- Toasts -->
+    <string name="successful_registration">Registration is successful</string>
+    <string name="registration_failed">Failed to register. Try again</string>
+    <string name="login_failed">"Failed to login. Please check your email and password"</string>
 </resources>
