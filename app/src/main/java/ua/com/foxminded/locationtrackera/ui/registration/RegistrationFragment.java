@@ -93,7 +93,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
 
             @Override
             public void afterTextChanged(Editable s) {
-                registrationViewModel.loginDataChanged(
+                registrationViewModel.registrationDataChanged(
                         binding.registerEditTextUserName.getText().toString().trim(),
                         binding.registerEditTextUserEmail.getText().toString().trim(),
                         binding.registerEditTextPassword.getText().toString().trim()
@@ -124,6 +124,9 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         final ProgressBar progressBar = binding.registerProgressBar;
         final float progressTargetAlpha = isVisible ? 1F : 0F;
         final int shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        if (isVisible) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
         if (progressTargetAlpha != progressBar.getAlpha()) {
             progressBar.animate().alpha(progressTargetAlpha)
                     .setDuration(shortAnimationDuration)

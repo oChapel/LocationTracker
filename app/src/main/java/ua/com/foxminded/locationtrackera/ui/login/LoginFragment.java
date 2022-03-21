@@ -91,6 +91,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         final ProgressBar progressBar = binding.loginProgressBar;
         final float progressTargetAlpha = isVisible ? 1F : 0F;
         final int shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        if (isVisible) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
         if (progressTargetAlpha != progressBar.getAlpha()) {
             progressBar.animate().alpha(progressTargetAlpha)
                     .setDuration(shortAnimationDuration)
