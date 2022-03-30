@@ -27,7 +27,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registrationViewModel = new ViewModelProvider(this,
-                new RegistrationViewModelFactory()).get(RegistrationViewModel.class);
+                new ViewModelProvider.NewInstanceFactory()).get(RegistrationViewModel.class);
     }
 
     @Override

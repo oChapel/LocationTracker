@@ -24,10 +24,9 @@ public class LoginViewModel extends ViewModel {
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private final FirebaseAuth firebaseAuth;
+    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-    public LoginViewModel(FirebaseAuth firebaseAuth) {
-        this.firebaseAuth = firebaseAuth;
+    public LoginViewModel() {
     }
 
     public void login(String email, String password) {

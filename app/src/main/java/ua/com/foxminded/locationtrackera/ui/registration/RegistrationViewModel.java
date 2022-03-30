@@ -9,14 +9,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.data.model.User;
+import ua.com.foxminded.locationtrackera.model.User;
 
 public class RegistrationViewModel extends ViewModel {
 
@@ -27,10 +27,9 @@ public class RegistrationViewModel extends ViewModel {
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private final FirebaseAuth firebaseAuth;
+    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-    public RegistrationViewModel(FirebaseAuth firebaseAuth) {
-        this.firebaseAuth = firebaseAuth;
+    public RegistrationViewModel() {
     }
 
     public void registerUser(String username, String email, String password) {
@@ -69,9 +68,10 @@ public class RegistrationViewModel extends ViewModel {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         User user = new User(username, email);
-                        FirebaseDatabase.getInstance().getReference("Users")
-                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                .setValue(user)
+                        FirebaseFirestore.getInstance()
+                                .collection("Users")
+                                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .set(user)
                                 .addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
                                         handler.post(() -> registerProgress

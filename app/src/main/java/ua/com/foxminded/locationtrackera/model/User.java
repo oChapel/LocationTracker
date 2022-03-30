@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.data.model;
+package ua.com.foxminded.locationtrackera.model;
 
 public class User {
 
@@ -9,5 +9,4 @@ public class User {
         this.username = username;
         this.email = email;
     }
-
 }

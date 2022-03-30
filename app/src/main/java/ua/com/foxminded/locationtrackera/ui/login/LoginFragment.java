@@ -25,7 +25,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loginViewModel = new ViewModelProvider(this,
-                new LoginViewModelFactory()).get(LoginViewModel.class);
+                new ViewModelProvider.NewInstanceFactory()).get(LoginViewModel.class);
     }
 
     @Override
@@ -58,8 +58,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 setUpProgressBarVisibility(true);
             } else if (integer == 1) {
                 setUpProgressBarVisibility(false);
-                //TODO: navigate to Tracker
-                Toast.makeText(getContext(), "LOGGED IN!!!!!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.successful_login, Toast.LENGTH_SHORT).show();
+                Navigation
+                        .findNavController(binding.getRoot())
+                        .navigate(R.id.nav_from_loginFragment_to_mapsFragment);
             } else if (integer == R.string.login_failed) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), integer, Toast.LENGTH_SHORT).show();
@@ -83,6 +85,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     .findNavController(binding.getRoot())
                     .navigate(R.id.nav_from_loginFragment_to_registrationFragment);
         } else if (view == binding.forgotPasswordTxt) {
+            //TODO: implement (or not) forgotPassport fragment
             Toast.makeText(getContext(), "Boy, I'm sorry for that(", Toast.LENGTH_SHORT).show();
         }
     }

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "733443762441",
+    "firebase_url": "https://location-tracker-dd929-default-rtdb.firebaseio.com",
     "project_id": "location-tracker-dd929",
     "storage_bucket": "location-tracker-dd929.appspot.com"
   },
