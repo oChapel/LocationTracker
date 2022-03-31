@@ -46,6 +46,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 binding.loginLayoutEmail.setError(getString(integer));
             }
         });
+
         loginViewModel.getPasswordErrorStatus().observe(getViewLifecycleOwner(), integer -> {
             if (integer == null) {
                 binding.loginLayoutPassword.setError(null);
@@ -53,6 +54,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 binding.loginLayoutPassword.setError(getString(integer));
             }
         });
+
         loginViewModel.getLoginProgress().observe(getViewLifecycleOwner(), integer -> {
             if (integer == 0) {
                 setUpProgressBarVisibility(true);
@@ -61,7 +63,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getContext(), R.string.successful_login, Toast.LENGTH_SHORT).show();
                 Navigation
                         .findNavController(binding.getRoot())
-                        .navigate(R.id.nav_from_loginFragment_to_mapsFragment);
+                        .navigate(R.id.nav_from_loginFragment_to_trackerFragment);
             } else if (integer == R.string.login_failed) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), integer, Toast.LENGTH_SHORT).show();
@@ -85,8 +87,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     .findNavController(binding.getRoot())
                     .navigate(R.id.nav_from_loginFragment_to_registrationFragment);
         } else if (view == binding.forgotPasswordTxt) {
-            //TODO: implement (or not) forgotPassport fragment
-            Toast.makeText(getContext(), "Boy, I'm sorry for that(", Toast.LENGTH_SHORT).show();
+            Navigation
+                    .findNavController(binding.getRoot())
+                    .navigate(R.id.nav_from_loginFragment_to_resetPasswordFragment);
         }
     }
 
