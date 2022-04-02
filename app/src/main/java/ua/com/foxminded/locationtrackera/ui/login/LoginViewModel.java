@@ -18,6 +18,10 @@ import ua.com.foxminded.locationtrackera.R;
 
 public class LoginViewModel extends ViewModel {
 
+    private static final int LOGIN_IN_PROGRESS = 100;
+    private static final int LOGIN_SUCCESSFUL = 101;
+    private static final int LOGIN_FAILED = 102;
+
     private final MutableLiveData<Integer> emailErrorStatus = new MutableLiveData<>();
     private final MutableLiveData<Integer> passwordErrorStatus = new MutableLiveData<>();
     private final MutableLiveData<Integer> loginProgress = new MutableLiveData<>();
@@ -31,7 +35,7 @@ public class LoginViewModel extends ViewModel {
 
     public void login(String email, String password) {
         if (isEmailValid(email) && isPasswordValid(password)) {
-            loginProgress.setValue(0);
+            loginProgress.setValue(LOGIN_IN_PROGRESS);
             compositeDisposable.add(Observable.fromCallable(() -> {
                         firebaseLogin(email, password);
                         return true;
@@ -46,9 +50,9 @@ public class LoginViewModel extends ViewModel {
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        handler.post(() -> loginProgress.setValue(1));
+                        handler.post(() -> loginProgress.setValue(LOGIN_SUCCESSFUL));
                     } else {
-                        handler.post(() -> loginProgress.setValue(R.string.login_failed));
+                        handler.post(() -> loginProgress.setValue(LOGIN_FAILED));
                     }
                 });
     }

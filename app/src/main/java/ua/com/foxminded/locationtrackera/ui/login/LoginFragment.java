@@ -18,6 +18,10 @@ import ua.com.foxminded.locationtrackera.databinding.LoginFragmentBinding;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
+    private static final int LOGIN_IN_PROGRESS = 100;
+    private static final int LOGIN_SUCCESSFUL = 101;
+    private static final int LOGIN_FAILED = 102;
+
     private LoginViewModel loginViewModel;
     private LoginFragmentBinding binding;
 
@@ -56,17 +60,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         });
 
         loginViewModel.getLoginProgress().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == 0) {
+            if (integer == LOGIN_IN_PROGRESS) {
                 setUpProgressBarVisibility(true);
-            } else if (integer == 1) {
+            } else if (integer == LOGIN_SUCCESSFUL) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.successful_login, Toast.LENGTH_SHORT).show();
                 Navigation
                         .findNavController(binding.getRoot())
                         .navigate(R.id.nav_from_loginFragment_to_trackerFragment);
-            } else if (integer == R.string.login_failed) {
+            } else if (integer == LOGIN_FAILED) {
                 setUpProgressBarVisibility(false);
-                Toast.makeText(getContext(), integer, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.login_failed, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -97,13 +101,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         final ProgressBar progressBar = binding.loginProgressBar;
         final float progressTargetAlpha = isVisible ? 1F : 0F;
         final int shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
-        if (isVisible) {
-            progressBar.setVisibility(View.VISIBLE);
-        }
         if (progressTargetAlpha != progressBar.getAlpha()) {
             progressBar.animate().alpha(progressTargetAlpha)
                     .setDuration(shortAnimationDuration)
-                    .withEndAction(isVisible ? null : () -> progressBar.setVisibility(View.INVISIBLE))
                     .start();
         }
     }

@@ -18,6 +18,10 @@ import ua.com.foxminded.locationtrackera.R;
 
 public class ResetPasswordViewModel extends ViewModel {
 
+    private static final int RESET_IN_PROGRESS = 100;
+    private static final int RESET_SUCCESSFUL = 101;
+    private static final int RESET_FAILED = 102;
+
     private final MutableLiveData<Integer> resetProgress = new MutableLiveData<>();
     private final MutableLiveData<Integer> emailErrorStatus = new MutableLiveData<>();
 
@@ -29,15 +33,15 @@ public class ResetPasswordViewModel extends ViewModel {
 
     public void resetPassword(String email) {
         if (isEmailIsValid(email)) {
-            resetProgress.setValue(0);
+            resetProgress.setValue(RESET_IN_PROGRESS);
             compositeDisposable.add(Observable.fromCallable(() -> {
                         FirebaseAuth.getInstance()
                                 .sendPasswordResetEmail(email)
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        handler.post(() -> resetProgress.setValue(R.string.successful_reset));
+                                        handler.post(() -> resetProgress.setValue(RESET_SUCCESSFUL));
                                     } else {
-                                        handler.post(() -> resetProgress.setValue(R.string.reset_failed));
+                                        handler.post(() -> resetProgress.setValue(RESET_FAILED));
                                     }
                                 });
                         return true;

@@ -95,7 +95,7 @@ public class TrackerFragment extends Fragment implements OnMapReadyCallback, Loc
 
         final FusedLocationProviderClient fusedLocationClient =
                 LocationServices.getFusedLocationProviderClient(getContext());
-        fusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
+        /*fusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 final LatLng currentLatLng = new LatLng(
                         task.getResult().getLatitude(),
@@ -104,7 +104,7 @@ public class TrackerFragment extends Fragment implements OnMapReadyCallback, Loc
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng));
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15));
             }
-        });
+        });*/
     }
 
     @Override

@@ -12,9 +12,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.ResetPasswordFragmentBinding;
 
 public class ResetPasswordFragment extends Fragment implements View.OnClickListener {
+
+    private static final int RESET_IN_PROGRESS = 100;
+    private static final int RESET_SUCCESSFUL = 101;
+    private static final int RESET_FAILED = 102;
 
     private ResetPasswordViewModel viewModel;
     private ResetPasswordFragmentBinding binding;
@@ -47,11 +52,14 @@ public class ResetPasswordFragment extends Fragment implements View.OnClickListe
         });
 
         viewModel.getResetProgress().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == 0) {
+            if (integer == RESET_IN_PROGRESS) {
                 setUpProgressBarVisibility(true);
-            } else {
+            } else if (integer == RESET_SUCCESSFUL) {
                 setUpProgressBarVisibility(false);
-                Toast.makeText(getContext(), integer, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), R.string.successful_reset, Toast.LENGTH_LONG).show();
+            } else if (integer == RESET_FAILED) {
+                setUpProgressBarVisibility(false);
+                Toast.makeText(getContext(), R.string.reset_failed, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -67,13 +75,9 @@ public class ResetPasswordFragment extends Fragment implements View.OnClickListe
         final ProgressBar progressBar = binding.resetPasswordProgressBar;
         final float progressTargetAlpha = isVisible ? 1F : 0F;
         final int shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
-        if (isVisible) {
-            progressBar.setVisibility(View.VISIBLE);
-        }
         if (progressTargetAlpha != progressBar.getAlpha()) {
             progressBar.animate().alpha(progressTargetAlpha)
                     .setDuration(shortAnimationDuration)
-                    .withEndAction(isVisible ? null : () -> progressBar.setVisibility(View.INVISIBLE))
                     .start();
         }
     }

@@ -20,6 +20,10 @@ import ua.com.foxminded.locationtrackera.model.User;
 
 public class RegistrationViewModel extends ViewModel {
 
+    private static final int REGISTRATION_IN_PROGRESS = 100;
+    private static final int REGISTRATION_SUCCESSFUL = 101;
+    private static final int REGISTRATION_FAILED = 102;
+
     private final MutableLiveData<Integer> usernameErrorStatus = new MutableLiveData<>();
     private final MutableLiveData<Integer> emailErrorStatus = new MutableLiveData<>();
     private final MutableLiveData<Integer> passwordErrorStatus = new MutableLiveData<>();
@@ -34,7 +38,7 @@ public class RegistrationViewModel extends ViewModel {
 
     public void registerUser(String username, String email, String password) {
         if (isUserNameValid(username) && isEmailValid(email) && isPasswordValid(password)) {
-            registerProgress.setValue(0);
+            registerProgress.setValue(REGISTRATION_IN_PROGRESS);
             compositeDisposable.add(Observable.fromCallable(() -> {
                         firebaseRegister(username, email, password);
                         return true;
@@ -75,14 +79,14 @@ public class RegistrationViewModel extends ViewModel {
                                 .addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
                                         handler.post(() -> registerProgress
-                                                .setValue(R.string.successful_registration));
+                                                .setValue(REGISTRATION_SUCCESSFUL));
                                     } else {
                                         handler.post(() -> registerProgress
-                                                .setValue(R.string.registration_failed));
+                                                .setValue(REGISTRATION_FAILED));
                                     }
                                 });
                     } else {
-                        handler.post(() -> registerProgress.setValue(R.string.registration_failed));
+                        handler.post(() -> registerProgress.setValue(REGISTRATION_FAILED));
                     }
                 });
     }
