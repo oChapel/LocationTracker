@@ -26,10 +26,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
+
+import java.util.Calendar;
 
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.model.UserLocation;
+import ua.com.foxminded.locationtrackera.data.model.UserLocation;
 
 public class LocationService extends Service {
 
@@ -85,9 +86,10 @@ public class LocationService extends Service {
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
 
-                final Location location = locationResult.getLastLocation();
-                final GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                saveUserLocation(geoPoint);
+                //final Location location = locationResult.getLastLocation();
+                //final GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                //saveUserLocation(geoPoint);
+                saveUserLocation(locationResult.getLastLocation());
             }
         };
     }
@@ -103,8 +105,8 @@ public class LocationService extends Service {
                 .requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
     }
 
-    private void saveUserLocation(GeoPoint geoPoint) {
-        if (geoPoint != null) {
+    private void saveUserLocation(Location location) {
+        if (location != null) {
             try {
                 final DocumentReference locationRef = FirebaseFirestore.getInstance()
                         .collection("Users")
@@ -112,7 +114,12 @@ public class LocationService extends Service {
                         .collection("User Locations")
                         .document();
                 locationRef
-                        .set(new UserLocation(geoPoint, null, locationRef.getId()));
+                        //.set(new UserLocation(geoPoint, null, locationRef.getId()));
+                        .set(new UserLocation(
+                                location.getLatitude(),
+                                location.getLongitude(),
+                                Calendar.getInstance().getTimeInMillis()
+                        ));
             } catch (NullPointerException e) {
                 stopSelf();
             }

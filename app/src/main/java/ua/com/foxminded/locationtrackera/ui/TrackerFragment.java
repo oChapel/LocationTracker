@@ -42,6 +42,7 @@ import ua.com.foxminded.locationtrackera.databinding.TrackerFragmentBinding;
 import ua.com.foxminded.locationtrackera.services.LocationService;
 
 public class TrackerFragment extends Fragment implements OnMapReadyCallback, LocationListener {
+    //TODO: delete map, create model for getting location, etc
 
     private static final int GOOGLE_API_AVAILABILITY_REQUEST_CODE = 101;
 

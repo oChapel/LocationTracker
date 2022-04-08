@@ -14,12 +14,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.ResetPasswordFragmentBinding;
+import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
 
 public class ResetPasswordFragment extends Fragment implements View.OnClickListener {
 
-    private static final int RESET_IN_PROGRESS = 100;
-    private static final int RESET_SUCCESSFUL = 101;
-    private static final int RESET_FAILED = 102;
+    private static final int RESET_IN_PROGRESS = 300;
+    private static final int RESET_SUCCESSFUL = 301;
+    private static final int RESET_FAILED = 302;
 
     private ResetPasswordViewModel viewModel;
     private ResetPasswordFragmentBinding binding;
@@ -28,7 +29,7 @@ public class ResetPasswordFragment extends Fragment implements View.OnClickListe
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this,
-                new ViewModelProvider.NewInstanceFactory()).get(ResetPasswordViewModel.class);
+                new AuthViewModelFactory()).get(ResetPasswordViewModel.class);
     }
 
     @Nullable

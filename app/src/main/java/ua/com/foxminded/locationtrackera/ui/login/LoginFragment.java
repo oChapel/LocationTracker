@@ -15,12 +15,13 @@ import androidx.navigation.Navigation;
 
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.LoginFragmentBinding;
+import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
-    private static final int LOGIN_IN_PROGRESS = 100;
-    private static final int LOGIN_SUCCESSFUL = 101;
-    private static final int LOGIN_FAILED = 102;
+    private static final int LOGIN_IN_PROGRESS = 200;
+    private static final int LOGIN_SUCCESSFUL = 201;
+    private static final int LOGIN_FAILED = 202;
 
     private LoginViewModel loginViewModel;
     private LoginFragmentBinding binding;
@@ -29,7 +30,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loginViewModel = new ViewModelProvider(this,
-                new ViewModelProvider.NewInstanceFactory()).get(LoginViewModel.class);
+                new AuthViewModelFactory()).get(LoginViewModel.class);
     }
 
     @Override

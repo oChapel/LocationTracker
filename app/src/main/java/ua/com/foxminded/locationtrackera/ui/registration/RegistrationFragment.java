@@ -17,6 +17,7 @@ import androidx.navigation.Navigation;
 
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.RegistrationFragmentBinding;
+import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
 
 public class RegistrationFragment extends Fragment implements View.OnClickListener {
 
@@ -31,7 +32,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registrationViewModel = new ViewModelProvider(this,
-                new ViewModelProvider.NewInstanceFactory()).get(RegistrationViewModel.class);
+                new AuthViewModelFactory()).get(RegistrationViewModel.class);
     }
 
     @Override
