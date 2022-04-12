@@ -16,12 +16,10 @@ import androidx.navigation.Navigation;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.LoginFragmentBinding;
 import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
+import ua.com.foxminded.locationtrackera.util.Constants;
+import ua.com.foxminded.locationtrackera.util.Utils;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
-
-    private static final int LOGIN_IN_PROGRESS = 200;
-    private static final int LOGIN_SUCCESSFUL = 201;
-    private static final int LOGIN_FAILED = 202;
 
     private LoginViewModel loginViewModel;
     private LoginFragmentBinding binding;
@@ -61,15 +59,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         });
 
         loginViewModel.getLoginProgress().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == LOGIN_IN_PROGRESS) {
+            if (integer == Constants.LOGIN_IN_PROGRESS) {
                 setUpProgressBarVisibility(true);
-            } else if (integer == LOGIN_SUCCESSFUL) {
+            } else if (integer == Constants.LOGIN_SUCCESSFUL) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.successful_login, Toast.LENGTH_SHORT).show();
                 Navigation
                         .findNavController(binding.getRoot())
                         .navigate(R.id.nav_from_loginFragment_to_trackerFragment);
-            } else if (integer == LOGIN_FAILED) {
+            } else if (integer == Constants.LOGIN_FAILED) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.login_failed, Toast.LENGTH_SHORT).show();
             }
@@ -84,8 +82,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if (view == binding.loginBtn) {
             loginViewModel.login(
-                    binding.loginEditTextEmail.getText().toString().trim(),
-                    binding.loginEditTextPassword.getText().toString().trim()
+                    Utils.getTextFromEditText(binding.loginEditTextEmail),
+                    Utils.getTextFromEditText(binding.loginEditTextPassword)
             );
         } else if (view == binding.signUpTxt) {
             Navigation

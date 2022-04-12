@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.data;
+package ua.com.foxminded.locationtrackera.data.auth;
 
 import dagger.Component;
 

@@ -1,44 +1,57 @@
 package ua.com.foxminded.locationtrackera.ui.login;
 
+import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.data.FirebaseAuthNetwork;
+import ua.com.foxminded.locationtrackera.data.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.util.Constants;
 
 public class LoginViewModel extends ViewModel {
 
     private final MutableLiveData<Integer> emailErrorStatus = new MutableLiveData<>();
     private final MutableLiveData<Integer> passwordErrorStatus = new MutableLiveData<>();
+    private final MutableLiveData<Integer> loginProgress = new MutableLiveData<>();
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private final FirebaseAuthNetwork authNetwork;
+    private final AuthNetwork authNetwork;
 
-    public LoginViewModel(FirebaseAuthNetwork authNetwork) {
+    public LoginViewModel(AuthNetwork authNetwork) {
         this.authNetwork = authNetwork;
     }
 
     public void login(String email, String password) {
+        loginProgress.setValue(Constants.LOGIN_IN_PROGRESS);
         if (isEmailValid(email) && isPasswordValid(password)) {
-            compositeDisposable.add(Observable.fromCallable(() -> {
-                        authNetwork.firebaseLogin(email, password);
-                        return true;
-                    })
+            compositeDisposable.add(
+                    authNetwork.firebaseLogin(email, password)
                     .subscribeOn(Schedulers.io())
-                    .subscribe()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(task -> task.addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            loginProgress.setValue(Constants.LOGIN_SUCCESSFUL);
+                        } else {
+                            loginProgress.setValue(Constants.LOGIN_FAILED);
+                        }
+                    }), error -> {
+                        error.printStackTrace();
+                        loginProgress.setValue(Constants.LOGIN_FAILED);
+                    })
             );
         }
     }
 
     private boolean isEmailValid(String email) {
-        if (email != null && Patterns.EMAIL_ADDRESS.matcher(email).matches() && !email.trim().isEmpty()) {
+        if (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailErrorStatus.setValue(null);
             return true;
         }
@@ -47,7 +60,7 @@ public class LoginViewModel extends ViewModel {
     }
 
     private boolean isPasswordValid(String password) {
-        if (password != null && !password.trim().isEmpty()) {
+        if (!TextUtils.isEmpty(password)) {
             passwordErrorStatus.setValue(null);
             return true;
         }
@@ -64,7 +77,7 @@ public class LoginViewModel extends ViewModel {
     }
 
     public LiveData<Integer> getLoginProgress() {
-        return authNetwork.getLoginProgress();
+        return loginProgress;
     }
 
     @Override

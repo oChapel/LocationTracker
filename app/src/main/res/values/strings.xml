@@ -30,7 +30,7 @@
     <string name="registration_failed">Failed to register. Try again</string>
     <string name="login_failed">"Failed to login. Please check your email and password"</string>
     <string name="successful_login">"Welcome back!"</string>
-    <string name="reset_failed">"Failed to reset password. Please check your email"</string>
+    <string name="reset_failed">"Failed to reset password. Please check your email or internet connection"</string>
     <string name="successful_reset">"Check your email to reset your password"</string>
     <string name="permission_denied">"To track your location please allow the app to use GPS"</string>
 

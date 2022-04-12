@@ -18,12 +18,10 @@ import androidx.navigation.Navigation;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.RegistrationFragmentBinding;
 import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
+import ua.com.foxminded.locationtrackera.util.Constants;
+import ua.com.foxminded.locationtrackera.util.Utils;
 
 public class RegistrationFragment extends Fragment implements View.OnClickListener {
-
-    private static final int REGISTRATION_IN_PROGRESS = 100;
-    private static final int REGISTRATION_SUCCESSFUL = 101;
-    private static final int REGISTRATION_FAILED = 102;
 
     private RegistrationViewModel registrationViewModel;
     private RegistrationFragmentBinding binding;
@@ -68,15 +66,15 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
             }
         });
         registrationViewModel.getRegisterProgress().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == REGISTRATION_IN_PROGRESS) {
+            if (integer == Constants.REGISTRATION_IN_PROGRESS) {
                 setUpProgressBarVisibility(true);
-            } else if (integer == REGISTRATION_SUCCESSFUL) {
+            } else if (integer == Constants.REGISTRATION_SUCCESSFUL) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.successful_registration, Toast.LENGTH_SHORT).show();
                 Navigation
                         .findNavController(binding.getRoot())
                         .navigate(R.id.nav_from_registrationFragment_to_loginFragment);
-            } else if (integer == REGISTRATION_FAILED) {
+            } else if (integer == Constants.REGISTRATION_FAILED) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.registration_failed, Toast.LENGTH_LONG).show();
             }
@@ -99,9 +97,9 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
             @Override
             public void afterTextChanged(Editable s) {
                 registrationViewModel.registrationDataChanged(
-                        binding.registerEditTextUserName.getText().toString().trim(),
-                        binding.registerEditTextUserEmail.getText().toString().trim(),
-                        binding.registerEditTextPassword.getText().toString().trim()
+                        Utils.getTextFromEditText(binding.registerEditTextUserName),
+                        Utils.getTextFromEditText(binding.registerEditTextUserEmail),
+                        Utils.getTextFromEditText(binding.registerEditTextPassword)
                 );
             }
         };
@@ -114,9 +112,9 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
     public void onClick(View view) {
         if (view == binding.registerBtn) {
             registrationViewModel.registerUser(
-                    binding.registerEditTextUserName.getText().toString().trim(),
-                    binding.registerEditTextUserEmail.getText().toString().trim(),
-                    binding.registerEditTextPassword.getText().toString().trim()
+                    Utils.getTextFromEditText(binding.registerEditTextUserName),
+                    Utils.getTextFromEditText(binding.registerEditTextUserEmail),
+                    Utils.getTextFromEditText(binding.registerEditTextPassword)
             );
         } else if (view == binding.registerLogInTxt) {
             Navigation

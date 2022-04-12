@@ -1,39 +1,49 @@
 package ua.com.foxminded.locationtrackera.ui.registration;
 
+import android.text.TextUtils;
 import android.util.Patterns;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.data.FirebaseAuthNetwork;
+import ua.com.foxminded.locationtrackera.data.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.util.Constants;
 
 public class RegistrationViewModel extends ViewModel {
 
     private final MutableLiveData<Integer> usernameErrorStatus = new MutableLiveData<>();
     private final MutableLiveData<Integer> emailErrorStatus = new MutableLiveData<>();
     private final MutableLiveData<Integer> passwordErrorStatus = new MutableLiveData<>();
+    private final MutableLiveData<Integer> registerProgress = new MutableLiveData<>();
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private final FirebaseAuthNetwork authNetwork;
+    private final AuthNetwork authNetwork;
 
-    public RegistrationViewModel(FirebaseAuthNetwork authNetwork) {
+    public RegistrationViewModel(AuthNetwork authNetwork) {
         this.authNetwork = authNetwork;
     }
 
     public void registerUser(String username, String email, String password) {
         if (isUserNameValid(username) && isEmailValid(email) && isPasswordValid(password)) {
-            compositeDisposable.add(Observable.fromCallable(() -> {
-                        authNetwork.firebaseRegister(username, email, password);
-                        return true;
-                    })
+            registerProgress.setValue(Constants.REGISTRATION_IN_PROGRESS);
+            compositeDisposable.add(authNetwork.firebaseRegister(username, email, password)
                     .subscribeOn(Schedulers.io())
-                    .subscribe()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(task -> task.addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            registerProgress.setValue(Constants.REGISTRATION_SUCCESSFUL);
+                        } else {
+                            registerProgress.setValue(Constants.REGISTRATION_FAILED);
+                        }
+                    }), error -> {
+                        error.printStackTrace();
+                        registerProgress.setValue(Constants.REGISTRATION_FAILED);
+                    })
             );
         }
     }
@@ -57,15 +67,15 @@ public class RegistrationViewModel extends ViewModel {
     }
 
     private boolean isUserNameValid(String username) {
-        return username != null && !username.trim().isEmpty();
+        return !TextUtils.isEmpty(username);
     }
 
     private boolean isEmailValid(String email) {
-        return email != null && Patterns.EMAIL_ADDRESS.matcher(email).matches() && !email.trim().isEmpty();
+        return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private boolean isPasswordValid(String password) {
-        return password != null && password.trim().length() > 5;
+        return !TextUtils.isEmpty(password) && password.trim().length() > 5;
     }
 
     public LiveData<Integer> getUsernameErrorStatus() {
@@ -81,7 +91,7 @@ public class RegistrationViewModel extends ViewModel {
     }
 
     public LiveData<Integer> getRegisterProgress() {
-        return authNetwork.getRegisterProgress();
+        return registerProgress;
     }
 
     @Override

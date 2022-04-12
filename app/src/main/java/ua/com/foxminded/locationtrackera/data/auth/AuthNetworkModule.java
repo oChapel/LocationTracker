@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.data;
+package ua.com.foxminded.locationtrackera.data.auth;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -9,7 +9,7 @@ import dagger.Provides;
 public class AuthNetworkModule {
 
     @Provides
-    public FirebaseAuthNetwork provideFirebaseNetworkAuth() {
+    public AuthNetwork provideFirebaseAuthNetwork() {
         return new FirebaseAuthNetwork(FirebaseAuth.getInstance());
     }
 }

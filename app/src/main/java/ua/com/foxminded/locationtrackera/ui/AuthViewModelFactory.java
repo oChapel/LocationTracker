@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import javax.inject.Inject;
 
-import ua.com.foxminded.locationtrackera.data.AuthNetworkComponent;
-import ua.com.foxminded.locationtrackera.data.DaggerAuthNetworkComponent;
-import ua.com.foxminded.locationtrackera.data.FirebaseAuthNetwork;
+import ua.com.foxminded.locationtrackera.data.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.data.auth.AuthNetworkComponent;
+import ua.com.foxminded.locationtrackera.data.auth.DaggerAuthNetworkComponent;
 import ua.com.foxminded.locationtrackera.ui.login.LoginViewModel;
 import ua.com.foxminded.locationtrackera.ui.login.ResetPasswordViewModel;
 import ua.com.foxminded.locationtrackera.ui.registration.RegistrationViewModel;
@@ -18,7 +18,7 @@ public class AuthViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final AuthNetworkComponent component = DaggerAuthNetworkComponent.create();
 
     @Inject
-    FirebaseAuthNetwork authNetwork;
+    AuthNetwork authNetwork;
 
     @NonNull
     @Override

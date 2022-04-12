@@ -15,12 +15,10 @@ import androidx.lifecycle.ViewModelProvider;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.ResetPasswordFragmentBinding;
 import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
+import ua.com.foxminded.locationtrackera.util.Constants;
+import ua.com.foxminded.locationtrackera.util.Utils;
 
 public class ResetPasswordFragment extends Fragment implements View.OnClickListener {
-
-    private static final int RESET_IN_PROGRESS = 300;
-    private static final int RESET_SUCCESSFUL = 301;
-    private static final int RESET_FAILED = 302;
 
     private ResetPasswordViewModel viewModel;
     private ResetPasswordFragmentBinding binding;
@@ -53,12 +51,12 @@ public class ResetPasswordFragment extends Fragment implements View.OnClickListe
         });
 
         viewModel.getResetProgress().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == RESET_IN_PROGRESS) {
+            if (integer == Constants.RESET_IN_PROGRESS) {
                 setUpProgressBarVisibility(true);
-            } else if (integer == RESET_SUCCESSFUL) {
+            } else if (integer == Constants.RESET_SUCCESSFUL) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.successful_reset, Toast.LENGTH_LONG).show();
-            } else if (integer == RESET_FAILED) {
+            } else if (integer == Constants.RESET_FAILED) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.reset_failed, Toast.LENGTH_LONG).show();
             }
@@ -69,7 +67,7 @@ public class ResetPasswordFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        viewModel.resetPassword(binding.resetPasswordEditTextEmail.getText().toString().trim());
+        viewModel.resetPassword(Utils.getTextFromEditText(binding.resetPasswordEditTextEmail));
     }
 
     private void setUpProgressBarVisibility(boolean isVisible) {

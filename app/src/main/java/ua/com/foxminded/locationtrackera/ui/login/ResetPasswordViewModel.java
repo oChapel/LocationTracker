@@ -1,40 +1,53 @@
 package ua.com.foxminded.locationtrackera.ui.login;
 
+import android.text.TextUtils;
 import android.util.Patterns;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.data.FirebaseAuthNetwork;
+import ua.com.foxminded.locationtrackera.data.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.util.Constants;
 
 public class ResetPasswordViewModel extends ViewModel {
 
     private final MutableLiveData<Integer> emailErrorStatus = new MutableLiveData<>();
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private final FirebaseAuthNetwork authNetwork;
+    private final MutableLiveData<Integer> resetProgress = new MutableLiveData<>();
 
-    public ResetPasswordViewModel(FirebaseAuthNetwork authNetwork) {
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final AuthNetwork authNetwork;
+
+    public ResetPasswordViewModel(AuthNetwork authNetwork) {
         this.authNetwork = authNetwork;
     }
 
     public void resetPassword(String email) {
         if (isEmailIsValid(email)) {
-            compositeDisposable.add(Observable.just(email)
-                    .doOnNext(authNetwork::resetPassword)
+            resetProgress.setValue(Constants.RESET_IN_PROGRESS);
+            compositeDisposable.add(authNetwork.resetPassword(email)
                     .subscribeOn(Schedulers.io())
-                    .subscribe()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(task -> task.addOnCompleteListener(task1 -> {
+                        if (task.isSuccessful()) {
+                            resetProgress.setValue(Constants.RESET_SUCCESSFUL);
+                        } else {
+                            resetProgress.setValue(Constants.RESET_FAILED);
+                        }
+                    }), error -> {
+                        error.printStackTrace();
+                        resetProgress.setValue(Constants.RESET_FAILED);
+                    })
             );
         }
     }
 
     private boolean isEmailIsValid(String email) {
-        if (email != null && Patterns.EMAIL_ADDRESS.matcher(email).matches() && !email.trim().isEmpty()) {
+        if (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailErrorStatus.setValue(null);
             return true;
         }
@@ -43,7 +56,7 @@ public class ResetPasswordViewModel extends ViewModel {
     }
 
     public LiveData<Integer> getResetProgress() {
-        return authNetwork.getResetProgress();
+        return resetProgress;
     }
 
     public LiveData<Integer> getEmailErrorStatus() {
