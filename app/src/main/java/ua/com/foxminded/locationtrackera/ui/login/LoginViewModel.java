@@ -1,7 +1,6 @@
 package ua.com.foxminded.locationtrackera.ui.login;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 
 import androidx.lifecycle.LiveData;
@@ -11,10 +10,9 @@ import androidx.lifecycle.ViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-
 import ua.com.foxminded.locationtrackera.R;
+import ua.com.foxminded.locationtrackera.data.auth.AuthConstants;
 import ua.com.foxminded.locationtrackera.data.auth.AuthNetwork;
-import ua.com.foxminded.locationtrackera.util.Constants;
 
 public class LoginViewModel extends ViewModel {
 
@@ -30,21 +28,20 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login(String email, String password) {
-        loginProgress.setValue(Constants.LOGIN_IN_PROGRESS);
+        loginProgress.setValue(AuthConstants.LOGIN_IN_PROGRESS);
         if (isEmailValid(email) && isPasswordValid(password)) {
-            compositeDisposable.add(
-                    authNetwork.firebaseLogin(email, password)
+            compositeDisposable.add(authNetwork.firebaseLogin(email, password)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(task -> task.addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful()) {
-                            loginProgress.setValue(Constants.LOGIN_SUCCESSFUL);
+                    .subscribe(result -> {
+                        if (result.isSuccessful()) {
+                            loginProgress.setValue(AuthConstants.LOGIN_SUCCESSFUL);
                         } else {
-                            loginProgress.setValue(Constants.LOGIN_FAILED);
+                            loginProgress.setValue(AuthConstants.LOGIN_FAILED);
                         }
-                    }), error -> {
+                    }, error -> {
                         error.printStackTrace();
-                        loginProgress.setValue(Constants.LOGIN_FAILED);
+                        loginProgress.setValue(AuthConstants.LOGIN_FAILED);
                     })
             );
         }

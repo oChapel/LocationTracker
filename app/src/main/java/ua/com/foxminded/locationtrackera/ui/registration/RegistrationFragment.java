@@ -18,7 +18,7 @@ import androidx.navigation.Navigation;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.RegistrationFragmentBinding;
 import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
-import ua.com.foxminded.locationtrackera.util.Constants;
+import ua.com.foxminded.locationtrackera.data.auth.AuthConstants;
 import ua.com.foxminded.locationtrackera.util.Utils;
 
 public class RegistrationFragment extends Fragment implements View.OnClickListener {
@@ -66,15 +66,15 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
             }
         });
         registrationViewModel.getRegisterProgress().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == Constants.REGISTRATION_IN_PROGRESS) {
+            if (integer == AuthConstants.REGISTRATION_IN_PROGRESS) {
                 setUpProgressBarVisibility(true);
-            } else if (integer == Constants.REGISTRATION_SUCCESSFUL) {
+            } else if (integer == AuthConstants.REGISTRATION_SUCCESSFUL) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.successful_registration, Toast.LENGTH_SHORT).show();
                 Navigation
                         .findNavController(binding.getRoot())
                         .navigate(R.id.nav_from_registrationFragment_to_loginFragment);
-            } else if (integer == Constants.REGISTRATION_FAILED) {
+            } else if (integer == AuthConstants.REGISTRATION_FAILED) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.registration_failed, Toast.LENGTH_LONG).show();
             }

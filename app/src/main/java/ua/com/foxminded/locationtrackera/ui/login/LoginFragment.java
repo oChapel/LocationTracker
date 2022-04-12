@@ -16,7 +16,7 @@ import androidx.navigation.Navigation;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.LoginFragmentBinding;
 import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
-import ua.com.foxminded.locationtrackera.util.Constants;
+import ua.com.foxminded.locationtrackera.data.auth.AuthConstants;
 import ua.com.foxminded.locationtrackera.util.Utils;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
@@ -59,15 +59,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         });
 
         loginViewModel.getLoginProgress().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == Constants.LOGIN_IN_PROGRESS) {
+            if (integer == AuthConstants.LOGIN_IN_PROGRESS) {
                 setUpProgressBarVisibility(true);
-            } else if (integer == Constants.LOGIN_SUCCESSFUL) {
+            } else if (integer == AuthConstants.LOGIN_SUCCESSFUL) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.successful_login, Toast.LENGTH_SHORT).show();
                 Navigation
                         .findNavController(binding.getRoot())
                         .navigate(R.id.nav_from_loginFragment_to_trackerFragment);
-            } else if (integer == Constants.LOGIN_FAILED) {
+            } else if (integer == AuthConstants.LOGIN_FAILED) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.login_failed, Toast.LENGTH_SHORT).show();
             }

@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.ResetPasswordFragmentBinding;
 import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
-import ua.com.foxminded.locationtrackera.util.Constants;
+import ua.com.foxminded.locationtrackera.data.auth.AuthConstants;
 import ua.com.foxminded.locationtrackera.util.Utils;
 
 public class ResetPasswordFragment extends Fragment implements View.OnClickListener {
@@ -51,12 +51,12 @@ public class ResetPasswordFragment extends Fragment implements View.OnClickListe
         });
 
         viewModel.getResetProgress().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == Constants.RESET_IN_PROGRESS) {
+            if (integer == AuthConstants.RESET_IN_PROGRESS) {
                 setUpProgressBarVisibility(true);
-            } else if (integer == Constants.RESET_SUCCESSFUL) {
+            } else if (integer == AuthConstants.RESET_SUCCESSFUL) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.successful_reset, Toast.LENGTH_LONG).show();
-            } else if (integer == Constants.RESET_FAILED) {
+            } else if (integer == AuthConstants.RESET_FAILED) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.reset_failed, Toast.LENGTH_LONG).show();
             }

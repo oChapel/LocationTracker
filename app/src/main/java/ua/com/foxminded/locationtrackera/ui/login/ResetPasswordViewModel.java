@@ -10,9 +10,10 @@ import androidx.lifecycle.ViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+
 import ua.com.foxminded.locationtrackera.R;
+import ua.com.foxminded.locationtrackera.data.auth.AuthConstants;
 import ua.com.foxminded.locationtrackera.data.auth.AuthNetwork;
-import ua.com.foxminded.locationtrackera.util.Constants;
 
 public class ResetPasswordViewModel extends ViewModel {
 
@@ -28,19 +29,19 @@ public class ResetPasswordViewModel extends ViewModel {
 
     public void resetPassword(String email) {
         if (isEmailIsValid(email)) {
-            resetProgress.setValue(Constants.RESET_IN_PROGRESS);
+            resetProgress.setValue(AuthConstants.RESET_IN_PROGRESS);
             compositeDisposable.add(authNetwork.resetPassword(email)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(task -> task.addOnCompleteListener(task1 -> {
-                        if (task.isSuccessful()) {
-                            resetProgress.setValue(Constants.RESET_SUCCESSFUL);
+                    .subscribe(result -> {
+                        if (result.isSuccessful()) {
+                            resetProgress.setValue(AuthConstants.RESET_SUCCESSFUL);
                         } else {
-                            resetProgress.setValue(Constants.RESET_FAILED);
+                            resetProgress.setValue(AuthConstants.RESET_FAILED);
                         }
-                    }), error -> {
+                    }, error -> {
                         error.printStackTrace();
-                        resetProgress.setValue(Constants.RESET_FAILED);
+                        resetProgress.setValue(AuthConstants.RESET_FAILED);
                     })
             );
         }

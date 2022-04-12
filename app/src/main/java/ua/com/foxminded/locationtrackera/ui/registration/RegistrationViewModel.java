@@ -12,7 +12,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.data.auth.AuthNetwork;
-import ua.com.foxminded.locationtrackera.util.Constants;
+import ua.com.foxminded.locationtrackera.data.auth.AuthConstants;
 
 public class RegistrationViewModel extends ViewModel {
 
@@ -30,19 +30,19 @@ public class RegistrationViewModel extends ViewModel {
 
     public void registerUser(String username, String email, String password) {
         if (isUserNameValid(username) && isEmailValid(email) && isPasswordValid(password)) {
-            registerProgress.setValue(Constants.REGISTRATION_IN_PROGRESS);
+            registerProgress.setValue(AuthConstants.REGISTRATION_IN_PROGRESS);
             compositeDisposable.add(authNetwork.firebaseRegister(username, email, password)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(task -> task.addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful()) {
-                            registerProgress.setValue(Constants.REGISTRATION_SUCCESSFUL);
+                    .subscribe(result -> {
+                        if (result.isSuccessful()) {
+                            registerProgress.setValue(AuthConstants.REGISTRATION_SUCCESSFUL);
                         } else {
-                            registerProgress.setValue(Constants.REGISTRATION_FAILED);
+                            registerProgress.setValue(AuthConstants.REGISTRATION_FAILED);
                         }
-                    }), error -> {
+                    }, error -> {
                         error.printStackTrace();
-                        registerProgress.setValue(Constants.REGISTRATION_FAILED);
+                        registerProgress.setValue(AuthConstants.REGISTRATION_FAILED);
                     })
             );
         }

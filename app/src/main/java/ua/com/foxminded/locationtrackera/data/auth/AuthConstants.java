@@ -1,6 +1,6 @@
-package ua.com.foxminded.locationtrackera.util;
+package ua.com.foxminded.locationtrackera.data.auth;
 
-public final class Constants {
+public final class AuthConstants {
 
     public static final int REGISTRATION_IN_PROGRESS = 100;
     public static final int REGISTRATION_SUCCESSFUL = 101;
