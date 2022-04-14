@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.data.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.data.auth.AuthConstants;

@@ -10,7 +10,7 @@ import ua.com.foxminded.locationtrackera.data.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.data.auth.AuthNetworkComponent;
 import ua.com.foxminded.locationtrackera.data.auth.DaggerAuthNetworkComponent;
 import ua.com.foxminded.locationtrackera.ui.login.LoginViewModel;
-import ua.com.foxminded.locationtrackera.ui.login.ResetPasswordViewModel;
+import ua.com.foxminded.locationtrackera.ui.reset.ResetPasswordViewModel;
 import ua.com.foxminded.locationtrackera.ui.registration.RegistrationViewModel;
 
 public class AuthViewModelFactory extends ViewModelProvider.NewInstanceFactory {

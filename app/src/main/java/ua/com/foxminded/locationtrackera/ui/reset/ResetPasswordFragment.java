@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.ui.login;
+package ua.com.foxminded.locationtrackera.ui.reset;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

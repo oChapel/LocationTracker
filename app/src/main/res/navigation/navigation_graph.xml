@@ -60,7 +60,7 @@
         tools:layout="@layout/tracker_fragment" />
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="ua.com.foxminded.locationtrackera.ui.login.ResetPasswordFragment"
+        android:name="ua.com.foxminded.locationtrackera.ui.reset.ResetPasswordFragment"
         android:label="reset_password_fragment"
         tools:layout="@layout/reset_password_fragment" />
 </navigation>

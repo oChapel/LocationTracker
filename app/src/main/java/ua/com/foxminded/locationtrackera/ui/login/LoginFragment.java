@@ -1,6 +1,7 @@
 package ua.com.foxminded.locationtrackera.ui.login;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,25 +10,23 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.LoginFragmentBinding;
+import ua.com.foxminded.locationtrackera.mvi.HostedFragment;
 import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
-import ua.com.foxminded.locationtrackera.data.auth.AuthConstants;
 import ua.com.foxminded.locationtrackera.util.Utils;
 
-public class LoginFragment extends Fragment implements View.OnClickListener {
+public class LoginFragment extends HostedFragment<LoginScreenState, LoginContract.ViewModel, LoginContract.Host>
+        implements LoginContract.View, View.OnClickListener {
 
-    private LoginViewModel loginViewModel;
     private LoginFragmentBinding binding;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        loginViewModel = new ViewModelProvider(this,
+    protected LoginContract.ViewModel createModel() {
+        return new ViewModelProvider(this,
                 new AuthViewModelFactory()).get(LoginViewModel.class);
     }
 
@@ -42,37 +41,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        loginViewModel.getEmailErrorStatus().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == null) {
-                binding.loginLayoutEmail.setError(null);
-            } else {
-                binding.loginLayoutEmail.setError(getString(integer));
-            }
-        });
-
-        loginViewModel.getPasswordErrorStatus().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == null) {
-                binding.loginLayoutPassword.setError(null);
-            } else {
-                binding.loginLayoutPassword.setError(getString(integer));
-            }
-        });
-
-        loginViewModel.getLoginProgress().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == AuthConstants.LOGIN_IN_PROGRESS) {
-                setUpProgressBarVisibility(true);
-            } else if (integer == AuthConstants.LOGIN_SUCCESSFUL) {
-                setUpProgressBarVisibility(false);
-                Toast.makeText(getContext(), R.string.successful_login, Toast.LENGTH_SHORT).show();
-                Navigation
-                        .findNavController(binding.getRoot())
-                        .navigate(R.id.nav_from_loginFragment_to_trackerFragment);
-            } else if (integer == AuthConstants.LOGIN_FAILED) {
-                setUpProgressBarVisibility(false);
-                Toast.makeText(getContext(), R.string.login_failed, Toast.LENGTH_SHORT).show();
-            }
-        });
-
         binding.loginBtn.setOnClickListener(this);
         binding.signUpTxt.setOnClickListener(this);
         binding.forgotPasswordTxt.setOnClickListener(this);
@@ -81,7 +49,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (view == binding.loginBtn) {
-            loginViewModel.login(
+            getModel().login(
                     Utils.getTextFromEditText(binding.loginEditTextEmail),
                     Utils.getTextFromEditText(binding.loginEditTextPassword)
             );
@@ -94,6 +62,46 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     .findNavController(binding.getRoot())
                     .navigate(R.id.nav_from_loginFragment_to_resetPasswordFragment);
         }
+    }
+
+    @Override
+    public void showProgress() {
+        resetErrors();
+        setUpProgressBarVisibility(true);
+    }
+
+    @Override
+    public void proceedToNextScreen() {
+        setUpProgressBarVisibility(false);
+        Toast.makeText(getContext(), R.string.successful_login, Toast.LENGTH_SHORT).show();
+        Navigation
+                .findNavController(binding.getRoot())
+                .navigate(R.id.nav_from_loginFragment_to_trackerFragment);
+    }
+
+    @Override
+    public void showFailureToastMessage() {
+        setUpProgressBarVisibility(false);
+        Toast.makeText(getContext(), R.string.login_failed, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showEmailAndPasswordError(int emailError, int passwordError) {
+        if (emailError == -1) {
+            binding.loginLayoutEmail.setError(null);
+        } else {
+            binding.loginLayoutEmail.setError(getString(emailError));
+        }
+        if (passwordError == -1) {
+            binding.loginLayoutPassword.setError(null);
+        } else {
+            binding.loginLayoutPassword.setError(getString(passwordError));
+        }
+    }
+
+    private void resetErrors() {
+        binding.loginLayoutEmail.setError(null);
+        binding.loginLayoutPassword.setError(null);
     }
 
     private void setUpProgressBarVisibility(boolean isVisible) {

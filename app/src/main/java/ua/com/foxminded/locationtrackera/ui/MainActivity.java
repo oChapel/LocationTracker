@@ -5,8 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import ua.com.foxminded.locationtrackera.R;
+import ua.com.foxminded.locationtrackera.ui.login.LoginContract;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoginContract.Host {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
