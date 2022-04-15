@@ -1,8 +1,7 @@
-package ua.com.foxminded.locationtrackera.data.auth;
+package ua.com.foxminded.locationtrackera.model.auth;
 
 import io.reactivex.rxjava3.core.Single;
-
-import ua.com.foxminded.locationtrackera.data.Result;
+import ua.com.foxminded.locationtrackera.util.Result;
 
 public interface AuthNetwork {
 

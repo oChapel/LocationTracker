@@ -1,19 +1,20 @@
 package ua.com.foxminded.locationtrackera.mvi;
 
 import androidx.annotation.CallSuper;
-import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ViewModel;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 
-public abstract class MviViewModel<T> extends ViewModel implements FragmentContract.ViewModel<T> {
+public abstract class MviViewModel<T> extends ViewModel implements FragmentContract.ViewModel<T>, LifecycleEventObserver {
 
-    //private final CompositeDisposable onStopDisposable = new CompositeDisposable();
-    //private final CompositeDisposable onDestroyDisposable = new CompositeDisposable();
+    private final CompositeDisposable onStopDisposable = new CompositeDisposable();
+    private final CompositeDisposable onDestroyDisposable = new CompositeDisposable();
     private final MutableLiveData<T> stateHolder = new MutableLiveData<>();
 
     @Override
@@ -21,17 +22,29 @@ public abstract class MviViewModel<T> extends ViewModel implements FragmentContr
         return stateHolder;
     }
 
-    //impl DefaultLifecycleObserver?
-/*    @CallSuper
-    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    protected void onAny(LifecycleOwner owner, Lifecycle.Event event) {
+    @CallSuper
+    @Override
+    public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
         switch (event) {
-            //case ON_STOP: onStopDisposable.clear();
-            //case ON_DESTROY: onDestroyDisposable.clear();
+            case ON_STOP:
+                onStopDisposable.clear();
+            case ON_DESTROY:
+                onDestroyDisposable.clear();
         }
-    }*/
+    }
 
     protected void setState(T state) {
         stateHolder.setValue(state);
+    }
+
+    protected void addTillDestroy(Disposable... disposables) {
+        onDestroyDisposable.addAll(disposables);
+    }
+
+    @CallSuper
+    @Override
+    protected void onCleared() {
+        onDestroyDisposable.dispose();
+        onStopDisposable.dispose();
     }
 }

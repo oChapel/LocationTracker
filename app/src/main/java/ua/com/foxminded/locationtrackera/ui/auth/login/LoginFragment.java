@@ -1,7 +1,6 @@
-package ua.com.foxminded.locationtrackera.ui.login;
+package ua.com.foxminded.locationtrackera.ui.auth.login;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +13,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.databinding.LoginFragmentBinding;
+import ua.com.foxminded.locationtrackera.databinding.FragmentLoginBinding;
 import ua.com.foxminded.locationtrackera.mvi.HostedFragment;
-import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
+import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
 import ua.com.foxminded.locationtrackera.util.Utils;
 
 public class LoginFragment extends HostedFragment<LoginScreenState, LoginContract.ViewModel, LoginContract.Host>
         implements LoginContract.View, View.OnClickListener {
 
-    private LoginFragmentBinding binding;
+    private FragmentLoginBinding binding;
 
     @Override
     protected LoginContract.ViewModel createModel() {
@@ -33,7 +32,7 @@ public class LoginFragment extends HostedFragment<LoginScreenState, LoginContrac
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = LoginFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentLoginBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -54,12 +53,10 @@ public class LoginFragment extends HostedFragment<LoginScreenState, LoginContrac
                     Utils.getTextFromEditText(binding.loginEditTextPassword)
             );
         } else if (view == binding.signUpTxt) {
-            Navigation
-                    .findNavController(binding.getRoot())
+            Navigation.findNavController(binding.getRoot())
                     .navigate(R.id.nav_from_loginFragment_to_registrationFragment);
         } else if (view == binding.forgotPasswordTxt) {
-            Navigation
-                    .findNavController(binding.getRoot())
+            Navigation.findNavController(binding.getRoot())
                     .navigate(R.id.nav_from_loginFragment_to_resetPasswordFragment);
         }
     }
@@ -74,8 +71,7 @@ public class LoginFragment extends HostedFragment<LoginScreenState, LoginContrac
     public void proceedToNextScreen() {
         setUpProgressBarVisibility(false);
         Toast.makeText(getContext(), R.string.successful_login, Toast.LENGTH_SHORT).show();
-        Navigation
-                .findNavController(binding.getRoot())
+        Navigation.findNavController(binding.getRoot())
                 .navigate(R.id.nav_from_loginFragment_to_trackerFragment);
     }
 

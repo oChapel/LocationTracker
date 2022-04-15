@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.ui;
+package ua.com.foxminded.locationtrackera.ui.auth;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -6,12 +6,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import javax.inject.Inject;
 
-import ua.com.foxminded.locationtrackera.data.auth.AuthNetwork;
-import ua.com.foxminded.locationtrackera.data.auth.AuthNetworkComponent;
-import ua.com.foxminded.locationtrackera.data.auth.DaggerAuthNetworkComponent;
-import ua.com.foxminded.locationtrackera.ui.login.LoginViewModel;
-import ua.com.foxminded.locationtrackera.ui.reset.ResetPasswordViewModel;
-import ua.com.foxminded.locationtrackera.ui.registration.RegistrationViewModel;
+import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.ui.auth.login.LoginViewModel;
+import ua.com.foxminded.locationtrackera.ui.auth.registration.RegistrationViewModel;
+import ua.com.foxminded.locationtrackera.ui.auth.reset.ResetPasswordViewModel;
 
 public class AuthViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 

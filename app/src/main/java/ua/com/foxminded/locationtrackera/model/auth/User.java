@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.data.model;
+package ua.com.foxminded.locationtrackera.model.auth;
 
 public class User {
 

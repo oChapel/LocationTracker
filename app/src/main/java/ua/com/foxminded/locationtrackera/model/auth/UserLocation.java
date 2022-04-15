@@ -1,13 +1,8 @@
-package ua.com.foxminded.locationtrackera.data.model;
+package ua.com.foxminded.locationtrackera.model.auth;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
-import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.ServerTimestamp;
-
-import java.util.Date;
 
 @Entity
 public class UserLocation {

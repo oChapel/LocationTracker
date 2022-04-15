@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.data;
+package ua.com.foxminded.locationtrackera.util;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,13 +37,13 @@ public class Result<T> {
     }
 
     public final static class Error extends Result<Void> {
-        private final Exception error;
+        private final Throwable error;
 
-        public Error(Exception error) {
+        public Error(Throwable error) {
             this.error = error;
         }
 
-        public Exception getError() {
+        public Throwable getError() {
             return this.error;
         }
     }

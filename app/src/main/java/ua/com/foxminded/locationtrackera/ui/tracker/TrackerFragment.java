@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.ui;
+package ua.com.foxminded.locationtrackera.ui.tracker;
 
 import android.Manifest;
 import android.app.ActivityManager;
@@ -38,7 +38,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.databinding.TrackerFragmentBinding;
+import ua.com.foxminded.locationtrackera.databinding.FragmentTrackerBinding;
 import ua.com.foxminded.locationtrackera.services.LocationService;
 
 public class TrackerFragment extends Fragment implements OnMapReadyCallback, LocationListener {
@@ -68,7 +68,7 @@ public class TrackerFragment extends Fragment implements OnMapReadyCallback, Loc
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return TrackerFragmentBinding.inflate(inflater, container, false).getRoot();
+        return FragmentTrackerBinding.inflate(inflater, container, false).getRoot();
     }
 
     @Override

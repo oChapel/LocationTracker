@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.ui.registration;
+package ua.com.foxminded.locationtrackera.ui.auth.registration;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,15 +16,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.databinding.RegistrationFragmentBinding;
-import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
-import ua.com.foxminded.locationtrackera.data.auth.AuthConstants;
+import ua.com.foxminded.locationtrackera.databinding.FragmentRegistrationBinding;
+import ua.com.foxminded.locationtrackera.model.auth.AuthConstants;
+import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
 import ua.com.foxminded.locationtrackera.util.Utils;
 
 public class RegistrationFragment extends Fragment implements View.OnClickListener {
 
     private RegistrationViewModel registrationViewModel;
-    private RegistrationFragmentBinding binding;
+    private FragmentRegistrationBinding binding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = RegistrationFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentRegistrationBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -71,8 +71,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
             } else if (integer == AuthConstants.REGISTRATION_SUCCESSFUL) {
                 setUpProgressBarVisibility(false);
                 Toast.makeText(getContext(), R.string.successful_registration, Toast.LENGTH_SHORT).show();
-                Navigation
-                        .findNavController(binding.getRoot())
+                Navigation.findNavController(binding.getRoot())
                         .navigate(R.id.nav_from_registrationFragment_to_loginFragment);
             } else if (integer == AuthConstants.REGISTRATION_FAILED) {
                 setUpProgressBarVisibility(false);
@@ -117,8 +116,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
                     Utils.getTextFromEditText(binding.registerEditTextPassword)
             );
         } else if (view == binding.registerLogInTxt) {
-            Navigation
-                    .findNavController(binding.getRoot())
+            Navigation.findNavController(binding.getRoot())
                     .navigate(R.id.nav_from_registrationFragment_to_loginFragment);
         }
     }

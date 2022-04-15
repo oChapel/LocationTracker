@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.data.auth;
+package ua.com.foxminded.locationtrackera.model.auth;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -7,9 +7,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import io.reactivex.rxjava3.core.Single;
-
-import ua.com.foxminded.locationtrackera.data.Result;
-import ua.com.foxminded.locationtrackera.data.model.User;
+import ua.com.foxminded.locationtrackera.util.Result;
 
 public class FirebaseAuthNetwork implements AuthNetwork {
 

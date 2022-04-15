@@ -30,7 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Calendar;
 
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.data.model.UserLocation;
+import ua.com.foxminded.locationtrackera.model.auth.UserLocation;
 
 public class LocationService extends Service {
 

@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.ui.reset;
+package ua.com.foxminded.locationtrackera.ui.auth.reset;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,15 +13,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.databinding.ResetPasswordFragmentBinding;
-import ua.com.foxminded.locationtrackera.ui.AuthViewModelFactory;
-import ua.com.foxminded.locationtrackera.data.auth.AuthConstants;
+import ua.com.foxminded.locationtrackera.databinding.FragmentResetPasswordBinding;
+import ua.com.foxminded.locationtrackera.model.auth.AuthConstants;
+import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
 import ua.com.foxminded.locationtrackera.util.Utils;
 
 public class ResetPasswordFragment extends Fragment implements View.OnClickListener {
 
     private ResetPasswordViewModel viewModel;
-    private ResetPasswordFragmentBinding binding;
+    private FragmentResetPasswordBinding binding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class ResetPasswordFragment extends Fragment implements View.OnClickListe
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = ResetPasswordFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentResetPasswordBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 

@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.ui.registration;
+package ua.com.foxminded.locationtrackera.ui.auth.registration;
 
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -10,10 +10,9 @@ import androidx.lifecycle.ViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.data.auth.AuthNetwork;
-import ua.com.foxminded.locationtrackera.data.auth.AuthConstants;
+import ua.com.foxminded.locationtrackera.model.auth.AuthConstants;
+import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 
 public class RegistrationViewModel extends ViewModel {
 

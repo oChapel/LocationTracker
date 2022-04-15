@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.ui.login;
+package ua.com.foxminded.locationtrackera.ui.auth.login;
 
 
 import ua.com.foxminded.locationtrackera.mvi.ScreenState;

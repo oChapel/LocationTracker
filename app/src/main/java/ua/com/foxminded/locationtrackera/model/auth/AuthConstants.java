@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.data.auth;
+package ua.com.foxminded.locationtrackera.model.auth;
 
 public final class AuthConstants {
 

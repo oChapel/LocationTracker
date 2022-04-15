@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="ua.com.foxminded.locationtrackera.ui.WelcomeFragment"
+        android:name="ua.com.foxminded.locationtrackera.ui.splash.WelcomeFragment"
         android:label="welcome_fragment"
-        tools:layout="@layout/welcome_fragment" >
+        tools:layout="@layout/fragment_welcome">
         <action
             android:id="@+id/nav_from_welcomeFragment_to_registrationFragment"
             app:destination="@id/registrationFragment"
@@ -21,22 +21,24 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
+
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="ua.com.foxminded.locationtrackera.ui.registration.RegistrationFragment"
+        android:name="ua.com.foxminded.locationtrackera.ui.auth.registration.RegistrationFragment"
         android:label="registration_fragment"
-        tools:layout="@layout/registration_fragment" >
+        tools:layout="@layout/fragment_registration">
         <action
             android:id="@+id/nav_from_registrationFragment_to_loginFragment"
             app:destination="@id/loginFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
+
     <fragment
         android:id="@+id/loginFragment"
-        android:name="ua.com.foxminded.locationtrackera.ui.login.LoginFragment"
+        android:name="ua.com.foxminded.locationtrackera.ui.auth.login.LoginFragment"
         android:label="login_fragment"
-        tools:layout="@layout/login_fragment" >
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/nav_from_loginFragment_to_registrationFragment"
             app:destination="@id/registrationFragment"
@@ -53,14 +55,16 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
+
     <fragment
         android:id="@+id/trackerFragment"
-        android:name="ua.com.foxminded.locationtrackera.ui.TrackerFragment"
+        android:name="ua.com.foxminded.locationtrackera.ui.tracker.TrackerFragment"
         android:label="tracker_fragment"
-        tools:layout="@layout/tracker_fragment" />
+        tools:layout="@layout/fragment_tracker" />
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="ua.com.foxminded.locationtrackera.ui.reset.ResetPasswordFragment"
+        android:name="ua.com.foxminded.locationtrackera.ui.auth.reset.ResetPasswordFragment"
         android:label="reset_password_fragment"
-        tools:layout="@layout/reset_password_fragment" />
+        tools:layout="@layout/fragment_reset_password" />
+
 </navigation>
