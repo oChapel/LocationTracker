@@ -10,7 +10,15 @@ import androidx.lifecycle.Observer;
 
 import java.lang.reflect.ParameterizedType;
 
-public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL extends FragmentContract.ViewModel<STATE>, HOST extends FragmentContract.Host>
+import ua.com.foxminded.locationtrackera.mvi.states.ScreenEffect;
+import ua.com.foxminded.locationtrackera.mvi.states.ScreenState;
+
+public abstract class HostedFragment<
+        VIEW extends FragmentContract.View,
+        STATE extends ScreenState<VIEW, STATE>,
+        EFFECT extends ScreenEffect<VIEW>,
+        VIEW_MODEL extends FragmentContract.ViewModel<STATE, EFFECT>,
+        HOST extends FragmentContract.Host>
         extends Fragment
         implements FragmentContract.View, Observer<STATE> {
 
@@ -39,6 +47,7 @@ public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL exten
         if (getModel() != null) {
             getLifecycle().addObserver(getModel());
             getModel().getStateObservable().observe(this, this);
+            getModel().getEffectObservable().observe(this, effect -> effect.visit((VIEW) this));
         }
     }
 
@@ -51,6 +60,7 @@ public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL exten
     @Override
     public void onDestroy() {
         if (getModel() != null) {
+            getModel().getEffectObservable().removeObservers(this);
             getModel().getStateObservable().removeObservers(this);
             getLifecycle().removeObserver(getModel());
         }
@@ -59,7 +69,7 @@ public abstract class HostedFragment<STATE extends ScreenState, VIEW_MODEL exten
 
     @Override
     public void onChanged(STATE screenState) {
-        screenState.visit(this);
+        screenState.visit((VIEW) this);
     }
 
     protected abstract VIEW_MODEL createModel();

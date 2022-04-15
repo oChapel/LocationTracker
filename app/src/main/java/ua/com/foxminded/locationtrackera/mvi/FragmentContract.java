@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData;
 
 public class FragmentContract {
 
-    public interface ViewModel<T> extends LifecycleObserver {
-        MutableLiveData<T> getStateObservable();
+    public interface ViewModel<S, A> extends LifecycleObserver {
+        MutableLiveData<S> getStateObservable();
+        MutableLiveData<A> getEffectObservable();
     }
 
     public interface View {

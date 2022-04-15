@@ -11,15 +11,21 @@ import androidx.lifecycle.ViewModel;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 
-public abstract class MviViewModel<T> extends ViewModel implements FragmentContract.ViewModel<T>, LifecycleEventObserver {
+public abstract class MviViewModel<S, A> extends ViewModel implements FragmentContract.ViewModel<S, A>, LifecycleEventObserver {
 
     private final CompositeDisposable onStopDisposable = new CompositeDisposable();
     private final CompositeDisposable onDestroyDisposable = new CompositeDisposable();
-    private final MutableLiveData<T> stateHolder = new MutableLiveData<>();
+    private final MutableLiveData<S> stateHolder = new MutableLiveData<>();
+    private final MutableLiveData<A> actionHolder = new MutableLiveData<>();
 
     @Override
-    public MutableLiveData<T> getStateObservable() {
+    public MutableLiveData<S> getStateObservable() {
         return stateHolder;
+    }
+
+    @Override
+    public MutableLiveData<A> getEffectObservable() {
+        return actionHolder;
     }
 
     @CallSuper
@@ -33,8 +39,12 @@ public abstract class MviViewModel<T> extends ViewModel implements FragmentContr
         }
     }
 
-    protected void setState(T state) {
+    protected void setState(S state) {
         stateHolder.setValue(state);
+    }
+
+    protected void setAction(A action) {
+        actionHolder.setValue(action);
     }
 
     protected void addTillDestroy(Disposable... disposables) {

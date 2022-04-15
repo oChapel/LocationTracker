@@ -19,4 +19,16 @@ public class Credentials {
     public boolean isPasswordValid() {
         return !TextUtils.isEmpty(password);
     }
+
+    public int getErrorCode() {
+        if (!isEmailValid() && !isPasswordValid()) {
+            return 1;
+        } else if (!isEmailValid() && isPasswordValid()) {
+            return 2;
+        } else if (isEmailValid() && !isPasswordValid()) {
+            return 3;
+        } else {
+            return 0;
+        }
+    }
 }

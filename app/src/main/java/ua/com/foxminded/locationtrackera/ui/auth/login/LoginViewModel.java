@@ -8,12 +8,16 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
+
+import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.mvi.MviViewModel;
 import ua.com.foxminded.locationtrackera.ui.auth.Credentials;
+import ua.com.foxminded.locationtrackera.ui.auth.login.state.LoginScreenEffect;
+import ua.com.foxminded.locationtrackera.ui.auth.login.state.LoginScreenState;
 import ua.com.foxminded.locationtrackera.util.Result;
 
-public class LoginViewModel extends MviViewModel<LoginScreenState> implements LoginContract.ViewModel {
+public class LoginViewModel extends MviViewModel<LoginScreenState, LoginScreenEffect> implements LoginContract.ViewModel {
 
     private final PublishSubject<Credentials> credsSupplier = PublishSubject.create();
     private final AuthNetwork authNetwork;
@@ -33,31 +37,38 @@ public class LoginViewModel extends MviViewModel<LoginScreenState> implements Lo
     private void setupLoginChain() {
         addTillDestroy(
                 credsSupplier
-                        .doOnNext(c -> LoginScreenState.createLoginInProgressState())
+                        .doOnNext(c -> setState(new LoginScreenState.LoginInProgress()))
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .flatMapSingle(creds -> {
                             if (creds.isEmailValid() && creds.isPasswordValid()) {
                                 return authNetwork.firebaseLogin(creds.email, creds.password);
                             } else {
-                                // R.string.enter_password; R.string.invalid_email;
-                                return Single.just(new Result.Error(new Throwable("Email or password is invalid")));
+                                return Single.just(new Result.Error(new Throwable("Email or password is invalid. Error code: " + creds.getErrorCode())));
                             }
                         }).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
                             if (result.isSuccessful()) {
-                                setState(LoginScreenState.createLoginSuccessState());
+                                setAction(new LoginScreenEffect.LoginSuccessful());
                             } else {
-                                // TODO: set error messages
-                                setState(LoginScreenState.createLoginFailureState());
+                                if (result.toString().contains("Error code: 1")) {
+                                    setState(new LoginScreenState.LoginError(R.string.invalid_email, R.string.enter_password));
+                                } else if (result.toString().contains("Error code: 2")) {
+                                    setState(new LoginScreenState.LoginError(R.string.invalid_email, -1));
+                                } else if (result.toString().contains("Error code: 3")) {
+                                    setState(new LoginScreenState.LoginError(-1, R.string.enter_password));
+                                } else {
+                                    setAction(new LoginScreenEffect.LoginFailed());
+                                }
                             }
                         }, error -> {
                             error.printStackTrace();
-                            setState(LoginScreenState.createLoginFailureState());
+                            setAction(new LoginScreenEffect.LoginFailed());
                         })
         );
     }
 
+    @Override
     public void login(String email, String password) {
         credsSupplier.onNext(new Credentials(email, password));
     }

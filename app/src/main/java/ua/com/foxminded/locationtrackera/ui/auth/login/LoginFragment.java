@@ -16,9 +16,16 @@ import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.FragmentLoginBinding;
 import ua.com.foxminded.locationtrackera.mvi.HostedFragment;
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
+import ua.com.foxminded.locationtrackera.ui.auth.login.state.LoginScreenEffect;
+import ua.com.foxminded.locationtrackera.ui.auth.login.state.LoginScreenState;
 import ua.com.foxminded.locationtrackera.util.Utils;
 
-public class LoginFragment extends HostedFragment<LoginScreenState, LoginContract.ViewModel, LoginContract.Host>
+public class LoginFragment extends HostedFragment<
+        LoginContract.View,
+        LoginScreenState,
+        LoginScreenEffect,
+        LoginContract.ViewModel,
+        LoginContract.Host>
         implements LoginContract.View, View.OnClickListener {
 
     private FragmentLoginBinding binding;
@@ -68,8 +75,12 @@ public class LoginFragment extends HostedFragment<LoginScreenState, LoginContrac
     }
 
     @Override
-    public void proceedToNextScreen() {
+    public void hideProgress() {
         setUpProgressBarVisibility(false);
+    }
+
+    @Override
+    public void proceedToNextScreen() {
         Toast.makeText(getContext(), R.string.successful_login, Toast.LENGTH_SHORT).show();
         Navigation.findNavController(binding.getRoot())
                 .navigate(R.id.nav_from_loginFragment_to_trackerFragment);
@@ -77,7 +88,6 @@ public class LoginFragment extends HostedFragment<LoginScreenState, LoginContrac
 
     @Override
     public void showFailureToastMessage() {
-        setUpProgressBarVisibility(false);
         Toast.makeText(getContext(), R.string.login_failed, Toast.LENGTH_SHORT).show();
     }
 
