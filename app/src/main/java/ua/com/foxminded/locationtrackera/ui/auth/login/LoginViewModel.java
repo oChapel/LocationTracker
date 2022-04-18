@@ -47,8 +47,8 @@ public class LoginViewModel extends MviViewModel<LoginScreenState, LoginScreenEf
                                 return Single.just(new Result.Error(new Throwable("Email or password is invalid. Error code: " + creds.getLoginErrorCode())));
                             }
                         }).observeOn(AndroidSchedulers.mainThread())
-                        .doFinally(() -> setState(new LoginScreenState.LoginProgress(false)))
                         .subscribe(result -> {
+                            setState(new LoginScreenState.LoginProgress(false));
                             if (result.isSuccessful()) {
                                 setAction(new LoginScreenEffect.LoginSuccessful());
                             } else {
@@ -64,6 +64,7 @@ public class LoginViewModel extends MviViewModel<LoginScreenState, LoginScreenEf
                             }
                         }, error -> {
                             error.printStackTrace();
+                            setState(new LoginScreenState.LoginProgress(false));
                             setAction(new LoginScreenEffect.LoginFailed());
                         })
         );

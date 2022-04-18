@@ -48,12 +48,13 @@ public class RegistrationViewModel extends MviViewModel<RegistrationScreenState,
                                 return Single.just(new Result.Error(new Throwable("Username or email or password invalid")));
                             }
                         }).observeOn(AndroidSchedulers.mainThread())
-                        .doFinally(() -> setState(new RegistrationScreenState.RegistrationProgress(false)))
                         .subscribe(result -> {
                             if (result.isSuccessful()) {
+                                setState(new RegistrationScreenState.RegistrationProgress(false));
                                 setAction(new RegistrationScreenEffect.RegistrationSuccessful());
                             } else {
                                 if (!result.toString().contains("Username or email or password invalid")) {
+                                    setState(new RegistrationScreenState.RegistrationProgress(false));
                                     setAction(new RegistrationScreenEffect.RegistrationFailed());
                                 }
                             }

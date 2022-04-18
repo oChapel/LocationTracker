@@ -1,5 +1,7 @@
 package ua.com.foxminded.locationtrackera.model.auth;
 
+import java.util.concurrent.ExecutionException;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
@@ -22,13 +24,25 @@ public class FirebaseAuthNetwork implements AuthNetwork {
         return Single.fromCallable(() -> {
             final Task<AuthResult> task =
                     firebaseAuth.createUserWithEmailAndPassword(email, password);
-            Tasks.await(task);
+
+            try {
+                Tasks.await(task);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
             if (task.isSuccessful()) {
                 final Task<Void> task2 = FirebaseFirestore.getInstance()
                         .collection("Users")
                         .document(firebaseAuth.getCurrentUser().getUid())
                         .set(new User(username, email));
-                Tasks.await(task2);
+
+                try {
+                    Tasks.await(task2);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
                 if (task.isSuccessful()) {
                     return new Result.Success<>(null);
                 } else {
@@ -44,7 +58,13 @@ public class FirebaseAuthNetwork implements AuthNetwork {
     public Single<Result<Void>> firebaseLogin(String email, String password) {
         return Single.fromCallable(() -> {
             final Task<AuthResult> task = firebaseAuth.signInWithEmailAndPassword(email, password);
-            Tasks.await(task);
+
+            try {
+                Tasks.await(task);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
             if (task.isSuccessful()) {
                 return new Result.Success<>(null);
             } else {
@@ -57,7 +77,13 @@ public class FirebaseAuthNetwork implements AuthNetwork {
     public Single<Result<Void>> resetPassword(String email) {
         return Single.fromCallable(() -> {
             final Task<Void> task = firebaseAuth.sendPasswordResetEmail(email);
-            Tasks.await(task);
+
+            try {
+                Tasks.await(task);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
             if (task.isSuccessful()) {
                 return new Result.Success<>(null);
             } else {

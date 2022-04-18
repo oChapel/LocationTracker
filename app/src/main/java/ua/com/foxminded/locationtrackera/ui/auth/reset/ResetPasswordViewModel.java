@@ -47,8 +47,8 @@ public class ResetPasswordViewModel extends MviViewModel<ResetPasswordScreenStat
                         return Single.just(new Result.Error(new Throwable("Email is invalid")));
                     }
                 }).observeOn(AndroidSchedulers.mainThread())
-                .doFinally(() -> setState(new ResetPasswordScreenState.ResetPasswordProgress(false)))
                 .subscribe(result -> {
+                    setState(new ResetPasswordScreenState.ResetPasswordProgress(false));
                     if (result.isSuccessful()) {
                         setAction(new ResetPasswordScreenEffect.ResetPasswordShowStatus(R.string.successful_reset));
                     } else {
@@ -60,6 +60,7 @@ public class ResetPasswordViewModel extends MviViewModel<ResetPasswordScreenStat
                     }
                 }, error -> {
                     error.printStackTrace();
+                    setState(new ResetPasswordScreenState.ResetPasswordProgress(false));
                     setAction(new ResetPasswordScreenEffect.ResetPasswordShowStatus(R.string.reset_failed));
                 })
         );
