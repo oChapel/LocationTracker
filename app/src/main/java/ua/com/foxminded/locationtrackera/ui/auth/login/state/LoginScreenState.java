@@ -11,8 +11,8 @@ public abstract class LoginScreenState extends ScreenState<LoginContract.View> {
 
     public LoginScreenState(boolean isProgressVisible) {
         this.isProgressVisible = isProgressVisible;
-        this.emailError = -1;
-        this.passwordError = -1;
+        this.emailError = 0;
+        this.passwordError = 0;
     }
 
     public LoginScreenState(boolean isProgressVisible, int emailError, int passwordError) {

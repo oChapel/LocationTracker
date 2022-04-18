@@ -10,7 +10,7 @@ public abstract class ResetPasswordScreenState extends ScreenState<ResetPassword
 
     public ResetPasswordScreenState(boolean isProgressVisible) {
         this.isProgressVisible = isProgressVisible;
-        this.emailError = -1;
+        this.emailError = 0;
     }
 
     public ResetPasswordScreenState(boolean isProgressVisible, int emailError) {

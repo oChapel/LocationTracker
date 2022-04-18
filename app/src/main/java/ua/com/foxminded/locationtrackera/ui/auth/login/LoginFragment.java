@@ -87,12 +87,12 @@ public class LoginFragment extends HostedFragment<
 
     @Override
     public void showEmailAndPasswordError(int emailError, int passwordError) {
-        if (emailError == -1) {
+        if (emailError == 0) {
             binding.loginLayoutEmail.setError(null);
         } else {
             binding.loginLayoutEmail.setError(getString(emailError));
         }
-        if (passwordError == -1) {
+        if (passwordError == 0) {
             binding.loginLayoutPassword.setError(null);
         } else {
             binding.loginLayoutPassword.setError(getString(passwordError));

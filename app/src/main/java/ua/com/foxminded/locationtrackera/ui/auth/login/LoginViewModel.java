@@ -55,9 +55,9 @@ public class LoginViewModel extends MviViewModel<LoginScreenState, LoginScreenEf
                                 if (result.toString().contains("Error code: 1")) {
                                     setState(new LoginScreenState.LoginError(R.string.invalid_email, R.string.enter_password));
                                 } else if (result.toString().contains("Error code: 2")) {
-                                    setState(new LoginScreenState.LoginError(R.string.invalid_email, -1));
+                                    setState(new LoginScreenState.LoginError(R.string.invalid_email, 0));
                                 } else if (result.toString().contains("Error code: 3")) {
-                                    setState(new LoginScreenState.LoginError(-1, R.string.enter_password));
+                                    setState(new LoginScreenState.LoginError(0, R.string.enter_password));
                                 } else {
                                     setAction(new LoginScreenEffect.LoginFailed());
                                 }

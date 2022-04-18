@@ -66,7 +66,7 @@ public class ResetPasswordFragment extends HostedFragment<
 
     @Override
     public void showEmailError(int emailError) {
-        if (emailError == -1) {
+        if (emailError == 0) {
             binding.resetPasswordLayoutEmail.setError(null);
         } else {
             binding.resetPasswordLayoutEmail.setError(getString(emailError));

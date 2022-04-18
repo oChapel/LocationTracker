@@ -12,9 +12,9 @@ public abstract class RegistrationScreenState extends ScreenState<RegistrationCo
 
     public RegistrationScreenState(boolean isProgressVisible) {
         this.isProgressVisible = isProgressVisible;
-        this.usernameError = -1;
-        this.emailError = -1;
-        this.passwordError = -1;
+        this.usernameError = 0;
+        this.emailError = 0;
+        this.passwordError = 0;
     }
 
     public RegistrationScreenState(boolean isProgressVisible, int usernameError, int emailError, int passwordError) {

@@ -98,17 +98,17 @@ public class RegistrationFragment extends HostedFragment<
 
     @Override
     public void showErrors(int usernameError, int emailError, int passwordError) {
-        if (usernameError == -1) {
+        if (usernameError == 0) {
             binding.registerLayoutUserName.setError(null);
         } else {
             binding.registerLayoutUserName.setError(getString(usernameError));
         }
-        if (emailError == -1) {
+        if (emailError == 0) {
             binding.registerLayoutEmail.setError(null);
         } else {
             binding.registerLayoutEmail.setError(getString(emailError));
         }
-        if (passwordError == -1) {
+        if (passwordError == 0) {
             binding.registerLayoutPassword.setError(null);
         } else {
             binding.registerLayoutPassword.setError(getString(passwordError));

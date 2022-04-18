@@ -68,18 +68,17 @@ public class RegistrationViewModel extends MviViewModel<RegistrationScreenState,
     private RegistrationScreenState getErrorState(Credentials creds) {
         int usernameError, emailError, passwordError;
         if (creds.isUsernameValid()) {
-
-            usernameError = -1;
+            usernameError = 0;
         } else {
             usernameError = R.string.empty_field;
         }
         if (creds.isEmailValid()) {
-            emailError = -1;
+            emailError = 0;
         } else {
             emailError =  R.string.invalid_email;
         }
         if (creds.isRegistrationPasswordValid()) {
-            passwordError = -1;
+            passwordError = 0;
         } else {
             passwordError = R.string.invalid_password;
         }
