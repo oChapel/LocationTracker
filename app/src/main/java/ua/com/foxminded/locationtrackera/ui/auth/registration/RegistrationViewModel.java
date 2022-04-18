@@ -1,104 +1,95 @@
 package ua.com.foxminded.locationtrackera.ui.auth.registration;
 
-import android.text.TextUtils;
-import android.util.Patterns;
-
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subjects.PublishSubject;
+
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.model.auth.AuthConstants;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.mvi.MviViewModel;
+import ua.com.foxminded.locationtrackera.ui.auth.Credentials;
+import ua.com.foxminded.locationtrackera.ui.auth.registration.state.RegistrationScreenEffect;
+import ua.com.foxminded.locationtrackera.ui.auth.registration.state.RegistrationScreenState;
+import ua.com.foxminded.locationtrackera.util.Result;
 
-public class RegistrationViewModel extends ViewModel {
+public class RegistrationViewModel extends MviViewModel<RegistrationScreenState, RegistrationScreenEffect>
+        implements RegistrationContract.ViewModel {
 
-    private final MutableLiveData<Integer> usernameErrorStatus = new MutableLiveData<>();
-    private final MutableLiveData<Integer> emailErrorStatus = new MutableLiveData<>();
-    private final MutableLiveData<Integer> passwordErrorStatus = new MutableLiveData<>();
-    private final MutableLiveData<Integer> registerProgress = new MutableLiveData<>();
-
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final PublishSubject<Credentials> credsSupplier = PublishSubject.create();
     private final AuthNetwork authNetwork;
 
     public RegistrationViewModel(AuthNetwork authNetwork) {
         this.authNetwork = authNetwork;
     }
 
-    public void registerUser(String username, String email, String password) {
-        if (isUserNameValid(username) && isEmailValid(email) && isPasswordValid(password)) {
-            registerProgress.setValue(AuthConstants.REGISTRATION_IN_PROGRESS);
-            compositeDisposable.add(authNetwork.firebaseRegister(username, email, password)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(result -> {
-                        if (result.isSuccessful()) {
-                            registerProgress.setValue(AuthConstants.REGISTRATION_SUCCESSFUL);
-                        } else {
-                            registerProgress.setValue(AuthConstants.REGISTRATION_FAILED);
-                        }
-                    }, error -> {
-                        error.printStackTrace();
-                        registerProgress.setValue(AuthConstants.REGISTRATION_FAILED);
-                    })
-            );
+    @Override
+    public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
+        super.onStateChanged(source, event);
+        if (event == Lifecycle.Event.ON_CREATE) {
+            setUpLoginChain();
         }
+    }
+
+    private void setUpLoginChain() {
+        addTillDestroy(
+                credsSupplier.doOnNext(c -> setState(new RegistrationScreenState.RegistrationProgress(true)))
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .observeOn(Schedulers.io())
+                        .flatMapSingle(creds -> {
+                            if (creds.isUsernameValid() && creds.isEmailValid() && creds.isRegistrationPasswordValid()) {
+                                return authNetwork.firebaseRegister(creds.username, creds.email, creds.password);
+                            } else {
+                                postState(getErrorState(creds));
+                                return Single.just(new Result.Error(new Throwable("Username or email or password invalid")));
+                            }
+                        }).observeOn(AndroidSchedulers.mainThread())
+                        .doFinally(() -> setState(new RegistrationScreenState.RegistrationProgress(false)))
+                        .subscribe(result -> {
+                            if (result.isSuccessful()) {
+                                setAction(new RegistrationScreenEffect.RegistrationSuccessful());
+                            } else {
+                                if (!result.toString().contains("Username or email or password invalid")) {
+                                    setAction(new RegistrationScreenEffect.RegistrationFailed());
+                                }
+                            }
+                        }, error -> {
+                            error.printStackTrace();
+                            setAction(new RegistrationScreenEffect.RegistrationFailed());
+                        })
+        );
+    }
+
+    private RegistrationScreenState getErrorState(Credentials creds) {
+        int usernameError, emailError, passwordError;
+        if (creds.isUsernameValid()) {
+
+            usernameError = -1;
+        } else {
+            usernameError = R.string.empty_field;
+        }
+        if (creds.isEmailValid()) {
+            emailError = -1;
+        } else {
+            emailError =  R.string.invalid_email;
+        }
+        if (creds.isRegistrationPasswordValid()) {
+            passwordError = -1;
+        } else {
+            passwordError = R.string.invalid_password;
+        }
+        return new RegistrationScreenState.RegistrationError(usernameError, emailError, passwordError);
+    }
+
+    public void registerUser(String username, String email, String password) {
+        credsSupplier.onNext(new Credentials(username, email, password));
     }
 
     public void registrationDataChanged(String username, String email, String password) {
-        if (!isUserNameValid(username)) {
-            usernameErrorStatus.setValue(R.string.empty_field);
-        } else {
-            usernameErrorStatus.setValue(null);
-        }
-        if (!isEmailValid(email)) {
-            emailErrorStatus.setValue(R.string.invalid_email);
-        } else {
-            emailErrorStatus.setValue(null);
-        }
-        if (!isPasswordValid(password)) {
-            passwordErrorStatus.setValue(R.string.invalid_password);
-        } else {
-            passwordErrorStatus.setValue(null);
-        }
-    }
-
-    private boolean isUserNameValid(String username) {
-        return !TextUtils.isEmpty(username);
-    }
-
-    private boolean isEmailValid(String email) {
-        return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    private boolean isPasswordValid(String password) {
-        return !TextUtils.isEmpty(password) && password.trim().length() > 5;
-    }
-
-    public LiveData<Integer> getUsernameErrorStatus() {
-        return usernameErrorStatus;
-    }
-
-    public LiveData<Integer> getEmailErrorStatus() {
-        return emailErrorStatus;
-    }
-
-    public LiveData<Integer> getPasswordErrorStatus() {
-        return passwordErrorStatus;
-    }
-
-    public LiveData<Integer> getRegisterProgress() {
-        return registerProgress;
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        if (!compositeDisposable.isDisposed()) {
-            compositeDisposable.dispose();
-        }
+        setState(getErrorState(new Credentials(username, email, password)));
     }
 }

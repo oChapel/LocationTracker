@@ -15,7 +15,7 @@ import ua.com.foxminded.locationtrackera.mvi.states.ScreenState;
 
 public abstract class HostedFragment<
         VIEW extends FragmentContract.View,
-        STATE extends ScreenState<VIEW, STATE>,
+        STATE extends ScreenState<VIEW>,
         EFFECT extends ScreenEffect<VIEW>,
         VIEW_MODEL extends FragmentContract.ViewModel<STATE, EFFECT>,
         HOST extends FragmentContract.Host>

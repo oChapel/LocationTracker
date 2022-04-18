@@ -43,6 +43,10 @@ public abstract class MviViewModel<S, A> extends ViewModel implements FragmentCo
         stateHolder.setValue(state);
     }
 
+    protected void postState(S state) {
+        stateHolder.postValue(state);
+    }
+
     protected void setAction(A action) {
         actionHolder.setValue(action);
     }

@@ -8,7 +8,6 @@ public abstract class LoginScreenEffect extends AbstractEffect<LoginContract.Vie
     public static class LoginSuccessful extends LoginScreenEffect {
         @Override
         public void handle(LoginContract.View screen) {
-            screen.hideProgress();
             screen.proceedToNextScreen();
         }
     }
@@ -16,7 +15,6 @@ public abstract class LoginScreenEffect extends AbstractEffect<LoginContract.Vie
     public static class LoginFailed extends LoginScreenEffect {
         @Override
         public void handle(LoginContract.View screen) {
-            screen.hideProgress();
             screen.showFailureToastMessage();
         }
     }

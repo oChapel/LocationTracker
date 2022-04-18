@@ -11,9 +11,7 @@ public class LoginContract {
     }
 
     public interface View extends FragmentContract.View {
-        void showProgress();
-
-        void hideProgress();
+        void setProgressVisibility(boolean isProgressVisible);
 
         void proceedToNextScreen();
 

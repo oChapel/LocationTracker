@@ -9,24 +9,28 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.FragmentResetPasswordBinding;
-import ua.com.foxminded.locationtrackera.model.auth.AuthConstants;
+import ua.com.foxminded.locationtrackera.mvi.HostedFragment;
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
+import ua.com.foxminded.locationtrackera.ui.auth.reset.state.ResetPasswordScreenEffect;
+import ua.com.foxminded.locationtrackera.ui.auth.reset.state.ResetPasswordScreenState;
 import ua.com.foxminded.locationtrackera.util.Utils;
 
-public class ResetPasswordFragment extends Fragment implements View.OnClickListener {
+public class ResetPasswordFragment extends HostedFragment<
+        ResetPasswordContract.View,
+        ResetPasswordScreenState,
+        ResetPasswordScreenEffect,
+        ResetPasswordContract.ViewModel,
+        ResetPasswordContract.Host>
+        implements ResetPasswordContract.View, View.OnClickListener {
 
-    private ResetPasswordViewModel viewModel;
     private FragmentResetPasswordBinding binding;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this,
+    protected ResetPasswordContract.ViewModel createModel() {
+        return new ViewModelProvider(this,
                 new AuthViewModelFactory()).get(ResetPasswordViewModel.class);
     }
 
@@ -42,32 +46,31 @@ public class ResetPasswordFragment extends Fragment implements View.OnClickListe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel.getEmailErrorStatus().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == null) {
-                binding.resetPasswordLayoutEmail.setError(null);
-            } else {
-                binding.resetPasswordLayoutEmail.setError(getString(integer));
-            }
-        });
-
-        viewModel.getResetProgress().observe(getViewLifecycleOwner(), integer -> {
-            if (integer == AuthConstants.RESET_IN_PROGRESS) {
-                setUpProgressBarVisibility(true);
-            } else if (integer == AuthConstants.RESET_SUCCESSFUL) {
-                setUpProgressBarVisibility(false);
-                Toast.makeText(getContext(), R.string.successful_reset, Toast.LENGTH_LONG).show();
-            } else if (integer == AuthConstants.RESET_FAILED) {
-                setUpProgressBarVisibility(false);
-                Toast.makeText(getContext(), R.string.reset_failed, Toast.LENGTH_LONG).show();
-            }
-        });
-
         binding.resetPasswordBtn.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        viewModel.resetPassword(Utils.getTextFromEditText(binding.resetPasswordEditTextEmail));
+        getModel().resetPassword(Utils.getTextFromEditText(binding.resetPasswordEditTextEmail));
+    }
+
+    @Override
+    public void setProgressVisibility(boolean isProgressVisible) {
+        setUpProgressBarVisibility(isProgressVisible);
+    }
+
+    @Override
+    public void showToastMessage(int idStringResource) {
+        Toast.makeText(getContext(), idStringResource, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showEmailError(int emailError) {
+        if (emailError == -1) {
+            binding.resetPasswordLayoutEmail.setError(null);
+        } else {
+            binding.resetPasswordLayoutEmail.setError(getString(emailError));
+        }
     }
 
     private void setUpProgressBarVisibility(boolean isVisible) {

@@ -69,14 +69,8 @@ public class LoginFragment extends HostedFragment<
     }
 
     @Override
-    public void showProgress() {
-        resetErrors();
-        setUpProgressBarVisibility(true);
-    }
-
-    @Override
-    public void hideProgress() {
-        setUpProgressBarVisibility(false);
+    public void setProgressVisibility(boolean isProgressVisible) {
+        setUpProgressBarVisibility(isProgressVisible);
     }
 
     @Override
@@ -103,11 +97,6 @@ public class LoginFragment extends HostedFragment<
         } else {
             binding.loginLayoutPassword.setError(getString(passwordError));
         }
-    }
-
-    private void resetErrors() {
-        binding.loginLayoutEmail.setError(null);
-        binding.loginLayoutPassword.setError(null);
     }
 
     private void setUpProgressBarVisibility(boolean isVisible) {

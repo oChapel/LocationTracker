@@ -3,7 +3,7 @@ package ua.com.foxminded.locationtrackera.ui.auth.login.state;
 import ua.com.foxminded.locationtrackera.mvi.states.ScreenState;
 import ua.com.foxminded.locationtrackera.ui.auth.login.LoginContract;
 
-public abstract class LoginScreenState extends ScreenState<LoginContract.View, LoginScreenState> {
+public abstract class LoginScreenState extends ScreenState<LoginContract.View> {
 
     private final boolean isProgressVisible;
     protected final int emailError;
@@ -23,36 +23,19 @@ public abstract class LoginScreenState extends ScreenState<LoginContract.View, L
 
     @Override
     public void visit(LoginContract.View screen) {
-        if (isProgressVisible) {
-            screen.showProgress();
-        } else {
-            screen.hideProgress();
-        }
+        screen.setProgressVisibility(isProgressVisible);
+        screen.showEmailAndPasswordError(emailError, passwordError);
     }
 
-    public static class LoginInProgress extends LoginScreenState {
-        public LoginInProgress() {
-            super(true);
-        }
-
-        @Override
-        public void merge(LoginScreenState prevState) {
+    public static class LoginProgress extends LoginScreenState {
+        public LoginProgress(boolean isProgressVisible) {
+            super(isProgressVisible);
         }
     }
 
     public static class LoginError extends LoginScreenState {
         public LoginError(int emailError, int passwordError) {
             super(false, emailError, passwordError);
-        }
-
-        @Override
-        public void merge(LoginScreenState prevState) {
-        }
-
-        @Override
-        public void visit(LoginContract.View screen) {
-            super.visit(screen);
-            screen.showEmailAndPasswordError(emailError, passwordError);
         }
     }
 }

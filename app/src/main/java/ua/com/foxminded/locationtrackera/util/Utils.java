@@ -13,4 +13,12 @@ public class Utils {
     public static String getTextFromEditText(EditText editText) {
         return editText.getText().toString().trim();
     }
+
+    public static boolean hasMoreThanFiveChars(String string) {
+        if (string == null) {
+            return false;
+        } else {
+            return string.trim().length() > 5;
+        }
+    }
 }

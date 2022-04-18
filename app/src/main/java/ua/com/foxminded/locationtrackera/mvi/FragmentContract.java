@@ -1,13 +1,13 @@
 package ua.com.foxminded.locationtrackera.mvi;
 
 import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.LiveData;
 
 public class FragmentContract {
 
     public interface ViewModel<S, A> extends LifecycleObserver {
-        MutableLiveData<S> getStateObservable();
-        MutableLiveData<A> getEffectObservable();
+        LiveData<S> getStateObservable();
+        LiveData<A> getEffectObservable();
     }
 
     public interface View {

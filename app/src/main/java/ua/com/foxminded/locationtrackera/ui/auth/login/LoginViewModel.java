@@ -37,16 +37,17 @@ public class LoginViewModel extends MviViewModel<LoginScreenState, LoginScreenEf
     private void setupLoginChain() {
         addTillDestroy(
                 credsSupplier
-                        .doOnNext(c -> setState(new LoginScreenState.LoginInProgress()))
+                        .doOnNext(c -> setState(new LoginScreenState.LoginProgress(true)))
                         .subscribeOn(AndroidSchedulers.mainThread())
+                        .observeOn(Schedulers.io())
                         .flatMapSingle(creds -> {
                             if (creds.isEmailValid() && creds.isPasswordValid()) {
                                 return authNetwork.firebaseLogin(creds.email, creds.password);
                             } else {
-                                return Single.just(new Result.Error(new Throwable("Email or password is invalid. Error code: " + creds.getErrorCode())));
+                                return Single.just(new Result.Error(new Throwable("Email or password is invalid. Error code: " + creds.getLoginErrorCode())));
                             }
-                        }).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        }).observeOn(AndroidSchedulers.mainThread())
+                        .doFinally(() -> setState(new LoginScreenState.LoginProgress(false)))
                         .subscribe(result -> {
                             if (result.isSuccessful()) {
                                 setAction(new LoginScreenEffect.LoginSuccessful());
