@@ -7,6 +7,7 @@
     <string name="sign_up_underlined"><u>Sign Up</u></string>
     <string name="register_uppercase">REGISTER</string>
     <string name="reset_password_uppercase">RESET PASSWORD</string>
+    <string name="logout">Logout</string>
 
     <string name="user_name">User Name</string>
     <string name="email">Email</string>
@@ -16,8 +17,16 @@
     <string name="no_account">Don\'t have an account?</string>
     <string name="have_account">Already have an account?</string>
 
+    <!-- Welcome Fragment -->
     <string name="welcome_message">Welcome to Location Tracker App</string>
     <string name="welcome_description">Track your location whenever you want wherever you are</string>
+
+    <!-- Tracker Fragment -->
+    <string name="gps_status">Gps status:</string>
+    <string name="service_status">Service status:</string>
+    <string name="connecting">connecting</string>
+    <string name="enabled">enabled</string>
+    <string name="disabled">disabled</string>
 
     <!-- Errors -->
     <string name="empty_field">This field cannot be empty</string>
@@ -33,6 +42,7 @@
     <string name="reset_failed">"Failed to reset password. Please check your email or internet connection"</string>
     <string name="successful_reset">"Check your email to reset your password"</string>
     <string name="permission_denied">"To track your location please allow the app to use GPS"</string>
+    <string name="logged_out">See you later!</string>
 
     <!-- Alert dialog -->
     <string name="no_gps_alert_message">"The application requires GPS to work properly. Do you want to enable it?"</string>

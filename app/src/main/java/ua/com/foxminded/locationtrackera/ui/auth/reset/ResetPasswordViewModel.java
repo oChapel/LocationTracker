@@ -31,11 +31,11 @@ public class ResetPasswordViewModel extends MviViewModel<ResetPasswordScreenStat
     public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
         super.onStateChanged(source, event);
         if (event == Lifecycle.Event.ON_CREATE) {
-            setUpLoginChain();
+            setUpResetPasswordChain();
         }
     }
 
-    private void setUpLoginChain() {
+    private void setUpResetPasswordChain() {
         addTillDestroy(
                 credsSupplier.doOnNext(c -> setState(new ResetPasswordScreenState.ResetPasswordProgress(true)))
                 .subscribeOn(AndroidSchedulers.mainThread())

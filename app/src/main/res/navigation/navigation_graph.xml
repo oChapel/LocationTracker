@@ -60,7 +60,13 @@
         android:id="@+id/trackerFragment"
         android:name="ua.com.foxminded.locationtrackera.ui.tracker.TrackerFragment"
         android:label="tracker_fragment"
-        tools:layout="@layout/fragment_tracker" />
+        tools:layout="@layout/fragment_tracker" >
+        <action
+            android:id="@+id/nav_from_trackerFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
     <fragment
         android:id="@+id/resetPasswordFragment"
         android:name="ua.com.foxminded.locationtrackera.ui.auth.reset.ResetPasswordFragment"

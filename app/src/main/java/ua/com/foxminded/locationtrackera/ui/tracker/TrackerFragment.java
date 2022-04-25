@@ -5,12 +5,12 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -19,119 +19,142 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.FragmentTrackerBinding;
+import ua.com.foxminded.locationtrackera.model.service.GpsStatusConstants;
+import ua.com.foxminded.locationtrackera.mvi.HostedFragment;
 import ua.com.foxminded.locationtrackera.services.LocationService;
+import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
+import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenEffect;
+import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenState;
 
-public class TrackerFragment extends Fragment implements OnMapReadyCallback, LocationListener {
-    //TODO: delete map, create model for getting location, etc
+public class TrackerFragment extends HostedFragment<
+        TrackerContract.View,
+        TrackerScreenState,
+        TrackerScreenEffect,
+        TrackerContract.ViewModel,
+        TrackerContract.Host> implements TrackerContract.View {
 
     private static final int GOOGLE_API_AVAILABILITY_REQUEST_CODE = 101;
 
-    private GoogleMap googleMap;
-    private Marker marker;
+    private FragmentTrackerBinding binding;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
-                    setUpTracker();
+                    startService();
                 } else {
                     Toast.makeText(getContext(), R.string.permission_denied, Toast.LENGTH_LONG).show();
                 }
             });
 
-    private final ActivityResultLauncher<Intent> enableGpsLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.StartActivityForResult(),
-                    result -> checkPermissionGranted()
-            );
+    @Override
+    protected TrackerContract.ViewModel createModel() {
+        return new ViewModelProvider(this,
+                new AuthViewModelFactory()).get(TrackerViewModel.class);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return FragmentTrackerBinding.inflate(inflater, container, false).getRoot();
+        binding = FragmentTrackerBinding.inflate(inflater, container, false);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
+        setHasOptionsMenu(true);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.tracker_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
-    }
-
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        this.googleMap = googleMap;
-
         checkGoogleServicesAvailability();
-        checkGpsEnabled();
-
-        if (ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getContext(), R.string.permission_denied, Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        final FusedLocationProviderClient fusedLocationClient =
-                LocationServices.getFusedLocationProviderClient(getContext());
-        /*fusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                final LatLng currentLatLng = new LatLng(
-                        task.getResult().getLatitude(),
-                        task.getResult().getLongitude()
-                );
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15));
-            }
-        });*/
     }
 
     @Override
-    public void onLocationChanged(@NonNull Location location) {
-        if (marker != null) {
-            marker.remove();
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_item_logout) {
+            getModel().logout();
         }
-
-        final LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        marker = googleMap.addMarker(
-                new MarkerOptions()
-                        .position(currentLatLng)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
-        );
-
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
+        return super.onOptionsItemSelected(item);
     }
 
-    private void startLocationService() {
-        if (!isLocationServiceRunning()) {
-            Intent serviceIntent = new Intent(getContext(), LocationService.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                getActivity().startForegroundService(serviceIntent);
-            } else {
-                getActivity().startService(serviceIntent);
+    @Override
+    public void proceedToSplashScreen() {
+        Toast.makeText(getContext(), R.string.logged_out, Toast.LENGTH_SHORT).show();
+        Navigation.findNavController(binding.getRoot())
+                .navigate(R.id.nav_from_trackerFragment_to_welcomeFragment);
+    }
+
+    @Override
+    public void changeGpsStatus(int gpsStatus) {
+        if (gpsStatus == GpsStatusConstants.FIX_ACQUIRED) {
+            binding.gpsStatus.setText(R.string.enabled);
+            binding.gpsStatus.setTextColor(getResources().getColor(R.color.green_500));
+        } else if (gpsStatus == GpsStatusConstants.FIX_NOT_ACQUIRED) {
+            binding.gpsStatus.setText(R.string.disabled);
+            binding.gpsStatus.setTextColor(getResources().getColor(R.color.red_500));
+        } else if (gpsStatus == GpsStatusConstants.CONNECTING) {
+            binding.gpsStatus.setText(R.string.connecting);
+            binding.gpsStatus.setTextColor(getResources().getColor(R.color.yellow_700));
+        }
+    }
+
+    @Override
+    public void changeServiceStatus(boolean isEnabled) {
+        if (isEnabled) {
+            binding.serviceStatus.setText(R.string.enabled);
+            binding.serviceStatus.setTextColor(getResources().getColor(R.color.green_500));
+        } else {
+            binding.serviceStatus.setText(R.string.disabled);
+            binding.serviceStatus.setTextColor(getResources().getColor(R.color.red_500));
+        }
+
+    }
+
+    private void checkGoogleServicesAvailability() {
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getContext());
+        if (available == ConnectionResult.SUCCESS) {
+            checkPermissionGranted();
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
+            GoogleApiAvailability
+                    .getInstance()
+                    .getErrorDialog(getActivity(), available, GOOGLE_API_AVAILABILITY_REQUEST_CODE)
+                    .show();
+        } else {
+            Toast.makeText(getContext(), R.string.common_google_play_services_unknown_issue, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void checkPermissionGranted() {
+        if (ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startService();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
             }
+        }
+    }
+
+    private void startService() {
+        if (!isLocationServiceRunning()) {
+            final Intent serviceIntent = new Intent(getContext(), LocationService.class);
+            ContextCompat.startForegroundService(getContext(), serviceIntent);
         }
     }
 
@@ -143,61 +166,5 @@ public class TrackerFragment extends Fragment implements OnMapReadyCallback, Loc
             }
         }
         return false;
-    }
-
-    private void checkGoogleServicesAvailability() {
-        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getContext());
-        if (available == ConnectionResult.SUCCESS) {
-            return;
-        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
-            GoogleApiAvailability
-                    .getInstance()
-                    .getErrorDialog(getActivity(), available, GOOGLE_API_AVAILABILITY_REQUEST_CODE)
-                    .show();
-        } else {
-            Toast.makeText(getContext(), R.string.common_google_play_services_unknown_issue, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void checkGpsEnabled() {
-        final LocationManager manager =
-                (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            showAlertDialogMessageNoGps();
-        } else {
-            checkPermissionGranted();
-        }
-    }
-
-    private void checkPermissionGranted() {
-        if (ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            setUpTracker();
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
-            }
-        }
-    }
-
-    private void showAlertDialogMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage(R.string.no_gps_alert_message)
-                .setCancelable(false)
-                .setPositiveButton(R.string.settings, (dialogInterface, i) ->
-                        enableGpsLauncher.launch(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                .setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.cancel());
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    private void setUpTracker() {
-        if (ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getContext(), R.string.permission_denied, Toast.LENGTH_LONG).show();
-            return;
-        }
-        startLocationService();
-        googleMap.setMyLocationEnabled(true);
     }
 }

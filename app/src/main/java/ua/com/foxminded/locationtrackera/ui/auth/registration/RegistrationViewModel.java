@@ -31,11 +31,11 @@ public class RegistrationViewModel extends MviViewModel<RegistrationScreenState,
     public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
         super.onStateChanged(source, event);
         if (event == Lifecycle.Event.ON_CREATE) {
-            setUpLoginChain();
+            setUpRegistrationChain();
         }
     }
 
-    private void setUpLoginChain() {
+    private void setUpRegistrationChain() {
         addTillDestroy(
                 credsSupplier.doOnNext(c -> setState(new RegistrationScreenState.RegistrationProgress(true)))
                         .subscribeOn(AndroidSchedulers.mainThread())
