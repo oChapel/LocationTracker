@@ -68,7 +68,7 @@ public class TrackerFragment extends HostedFragment<
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentTrackerBinding.inflate(inflater, container, false);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(binding.toolbar);
         setHasOptionsMenu(true);
         return binding.getRoot();
     }
@@ -127,13 +127,13 @@ public class TrackerFragment extends HostedFragment<
     }
 
     private void checkGoogleServicesAvailability() {
-        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getContext());
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(requireContext());
         if (available == ConnectionResult.SUCCESS) {
             checkPermissionGranted();
         } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             GoogleApiAvailability
                     .getInstance()
-                    .getErrorDialog(getActivity(), available, GOOGLE_API_AVAILABILITY_REQUEST_CODE)
+                    .getErrorDialog(requireActivity(), available, GOOGLE_API_AVAILABILITY_REQUEST_CODE)
                     .show();
         } else {
             Toast.makeText(getContext(), R.string.common_google_play_services_unknown_issue, Toast.LENGTH_LONG).show();
@@ -141,7 +141,7 @@ public class TrackerFragment extends HostedFragment<
     }
 
     private void checkPermissionGranted() {
-        if (ActivityCompat.checkSelfPermission(getContext(),
+        if (ActivityCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             startService();
         } else {
@@ -154,12 +154,12 @@ public class TrackerFragment extends HostedFragment<
     private void startService() {
         if (!isLocationServiceRunning()) {
             final Intent serviceIntent = new Intent(getContext(), LocationService.class);
-            ContextCompat.startForegroundService(getContext(), serviceIntent);
+            ContextCompat.startForegroundService(requireContext(), serviceIntent);
         }
     }
 
     private boolean isLocationServiceRunning() {
-        final ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        final ActivityManager manager = (ActivityManager) requireActivity().getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (LocationService.class.getName().equals(service.service.getClassName())) {
                 return true;

@@ -15,28 +15,13 @@ public interface LocationServiceContract {
     }
 
     interface Presenter {
-        void init();
+        void onStart(LocationServiceContract.ServiceInteractor serviceInteractor);
         void saveUserLocation(Location location);
-        void onDestroy();
-    }
-
-    interface GpsServices {
-        void setUpServices();
-        void startLocationUpdates();
-        void registerGpsOrGnssStatusChanges();
-        void setStatusListener(StatusListener listener);
-        void setLocationListener(LocationListener listener);
         void onDestroy();
     }
 
     interface Repository {
         void saveLocation(UserLocation userLocation);
         List<UserLocation> getAll();
-    }
-
-    interface Cache {
-        void serviceStatusChanged(boolean isRunning);
-        void setStatusListener(StatusListener listener);
-        void setGpsStatus(int status);
     }
 }

@@ -6,29 +6,35 @@ import dagger.Module;
 import dagger.Provides;
 
 import ua.com.foxminded.locationtrackera.App;
-import ua.com.foxminded.locationtrackera.data.LocationRepository;
-import ua.com.foxminded.locationtrackera.model.service.Cache;
-import ua.com.foxminded.locationtrackera.model.service.GpsServicesModel;
+import ua.com.foxminded.locationtrackera.model.service.DefaultTrackerCache;
+import ua.com.foxminded.locationtrackera.model.service.DefaultGpsModel;
+import ua.com.foxminded.locationtrackera.model.service.GpsSource;
+import ua.com.foxminded.locationtrackera.model.service.TrackerCache;
 import ua.com.foxminded.locationtrackera.services.LocationServiceContract;
+import ua.com.foxminded.locationtrackera.services.LocationServicePresenter;
 
 @Module
 public class ServiceModule {
 
     @Provides
     @Singleton
-    public LocationServiceContract.Repository provideLocationRepository() {
-        return new LocationRepository();
+    public GpsSource provideGpsServicesModel() {
+        return new DefaultGpsModel(App.getInstance());
     }
 
     @Provides
     @Singleton
-    public LocationServiceContract.GpsServices provideGpsServicesModel() {
-        return new GpsServicesModel(App.getInstance());
+    public TrackerCache provideCache() {
+        return new DefaultTrackerCache();
     }
 
     @Provides
     @Singleton
-    public LocationServiceContract.Cache provideCache() {
-        return new Cache();
+    public LocationServiceContract.Presenter provideServicePresenter(
+            GpsSource gpsSource,
+            LocationServiceContract.Repository repository,
+            TrackerCache cache
+    ) {
+        return new LocationServicePresenter(gpsSource, repository, cache);
     }
 }

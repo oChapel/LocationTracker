@@ -2,42 +2,37 @@ package ua.com.foxminded.locationtrackera.services;
 
 import java.util.Calendar;
 
-import javax.inject.Inject;
-
 import android.location.Location;
-import android.location.LocationListener;
 
-import androidx.annotation.NonNull;
-
-import ua.com.foxminded.locationtrackera.App;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import ua.com.foxminded.locationtrackera.model.auth.UserLocation;
+import ua.com.foxminded.locationtrackera.model.service.GpsSource;
+import ua.com.foxminded.locationtrackera.model.service.TrackerCache;
 
-public class LocationServicePresenter implements LocationServiceContract.Presenter, StatusListener, LocationListener {
+public class LocationServicePresenter implements LocationServiceContract.Presenter {
 
-    private final LocationServiceContract.ServiceInteractor serviceInteractions;
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final GpsSource gpsServices;
+    private final LocationServiceContract.Repository repository;
+    private final TrackerCache cache;
 
-    @Inject
-    LocationServiceContract.GpsServices gpsServices;
+    private LocationServiceContract.ServiceInteractor serviceInteractor;
 
-    @Inject
-    LocationServiceContract.Repository repository;
-
-    @Inject
-    LocationServiceContract.Cache cache;
-
-    public LocationServicePresenter(LocationServiceContract.ServiceInteractor serviceInteractions) {
-        this.serviceInteractions = serviceInteractions;
-        App.getComponent().inject(this);
+    public LocationServicePresenter(GpsSource gpsSource, LocationServiceContract.Repository repository,
+                                    TrackerCache cache) {
+        this.gpsServices = gpsSource;
+        this.repository = repository;
+        this.cache = cache;
     }
 
     @Override
-    public void init() {
-        gpsServices.setStatusListener(this);
-        gpsServices.setLocationListener(this);
+    public void onStart(LocationServiceContract.ServiceInteractor serviceInteractor) {
+        this.serviceInteractor = serviceInteractor;
+        setObservers();
         gpsServices.setUpServices();
         gpsServices.startLocationUpdates();
         gpsServices.registerGpsOrGnssStatusChanges();
-        onServiceStatusChanged(true);
+        cache.serviceStatusChanged(true);
     }
 
     @Override
@@ -51,25 +46,18 @@ public class LocationServicePresenter implements LocationServiceContract.Present
         }
     }
 
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        saveUserLocation(location);
-    }
-
-    @Override
-    public void onGpsStatusChanged(int gpsStatus) {
-        cache.setGpsStatus(gpsStatus);
-    }
-
-    @Override
-    public void onServiceStatusChanged(boolean isRunning) {
-        cache.serviceStatusChanged(isRunning);
+    private void setObservers() {
+        compositeDisposable.addAll(
+                gpsServices.setGpsStatusObservable().subscribe(cache::setGpsStatus),
+                gpsServices.setLocationObservable().subscribe(this::saveUserLocation)
+        );
     }
 
     @Override
     public void onDestroy() {
         gpsServices.onDestroy();
-        onServiceStatusChanged(false);
+        compositeDisposable.dispose();
+        cache.serviceStatusChanged(false);
     }
 
 }

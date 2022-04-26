@@ -6,7 +6,6 @@ import android.content.Context;
 import android.location.GnssStatus;
 import android.location.GpsStatus;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Looper;
@@ -19,28 +18,33 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
-import ua.com.foxminded.locationtrackera.services.LocationServiceContract;
-import ua.com.foxminded.locationtrackera.services.StatusListener;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-public class GpsServicesModel implements LocationServiceContract.GpsServices {
+public class DefaultGpsModel implements GpsSource {
 
     private static final int DEFAULT_UPDATE_INTERVAL = 30;
     private static final int FAST_UPDATE_INTERVAL = 10;
     private static final int SMALLEST_DISPLACEMENT = 60;
 
     private final Application application;
+    private final BehaviorSubject<Integer> gpsStatusSupplier = BehaviorSubject.create();
+    private final BehaviorSubject<Location> locationSupplier = BehaviorSubject.create();
+    private final LocationCallback locationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(@NonNull LocationResult locationResult) {
+            super.onLocationResult(locationResult);
+            locationSupplier.onNext(locationResult.getLastLocation());
+        }
+    };
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
-    private LocationCallback locationCallback;
     private LocationManager locationManager;
-    private Location currentLocation;
     private GnssStatus.Callback gnssStatusCallback;
     private GpsStatus.Listener gpsStatusListener;
-    private LocationListener locationListener;
-    private StatusListener statusListener;
 
-    public GpsServicesModel(Application application) {
+    public DefaultGpsModel(Application application) {
         this.application = application;
     }
 
@@ -54,23 +58,14 @@ public class GpsServicesModel implements LocationServiceContract.GpsServices {
                 .setInterval(1000 * DEFAULT_UPDATE_INTERVAL)
                 .setFastestInterval(1000 * FAST_UPDATE_INTERVAL)
                 .setSmallestDisplacement(SMALLEST_DISPLACEMENT)
-                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                currentLocation = locationResult.getLastLocation();
-                locationListener.onLocationChanged(currentLocation);
-            }
-        };
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     private void checkGpsEnabled() {
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            statusListener.onGpsStatusChanged(GpsStatusConstants.FIX_ACQUIRED);
+            gpsStatusSupplier.onNext(GpsStatusConstants.FIX_ACQUIRED);
         } else {
-            statusListener.onGpsStatusChanged(GpsStatusConstants.FIX_NOT_ACQUIRED);
+            gpsStatusSupplier.onNext(GpsStatusConstants.FIX_NOT_ACQUIRED);
         }
     }
 
@@ -88,27 +83,26 @@ public class GpsServicesModel implements LocationServiceContract.GpsServices {
             gnssStatusCallback = new GnssStatus.Callback() {
                 @Override
                 public void onStarted() {
-                    statusListener.onGpsStatusChanged(GpsStatusConstants.CONNECTING);
+                    gpsStatusSupplier.onNext(GpsStatusConstants.CONNECTING);
                 }
 
                 @Override
                 public void onFirstFix(int ttffMillis) {
-                    statusListener.onGpsStatusChanged(GpsStatusConstants.FIX_ACQUIRED);
+                    gpsStatusSupplier.onNext(GpsStatusConstants.FIX_ACQUIRED);
                 }
 
                 @Override
                 public void onStopped() {
-                    statusListener.onGpsStatusChanged(GpsStatusConstants.FIX_NOT_ACQUIRED);
+                    gpsStatusSupplier.onNext(GpsStatusConstants.FIX_NOT_ACQUIRED);
                 }
-
             };
             locationManager.registerGnssStatusCallback(gnssStatusCallback);
         } else {
             gpsStatusListener = event -> {
                 switch (event) {
-                    case GpsStatus.GPS_EVENT_STARTED: statusListener.onGpsStatusChanged(GpsStatusConstants.CONNECTING);
-                    case GpsStatus.GPS_EVENT_FIRST_FIX: statusListener.onGpsStatusChanged(GpsStatusConstants.FIX_ACQUIRED);
-                    case GpsStatus.GPS_EVENT_STOPPED: statusListener.onGpsStatusChanged(GpsStatusConstants.FIX_NOT_ACQUIRED);
+                    case GpsStatus.GPS_EVENT_STARTED: gpsStatusSupplier.onNext(GpsStatusConstants.CONNECTING);
+                    case GpsStatus.GPS_EVENT_FIRST_FIX: gpsStatusSupplier.onNext(GpsStatusConstants.FIX_ACQUIRED);
+                    case GpsStatus.GPS_EVENT_STOPPED: gpsStatusSupplier.onNext(GpsStatusConstants.FIX_NOT_ACQUIRED);
                 }
             };
             locationManager.addGpsStatusListener(gpsStatusListener);
@@ -116,13 +110,13 @@ public class GpsServicesModel implements LocationServiceContract.GpsServices {
     }
 
     @Override
-    public void setStatusListener(StatusListener listener) {
-        this.statusListener = listener;
+    public Observable<Integer> setGpsStatusObservable() {
+        return gpsStatusSupplier;
     }
 
     @Override
-    public void setLocationListener(LocationListener listener) {
-        this.locationListener = listener;
+    public Observable<Location> setLocationObservable() {
+        return locationSupplier;
     }
 
     @Override
