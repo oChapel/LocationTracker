@@ -16,8 +16,6 @@ public class LocationServicePresenter implements LocationServiceContract.Present
     private final LocationServiceContract.Repository repository;
     private final TrackerCache cache;
 
-    private LocationServiceContract.ServiceInteractor serviceInteractor;
-
     public LocationServicePresenter(GpsSource gpsSource, LocationServiceContract.Repository repository,
                                     TrackerCache cache) {
         this.gpsServices = gpsSource;
@@ -26,8 +24,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
     }
 
     @Override
-    public void onStart(LocationServiceContract.ServiceInteractor serviceInteractor) {
-        this.serviceInteractor = serviceInteractor;
+    public void onStart() {
         setObservers();
         gpsServices.setUpServices();
         gpsServices.startLocationUpdates();

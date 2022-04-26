@@ -5,7 +5,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -16,7 +15,7 @@ import javax.inject.Inject;
 import ua.com.foxminded.locationtrackera.App;
 import ua.com.foxminded.locationtrackera.R;
 
-public class LocationService extends LifecycleService implements LocationServiceContract.ServiceInteractor {
+public class LocationService extends LifecycleService {
 
     private static final String CHANNEL_ID = "location_service_channel";
 
@@ -35,18 +34,8 @@ public class LocationService extends LifecycleService implements LocationService
     @Override
     public void onStart(@Nullable Intent intent, int startId) {
         super.onStart(intent, startId);
-        presenter.onStart(this);
+        presenter.onStart();
         startForeground(1, buildNotification());
-    }
-
-    @Override
-    public void showAlertToast(int stringId) {
-        Toast.makeText(this, stringId, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void stopService() {
-        stopSelf();
     }
 
     @Override

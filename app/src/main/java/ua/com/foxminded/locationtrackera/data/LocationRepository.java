@@ -2,18 +2,19 @@ package ua.com.foxminded.locationtrackera.data;
 
 import java.util.List;
 
-import ua.com.foxminded.locationtrackera.data.source.LocationDataSource;
+import ua.com.foxminded.locationtrackera.data.source.LocationsDao;
+import ua.com.foxminded.locationtrackera.data.source.LocationsNetwork;
 import ua.com.foxminded.locationtrackera.model.auth.UserLocation;
 import ua.com.foxminded.locationtrackera.services.LocationServiceContract;
 
 public class LocationRepository implements LocationServiceContract.Repository {
 
-    private final LocationDataSource localDataSource;
-    private final LocationDataSource remoteDataSource;
+    private final LocationsDao localDataSource;
+    private final LocationsNetwork remoteDataSource;
 
     private List<UserLocation> locationList;
 
-    public LocationRepository(LocationDataSource localDataSource, LocationDataSource remoteDataSource) {
+    public LocationRepository(LocationsDao localDataSource, LocationsNetwork remoteDataSource) {
         this.localDataSource = localDataSource;
         this.remoteDataSource = remoteDataSource;
     }

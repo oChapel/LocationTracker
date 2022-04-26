@@ -8,11 +8,11 @@ import java.util.List;
 
 import ua.com.foxminded.locationtrackera.model.auth.UserLocation;
 
-public class FirebaseDataSource implements LocationDataSource {
+public class FirebaseLocationsNetwork implements LocationsNetwork {
 
     private final FirebaseFirestore firestore;
 
-    public FirebaseDataSource(FirebaseFirestore firestore) {
+    public FirebaseLocationsNetwork(FirebaseFirestore firestore) {
         this.firestore = firestore;
     }
 

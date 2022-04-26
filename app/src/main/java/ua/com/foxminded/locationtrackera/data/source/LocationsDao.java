@@ -4,7 +4,7 @@ import java.util.List;
 
 import ua.com.foxminded.locationtrackera.model.auth.UserLocation;
 
-public interface LocationDataSource {
+public interface LocationsDao {
 
     void saveLocation(UserLocation userLocation);
 
