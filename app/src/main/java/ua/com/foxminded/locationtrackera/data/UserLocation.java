@@ -1,15 +1,13 @@
-package ua.com.foxminded.locationtrackera.model.auth;
+package ua.com.foxminded.locationtrackera.data;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
 public class UserLocation {
 
-    @PrimaryKey
-    @NonNull
-    public String locationId;
+    @PrimaryKey(autoGenerate = true)
+    public int locationId;
     public double latitude;
     public double longitude;
     public double date;

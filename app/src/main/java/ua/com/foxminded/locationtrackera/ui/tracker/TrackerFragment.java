@@ -34,6 +34,7 @@ import ua.com.foxminded.locationtrackera.model.service.GpsStatusConstants;
 import ua.com.foxminded.locationtrackera.mvi.HostedFragment;
 import ua.com.foxminded.locationtrackera.services.LocationService;
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
+import ua.com.foxminded.locationtrackera.ui.tracker.dialog.TrackerDialogFragment;
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenState;
 
@@ -95,6 +96,7 @@ public class TrackerFragment extends HostedFragment<
 
     @Override
     public void proceedToSplashScreen() {
+        stopService();
         Toast.makeText(getContext(), R.string.logged_out, Toast.LENGTH_SHORT).show();
         Navigation.findNavController(binding.getRoot())
                 .navigate(R.id.nav_from_trackerFragment_to_welcomeFragment);
@@ -126,6 +128,23 @@ public class TrackerFragment extends HostedFragment<
 
     }
 
+    @Override
+    public void showDialogFragment(int argType, int message, int negativeButton, int positiveButton) {
+        final TrackerDialogFragment dialog
+                = TrackerDialogFragment.newInstance(argType, message, negativeButton, positiveButton);
+        dialog.show(getChildFragmentManager(), "logout_dialog");
+    }
+
+    public void doPositiveButton(int code) {
+        getModel().setDialogResponse(code);
+    }
+
+    public void doNegativeButton(int code) {
+        if (code == 1) {
+            getModel().setDialogResponse(code);
+        }
+    }
+
     private void checkGoogleServicesAvailability() {
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(requireContext());
         if (available == ConnectionResult.SUCCESS) {
@@ -155,6 +174,13 @@ public class TrackerFragment extends HostedFragment<
         if (!isLocationServiceRunning()) {
             final Intent serviceIntent = new Intent(getContext(), LocationService.class);
             ContextCompat.startForegroundService(requireContext(), serviceIntent);
+        }
+    }
+
+    private void stopService() {
+        if (isLocationServiceRunning()) {
+            final Intent serviceIntent = new Intent(getContext(), LocationService.class);
+            requireActivity().stopService(serviceIntent);
         }
     }
 

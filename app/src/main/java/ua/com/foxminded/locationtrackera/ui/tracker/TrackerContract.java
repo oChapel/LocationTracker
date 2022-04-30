@@ -8,6 +8,8 @@ public class TrackerContract {
 
     public interface ViewModel extends FragmentContract.ViewModel<TrackerScreenState, TrackerScreenEffect> {
         void logout();
+
+        void setDialogResponse(int code);
     }
 
     public interface View extends FragmentContract.View {
@@ -16,6 +18,8 @@ public class TrackerContract {
         void changeGpsStatus(int gpsStatus);
 
         void changeServiceStatus(boolean isEnabled);
+
+        void showDialogFragment(int argType, int message, int negativeButton, int positiveButton);
     }
 
     public interface Host extends FragmentContract.Host {

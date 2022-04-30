@@ -4,7 +4,9 @@ import android.location.Location;
 
 import java.util.List;
 
-import ua.com.foxminded.locationtrackera.model.auth.UserLocation;
+import io.reactivex.rxjava3.core.Single;
+import ua.com.foxminded.locationtrackera.data.UserLocation;
+import ua.com.foxminded.locationtrackera.util.Result;
 
 public interface LocationServiceContract {
 
@@ -16,6 +18,8 @@ public interface LocationServiceContract {
 
     interface Repository {
         void saveLocation(UserLocation userLocation);
-        List<UserLocation> getAll();
+        void deleteLocationsFromDb();
+        List<UserLocation> getAllLocations();
+        Single<Result<Void>> saveLocationsToNetwork(List<UserLocation> locationList);
     }
 }

@@ -6,9 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import ua.com.foxminded.locationtrackera.model.auth.UserLocation;
-
-@Database(entities = UserLocation.class, version = 1, exportSchema = false)
+@Database(entities = UserLocation.class, version = 2, exportSchema = false)
 public abstract class LocationDatabase extends RoomDatabase {
 
     private static LocationDatabase instance;

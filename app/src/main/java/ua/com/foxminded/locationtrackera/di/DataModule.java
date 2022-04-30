@@ -1,5 +1,6 @@
 package ua.com.foxminded.locationtrackera.di;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import javax.inject.Singleton;
@@ -36,6 +37,9 @@ public class DataModule {
     @Provides
     @Singleton
     public LocationsNetwork provideFirebaseDataSource() {
-        return new FirebaseLocationsNetwork(FirebaseFirestore.getInstance());
+        return new FirebaseLocationsNetwork(
+                FirebaseFirestore.getInstance(),
+                FirebaseAuth.getInstance()
+        );
     }
 }

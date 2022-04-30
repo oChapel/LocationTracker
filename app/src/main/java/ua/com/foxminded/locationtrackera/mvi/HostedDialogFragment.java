@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.lifecycle.Observer;
 
 import java.lang.reflect.ParameterizedType;
@@ -13,13 +13,13 @@ import java.lang.reflect.ParameterizedType;
 import ua.com.foxminded.locationtrackera.mvi.states.ScreenEffect;
 import ua.com.foxminded.locationtrackera.mvi.states.ScreenState;
 
-public abstract class HostedFragment<
+public abstract class HostedDialogFragment<
         VIEW extends FragmentContract.View,
         STATE extends ScreenState<VIEW>,
-        EFFECT extends ScreenEffect<VIEW>,
-        VIEW_MODEL extends FragmentContract.ViewModel<STATE, EFFECT>,
+        ACTION extends ScreenEffect<VIEW>,
+        VIEW_MODEL extends FragmentContract.ViewModel<STATE, ACTION>,
         HOST extends FragmentContract.Host>
-        extends Fragment
+        extends AppCompatDialogFragment
         implements FragmentContract.View, Observer<STATE> {
 
     private VIEW_MODEL model;

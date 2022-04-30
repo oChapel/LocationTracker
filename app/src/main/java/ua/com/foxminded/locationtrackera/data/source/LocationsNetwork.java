@@ -2,11 +2,11 @@ package ua.com.foxminded.locationtrackera.data.source;
 
 import java.util.List;
 
-import ua.com.foxminded.locationtrackera.model.auth.UserLocation;
+import io.reactivex.rxjava3.core.Single;
+import ua.com.foxminded.locationtrackera.data.UserLocation;
+import ua.com.foxminded.locationtrackera.util.Result;
 
 public interface LocationsNetwork {
 
-    void saveLocation(UserLocation userLocation);
-
-    List<UserLocation> getAll();
+    Single<Result<Void>> saveLocations(List<UserLocation> locationList);
 }

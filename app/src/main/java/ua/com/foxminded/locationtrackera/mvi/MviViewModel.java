@@ -51,6 +51,10 @@ public abstract class MviViewModel<S, A> extends ViewModel implements FragmentCo
         actionHolder.setValue(action);
     }
 
+    protected void postAction(A action) {
+        actionHolder.postValue(action);
+    }
+
     protected void addTillDestroy(Disposable... disposables) {
         onDestroyDisposable.addAll(disposables);
     }
