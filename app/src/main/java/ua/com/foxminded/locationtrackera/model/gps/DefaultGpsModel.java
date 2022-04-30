@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.model.service;
+package ua.com.foxminded.locationtrackera.model.gps;
 
 import android.annotation.SuppressLint;
 import android.app.Application;

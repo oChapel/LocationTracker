@@ -7,14 +7,13 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-
 import ua.com.foxminded.locationtrackera.App;
-import ua.com.foxminded.locationtrackera.data.source.RoomLocationsDao;
-import ua.com.foxminded.locationtrackera.data.source.LocationsDao;
-import ua.com.foxminded.locationtrackera.data.source.LocationsNetwork;
-import ua.com.foxminded.locationtrackera.data.LocationRepository;
-import ua.com.foxminded.locationtrackera.data.source.FirebaseLocationsNetwork;
-import ua.com.foxminded.locationtrackera.services.LocationServiceContract;
+import ua.com.foxminded.locationtrackera.background.LocationServiceContract;
+import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.model.locations.dao.LocationsDao;
+import ua.com.foxminded.locationtrackera.model.locations.dao.RoomLocationsDao;
+import ua.com.foxminded.locationtrackera.model.locations.network.FirebaseLocationsNetwork;
+import ua.com.foxminded.locationtrackera.model.locations.network.LocationsNetwork;
 
 @Module
 public class DataModule {

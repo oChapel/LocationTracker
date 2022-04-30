@@ -1,12 +1,10 @@
-package ua.com.foxminded.locationtrackera.data.source;
+package ua.com.foxminded.locationtrackera.model.locations.dao;
 
 import android.app.Application;
 
 import java.util.List;
 
-import ua.com.foxminded.locationtrackera.data.LocationDatabase;
-import ua.com.foxminded.locationtrackera.data.UserLocationDao;
-import ua.com.foxminded.locationtrackera.data.UserLocation;
+import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 
 public class RoomLocationsDao implements LocationsDao {
 

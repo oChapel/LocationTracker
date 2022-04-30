@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.model.service;
+package ua.com.foxminded.locationtrackera.model.bus;
 
 import io.reactivex.rxjava3.core.Observable;
 

@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.data.source;
+package ua.com.foxminded.locationtrackera.model.locations.network;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import io.reactivex.rxjava3.core.Single;
-import ua.com.foxminded.locationtrackera.data.UserLocation;
+import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 import ua.com.foxminded.locationtrackera.util.Result;
 
 public class FirebaseLocationsNetwork implements LocationsNetwork {

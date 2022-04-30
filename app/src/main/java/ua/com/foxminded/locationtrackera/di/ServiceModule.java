@@ -4,14 +4,13 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-
 import ua.com.foxminded.locationtrackera.App;
-import ua.com.foxminded.locationtrackera.model.service.DefaultTrackerCache;
-import ua.com.foxminded.locationtrackera.model.service.DefaultGpsModel;
-import ua.com.foxminded.locationtrackera.model.service.GpsSource;
-import ua.com.foxminded.locationtrackera.model.service.TrackerCache;
-import ua.com.foxminded.locationtrackera.services.LocationServiceContract;
-import ua.com.foxminded.locationtrackera.services.LocationServicePresenter;
+import ua.com.foxminded.locationtrackera.background.LocationServiceContract;
+import ua.com.foxminded.locationtrackera.background.LocationServicePresenter;
+import ua.com.foxminded.locationtrackera.model.bus.DefaultTrackerCache;
+import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
+import ua.com.foxminded.locationtrackera.model.gps.DefaultGpsModel;
+import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
 
 @Module
 public class ServiceModule {

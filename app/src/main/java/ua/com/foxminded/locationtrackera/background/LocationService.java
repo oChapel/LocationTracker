@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.services;
+package ua.com.foxminded.locationtrackera.background;
 
 import android.app.Notification;
 import android.app.NotificationChannel;

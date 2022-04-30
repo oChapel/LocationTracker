@@ -29,10 +29,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import ua.com.foxminded.locationtrackera.R;
+import ua.com.foxminded.locationtrackera.background.LocationService;
 import ua.com.foxminded.locationtrackera.databinding.FragmentTrackerBinding;
-import ua.com.foxminded.locationtrackera.model.service.GpsStatusConstants;
+import ua.com.foxminded.locationtrackera.model.gps.GpsStatusConstants;
 import ua.com.foxminded.locationtrackera.mvi.HostedFragment;
-import ua.com.foxminded.locationtrackera.services.LocationService;
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
 import ua.com.foxminded.locationtrackera.ui.tracker.dialog.TrackerDialogFragment;
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenEffect;

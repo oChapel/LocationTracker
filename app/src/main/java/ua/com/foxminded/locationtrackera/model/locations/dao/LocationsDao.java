@@ -1,8 +1,8 @@
-package ua.com.foxminded.locationtrackera.data.source;
+package ua.com.foxminded.locationtrackera.model.locations.dao;
 
 import java.util.List;
 
-import ua.com.foxminded.locationtrackera.data.UserLocation;
+import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 
 public interface LocationsDao {
 

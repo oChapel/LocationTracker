@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.services;
+package ua.com.foxminded.locationtrackera.background.jobs;
 
 import android.content.Context;
 
@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import ua.com.foxminded.locationtrackera.App;
+import ua.com.foxminded.locationtrackera.background.LocationServiceContract;
 
 public class LocationsUploader extends Worker {
 

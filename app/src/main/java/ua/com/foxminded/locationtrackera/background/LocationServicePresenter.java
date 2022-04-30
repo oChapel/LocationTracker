@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.services;
+package ua.com.foxminded.locationtrackera.background;
 
 import android.location.Location;
 
@@ -14,9 +14,10 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import ua.com.foxminded.locationtrackera.App;
-import ua.com.foxminded.locationtrackera.data.UserLocation;
-import ua.com.foxminded.locationtrackera.model.service.GpsSource;
-import ua.com.foxminded.locationtrackera.model.service.TrackerCache;
+import ua.com.foxminded.locationtrackera.background.jobs.LocationsUploader;
+import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
+import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
+import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 
 public class LocationServicePresenter implements LocationServiceContract.Presenter {
 

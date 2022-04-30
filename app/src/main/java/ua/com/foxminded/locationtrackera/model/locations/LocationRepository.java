@@ -1,11 +1,11 @@
-package ua.com.foxminded.locationtrackera.data;
+package ua.com.foxminded.locationtrackera.model.locations;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Single;
-import ua.com.foxminded.locationtrackera.data.source.LocationsDao;
-import ua.com.foxminded.locationtrackera.data.source.LocationsNetwork;
-import ua.com.foxminded.locationtrackera.services.LocationServiceContract;
+import ua.com.foxminded.locationtrackera.background.LocationServiceContract;
+import ua.com.foxminded.locationtrackera.model.locations.dao.LocationsDao;
+import ua.com.foxminded.locationtrackera.model.locations.network.LocationsNetwork;
 import ua.com.foxminded.locationtrackera.util.Result;
 
 public class LocationRepository implements LocationServiceContract.Repository {

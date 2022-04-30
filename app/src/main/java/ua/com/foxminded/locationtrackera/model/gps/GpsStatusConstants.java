@@ -1,4 +1,4 @@
-package ua.com.foxminded.locationtrackera.model.service;
+package ua.com.foxminded.locationtrackera.model.gps;
 
 public final class GpsStatusConstants {
 
