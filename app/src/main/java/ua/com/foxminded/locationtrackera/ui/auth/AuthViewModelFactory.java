@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModelProvider;
 import javax.inject.Inject;
 
 import ua.com.foxminded.locationtrackera.App;
-import ua.com.foxminded.locationtrackera.background.LocationServiceContract;
 import ua.com.foxminded.locationtrackera.di.AppComponent;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
+import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
 import ua.com.foxminded.locationtrackera.ui.auth.login.LoginViewModel;
 import ua.com.foxminded.locationtrackera.ui.auth.registration.RegistrationViewModel;
 import ua.com.foxminded.locationtrackera.ui.auth.reset.ResetPasswordViewModel;
@@ -27,7 +27,7 @@ public class AuthViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     TrackerCache cache;
 
     @Inject
-    LocationServiceContract.Repository repository;
+    LocationRepository repository;
 
     @NonNull
     @Override

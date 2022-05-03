@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+
 import ua.com.foxminded.locationtrackera.App;
 import ua.com.foxminded.locationtrackera.background.LocationServiceContract;
 import ua.com.foxminded.locationtrackera.background.LocationServicePresenter;
@@ -11,6 +12,7 @@ import ua.com.foxminded.locationtrackera.model.bus.DefaultTrackerCache;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
 import ua.com.foxminded.locationtrackera.model.gps.DefaultGpsModel;
 import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
+import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
 
 @Module
 public class ServiceModule {
@@ -31,7 +33,7 @@ public class ServiceModule {
     @Singleton
     public LocationServiceContract.Presenter provideServicePresenter(
             GpsSource gpsSource,
-            LocationServiceContract.Repository repository,
+            LocationRepository repository,
             TrackerCache cache
     ) {
         return new LocationServicePresenter(gpsSource, repository, cache);

@@ -2,24 +2,18 @@ package ua.com.foxminded.locationtrackera.background;
 
 import android.location.Location;
 
-import java.util.List;
-
-import io.reactivex.rxjava3.core.Single;
-import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
-import ua.com.foxminded.locationtrackera.util.Result;
+import io.reactivex.rxjava3.core.Observable;
 
 public interface LocationServiceContract {
 
     interface Presenter {
-        void onStart();
-        void saveUserLocation(Location location);
-        void onDestroy();
-    }
 
-    interface Repository {
-        void saveLocation(UserLocation userLocation);
-        void deleteLocationsFromDb();
-        List<UserLocation> getAllLocations();
-        Single<Result<Void>> saveLocationsToNetwork(List<UserLocation> locationList);
+        void onStart();
+
+        boolean saveUserLocation(Location location);
+
+        void onDestroy();
+
+        Observable<Integer> getGpsStatusObservable();
     }
 }

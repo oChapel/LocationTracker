@@ -17,8 +17,8 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
     private final FirebaseFirestore firestore;
     private final FirebaseAuth firebaseAuth;
 
-    public FirebaseLocationsNetwork(FirebaseFirestore firestore, FirebaseAuth firebaseAuth) {
-        this.firestore = firestore;
+    public FirebaseLocationsNetwork(FirebaseAuth firebaseAuth) {
+        this.firestore = FirebaseFirestore.getInstance();
         this.firebaseAuth = firebaseAuth;
     }
 
@@ -27,7 +27,10 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
         return Single.fromCallable(() -> {
             if (!locationList.isEmpty()) {
                 for (int i = 0; i < locationList.size(); i++) {
-                    final Task<Void> task = saveToFirebase(locationList.get(i));
+                    final Task<Void> task = saveToFirebase(
+                            locationList.get(i),
+                            firebaseAuth.getCurrentUser().getUid()
+                    );
 
                     try {
                         Tasks.await(task);
@@ -45,9 +48,9 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
         });
     }
 
-    private Task<Void> saveToFirebase(UserLocation userLocation) {
+    private Task<Void> saveToFirebase(UserLocation userLocation, String uid) {
         return firestore.collection("Users")
-                .document(firebaseAuth.getCurrentUser().getUid())
+                .document(uid)
                 .collection("User Locations")
                 .document()
                 .set(userLocation);

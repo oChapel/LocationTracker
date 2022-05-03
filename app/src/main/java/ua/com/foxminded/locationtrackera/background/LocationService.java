@@ -1,6 +1,5 @@
 package ua.com.foxminded.locationtrackera.background;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -12,12 +11,20 @@ import androidx.lifecycle.LifecycleService;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
 import ua.com.foxminded.locationtrackera.App;
 import ua.com.foxminded.locationtrackera.R;
 
 public class LocationService extends LifecycleService {
 
     private static final String CHANNEL_ID = "location_service_channel";
+    private static final int NOTIFICATION_ID = 1;
+
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private NotificationManager notificationManager;
+    private NotificationCompat.Builder notification;
 
     @Inject
     LocationServiceContract.Presenter presenter;
@@ -35,26 +42,37 @@ public class LocationService extends LifecycleService {
     public void onStart(@Nullable Intent intent, int startId) {
         super.onStart(intent, startId);
         presenter.onStart();
-        startForeground(1, buildNotification());
+        startForeground(NOTIFICATION_ID, getNotificationBuilder().build());
+        setGpsStatusObserver();
+    }
+
+    private void setGpsStatusObserver() {
+        compositeDisposable.add(
+                presenter.getGpsStatusObservable().subscribe(status -> {
+                    notification.setContentText(getString(R.string.gps_status_is) + " " + getString(status));
+                    notificationManager.notify(NOTIFICATION_ID, notification.build());
+                })
+        );
+    }
+
+    private NotificationCompat.Builder getNotificationBuilder() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            final NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID, "Channel_1", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+        notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.service_running))
+                .setSmallIcon(R.drawable.icon);
+        return notification;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        compositeDisposable.dispose();
         presenter.onDestroy();
-    }
-
-    private Notification buildNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            final NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID, "Channel_1", NotificationManager.IMPORTANCE_DEFAULT);
-            final NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.service_running))
-                .setSmallIcon(R.drawable.icon)
-                .build();
     }
 }

@@ -12,9 +12,9 @@ public interface GpsSource {
 
     void registerGpsOrGnssStatusChanges();
 
-    Observable<Integer> setGpsStatusObservable();
+    Observable<Integer> getGpsStatusObservable();
 
-    Observable<Location> setLocationObservable();
+    Observable<Location> getLocationObservable();
 
     void onDestroy();
 }

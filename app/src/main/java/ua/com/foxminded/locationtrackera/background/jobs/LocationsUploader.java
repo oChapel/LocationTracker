@@ -10,17 +10,17 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
 
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import ua.com.foxminded.locationtrackera.App;
-import ua.com.foxminded.locationtrackera.background.LocationServiceContract;
+import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
 
-public class LocationsUploader extends Worker {
+public class LocationsUploader extends Worker implements SendLocationsUseCase.Listener {
 
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final SendLocationsUseCase sendLocationsUseCase = new SendLocationsUseCase(this);
+    private final AtomicReference<Result> workResult = new AtomicReference<>();
 
     @Inject
-    LocationServiceContract.Repository repository;
+    LocationRepository repository;
 
     public LocationsUploader(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -30,29 +30,24 @@ public class LocationsUploader extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        final AtomicReference<Result> workResult = new AtomicReference<>();
-        compositeDisposable.add(
-                repository.saveLocationsToNetwork(repository.getAllLocations())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(result -> {
-                                    if (result.isSuccessful()) {
-                                        workResult.set(Result.success());
-                                        repository.deleteLocationsFromDb();
-                                    } else {
-                                        workResult.set(Result.failure());
-                                    }
-                                }, error -> {
-                                    error.printStackTrace();
-                                    workResult.set(Result.failure());
-                                }
-                        )
-        );
+        sendLocationsUseCase.execute();
         return workResult.get();
+    }
+
+    @Override
+    public void onLocationsSent() {
+        workResult.set(Result.success());
+        repository.deleteLocationsFromDb();
+    }
+
+    @Override
+    public void onSendingFailed() {
+        workResult.set(Result.failure());
     }
 
     @Override
     public void onStopped() {
         super.onStopped();
-        compositeDisposable.dispose();
+        sendLocationsUseCase.dispose();
     }
 }

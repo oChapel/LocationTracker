@@ -4,34 +4,41 @@ import android.location.Location;
 
 import androidx.work.Constraints;
 import androidx.work.NetworkType;
-import androidx.work.PeriodicWorkRequest;
+import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import ua.com.foxminded.locationtrackera.App;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
+
+import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.background.jobs.LocationsUploader;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
 import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
+import ua.com.foxminded.locationtrackera.model.gps.GpsStatusConstants;
+import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
 import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
+import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
 
-public class LocationServicePresenter implements LocationServiceContract.Presenter {
-
-    public static final int WORK_REQUEST_REPEAT_INTERVAL_MIN = 40;
+public class LocationServicePresenter implements LocationServiceContract.Presenter, SendLocationsUseCase.Listener {
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private final WorkManager workManager = WorkManager.getInstance(App.getInstance());
+    private final BehaviorSubject<Integer> gpsStatusSupplier = BehaviorSubject.create();
+    private final SendLocationsUseCase sendLocationsUseCase = new SendLocationsUseCase(this);
+    private final WorkManager workManager = WorkManager.getInstance();
     private final GpsSource gpsServices;
-    private final LocationServiceContract.Repository repository;
+    private final LocationRepository repository;
     private final TrackerCache cache;
+    private WorkRequest request;
 
     public LocationServicePresenter(
             GpsSource gpsSource,
-            LocationServiceContract.Repository repository,
+            LocationRepository repository,
             TrackerCache cache
     ) {
         this.gpsServices = gpsSource;
@@ -50,7 +57,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
     }
 
     @Override
-    public void saveUserLocation(Location location) {
+    public boolean saveUserLocation(Location location) {
         if (location != null) {
             repository.saveLocation(new UserLocation(
                     location.getLatitude(),
@@ -58,14 +65,31 @@ public class LocationServicePresenter implements LocationServiceContract.Present
                     Calendar.getInstance().getTimeInMillis()
             ));
         }
+        return repository.getAllLocations().size() >= 5;
     }
 
     private void setObservers() {
         compositeDisposable.addAll(
-                gpsServices.setGpsStatusObservable().subscribe(cache::setGpsStatus),
-                gpsServices.setLocationObservable()
+                gpsServices.getGpsStatusObservable().subscribe(status -> {
+                    cache.setGpsStatus(status);
+                    int resourceStatusString = 0;
+                    if (status == GpsStatusConstants.CONNECTING) {
+                        resourceStatusString = R.string.connecting;
+                    } else if (status == GpsStatusConstants.FIX_ACQUIRED) {
+                        resourceStatusString = R.string.enabled;
+                    } else if (status == GpsStatusConstants.FIX_NOT_ACQUIRED) {
+                        resourceStatusString = R.string.disabled;
+                    }
+                    gpsStatusSupplier.onNext(resourceStatusString);
+                }),
+                gpsServices.getLocationObservable()
                         .observeOn(Schedulers.io())
-                        .subscribe(this::saveUserLocation, Throwable::printStackTrace)
+                        .flatMapSingle(location -> Single.just(saveUserLocation(location)))
+                        .subscribe(aBoolean -> {
+                            if (aBoolean) {
+                                sendLocationsUseCase.execute();
+                            }
+                        }, Throwable::printStackTrace)
         );
     }
 
@@ -73,18 +97,32 @@ public class LocationServicePresenter implements LocationServiceContract.Present
         final Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build();
-        final WorkRequest request = new PeriodicWorkRequest
-                .Builder(LocationsUploader.class, WORK_REQUEST_REPEAT_INTERVAL_MIN, TimeUnit.MINUTES)
+        request = new OneTimeWorkRequest
+                .Builder(LocationsUploader.class)
                 .setConstraints(constraints)
                 .build();
+    }
+
+    @Override
+    public void onLocationsSent() {
+        repository.deleteLocationsFromDb();
+    }
+
+    @Override
+    public void onSendingFailed() {
         workManager.enqueue(request);
+    }
+
+    @Override
+    public Observable<Integer> getGpsStatusObservable() {
+        return gpsStatusSupplier;
     }
 
     @Override
     public void onDestroy() {
         gpsServices.onDestroy();
         compositeDisposable.dispose();
-        workManager.cancelAllWork();
+        sendLocationsUseCase.dispose();
         cache.serviceStatusChanged(false);
     }
 }

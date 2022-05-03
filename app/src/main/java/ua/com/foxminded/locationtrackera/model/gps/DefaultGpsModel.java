@@ -1,7 +1,6 @@
 package ua.com.foxminded.locationtrackera.model.gps;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Context;
 import android.location.GnssStatus;
 import android.location.GpsStatus;
@@ -21,20 +20,24 @@ import com.google.android.gms.location.LocationServices;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
+import ua.com.foxminded.locationtrackera.BuildConfig;
+
 public class DefaultGpsModel implements GpsSource {
 
     private static final int DEFAULT_UPDATE_INTERVAL = 30;
     private static final int FAST_UPDATE_INTERVAL = 10;
     private static final int SMALLEST_DISPLACEMENT = 60;
 
-    private final Application application;
+    private final Context context;
     private final BehaviorSubject<Integer> gpsStatusSupplier = BehaviorSubject.create();
     private final BehaviorSubject<Location> locationSupplier = BehaviorSubject.create();
     private final LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(@NonNull LocationResult locationResult) {
             super.onLocationResult(locationResult);
-            locationSupplier.onNext(locationResult.getLastLocation());
+            if (locationManager.isProviderEnabled(BuildConfig.LOCATION_PROVIDER)) {
+                locationSupplier.onNext(locationResult.getLastLocation());
+            }
         }
     };
 
@@ -44,14 +47,14 @@ public class DefaultGpsModel implements GpsSource {
     private GnssStatus.Callback gnssStatusCallback;
     private GpsStatus.Listener gpsStatusListener;
 
-    public DefaultGpsModel(Application application) {
-        this.application = application;
+    public DefaultGpsModel(Context appContext) {
+        this.context = appContext;
     }
 
     @Override
     public void setUpServices() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(application);
-        locationManager = (LocationManager) application.getSystemService(Context.LOCATION_SERVICE);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         checkGpsEnabled();
 
         locationRequest = LocationRequest.create()
@@ -110,12 +113,12 @@ public class DefaultGpsModel implements GpsSource {
     }
 
     @Override
-    public Observable<Integer> setGpsStatusObservable() {
+    public Observable<Integer> getGpsStatusObservable() {
         return gpsStatusSupplier;
     }
 
     @Override
-    public Observable<Location> setLocationObservable() {
+    public Observable<Location> getLocationObservable() {
         return locationSupplier;
     }
 

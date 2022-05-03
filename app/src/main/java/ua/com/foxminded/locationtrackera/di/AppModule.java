@@ -6,9 +6,9 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.auth.FirebaseAuthNetwork;
-import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
 
 @Module
 public class AppModule {
