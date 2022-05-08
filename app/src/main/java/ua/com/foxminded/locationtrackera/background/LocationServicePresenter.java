@@ -6,6 +6,7 @@ import androidx.work.Constraints;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
+import androidx.work.WorkManagerInitializer;
 import androidx.work.WorkRequest;
 
 import java.util.Calendar;
@@ -16,6 +17,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
+import ua.com.foxminded.locationtrackera.App;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.background.jobs.LocationsUploader;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
@@ -25,12 +27,13 @@ import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
 import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
 
-public class LocationServicePresenter implements LocationServiceContract.Presenter, SendLocationsUseCase.Listener {
+public class LocationServicePresenter implements LocationServiceContract.Presenter {
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final BehaviorSubject<Integer> gpsStatusSupplier = BehaviorSubject.create();
-    private final SendLocationsUseCase sendLocationsUseCase = new SendLocationsUseCase(this);
-    private final WorkManager workManager = WorkManager.getInstance();
+    private final WorkManagerInitializer workManagerInitializer = new WorkManagerInitializer();
+    private final WorkManager workManager = workManagerInitializer.create(App.getInstance());
+    private final SendLocationsUseCase sendLocationsUseCase;
     private final GpsSource gpsServices;
     private final LocationRepository repository;
     private final TrackerCache cache;
@@ -39,11 +42,13 @@ public class LocationServicePresenter implements LocationServiceContract.Present
     public LocationServicePresenter(
             GpsSource gpsSource,
             LocationRepository repository,
-            TrackerCache cache
+            TrackerCache cache,
+            SendLocationsUseCase sendLocationsUseCase
     ) {
         this.gpsServices = gpsSource;
         this.repository = repository;
         this.cache = cache;
+        this.sendLocationsUseCase = sendLocationsUseCase;
     }
 
     @Override
@@ -82,12 +87,21 @@ public class LocationServicePresenter implements LocationServiceContract.Present
                     }
                     gpsStatusSupplier.onNext(resourceStatusString);
                 }),
+
                 gpsServices.getLocationObservable()
                         .observeOn(Schedulers.io())
                         .flatMapSingle(location -> Single.just(saveUserLocation(location)))
-                        .subscribe(aBoolean -> {
+                        .flatMapSingle(aBoolean -> {
                             if (aBoolean) {
-                                sendLocationsUseCase.execute();
+                                return sendLocationsUseCase.execute();
+                            }
+                            return null;
+                        })
+                        .subscribe(result -> {
+                            if (result.isSuccessful()) {
+                                repository.deleteLocationsFromDb();
+                            } else {
+                                workManager.enqueue(request);
                             }
                         }, Throwable::printStackTrace)
         );
@@ -101,16 +115,6 @@ public class LocationServicePresenter implements LocationServiceContract.Present
                 .Builder(LocationsUploader.class)
                 .setConstraints(constraints)
                 .build();
-    }
-
-    @Override
-    public void onLocationsSent() {
-        repository.deleteLocationsFromDb();
-    }
-
-    @Override
-    public void onSendingFailed() {
-        workManager.enqueue(request);
     }
 
     @Override

@@ -23,11 +23,11 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
     }
 
     @Override
-    public Single<Result<Void>> saveLocations(List<UserLocation> locationList) {
+    public Single<Result<Void>> sendLocations(List<UserLocation> locationList) {
         return Single.fromCallable(() -> {
             if (!locationList.isEmpty()) {
                 for (int i = 0; i < locationList.size(); i++) {
-                    final Task<Void> task = saveToFirebase(
+                    final Task<Void> task = sendToFirebase(
                             locationList.get(i),
                             firebaseAuth.getCurrentUser().getUid()
                     );
@@ -48,7 +48,7 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
         });
     }
 
-    private Task<Void> saveToFirebase(UserLocation userLocation, String uid) {
+    private Task<Void> sendToFirebase(UserLocation userLocation, String uid) {
         return firestore.collection("Users")
                 .document(uid)
                 .collection("User Locations")

@@ -8,5 +8,5 @@ import ua.com.foxminded.locationtrackera.util.Result;
 
 public interface LocationsNetwork {
 
-    Single<Result<Void>> saveLocations(List<UserLocation> locationList);
+    Single<Result<Void>> sendLocations(List<UserLocation> locationList);
 }

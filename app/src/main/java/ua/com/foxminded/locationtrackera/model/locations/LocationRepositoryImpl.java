@@ -35,6 +35,6 @@ public class LocationRepositoryImpl implements LocationRepository {
 
     @Override
     public Single<Result<Void>> sendLocations(List<UserLocation> locationList) {
-        return remoteDataSource.saveLocations(locationList);
+        return remoteDataSource.sendLocations(locationList);
     }
 }

@@ -24,10 +24,6 @@ import ua.com.foxminded.locationtrackera.BuildConfig;
 
 public class DefaultGpsModel implements GpsSource {
 
-    private static final int DEFAULT_UPDATE_INTERVAL = 30;
-    private static final int FAST_UPDATE_INTERVAL = 10;
-    private static final int SMALLEST_DISPLACEMENT = 60;
-
     private final Context context;
     private final BehaviorSubject<Integer> gpsStatusSupplier = BehaviorSubject.create();
     private final BehaviorSubject<Location> locationSupplier = BehaviorSubject.create();
@@ -58,9 +54,8 @@ public class DefaultGpsModel implements GpsSource {
         checkGpsEnabled();
 
         locationRequest = LocationRequest.create()
-                .setInterval(1000 * DEFAULT_UPDATE_INTERVAL)
-                .setFastestInterval(1000 * FAST_UPDATE_INTERVAL)
-                .setSmallestDisplacement(SMALLEST_DISPLACEMENT)
+                .setInterval(1000 * BuildConfig.UPDATE_INTERVAL)
+                .setSmallestDisplacement(BuildConfig.TRACKING_SENSIVITY)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 

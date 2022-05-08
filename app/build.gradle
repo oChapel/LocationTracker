@@ -15,7 +15,9 @@ android {
         versionName "1.0"
         multiDexEnabled true
 
-        buildConfigField "String", "LOCATION_PROVIDER", "\"gps\""
+        buildConfigField "int", "UPDATE_INTERVAL", "600"
+        buildConfigField "int", "TRACKING_SENSIVITY", "60"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -24,7 +26,28 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            buildConfigField "int", "UPDATE_INTERVAL", "5"
+            buildConfigField "int", "TRACKING_SENSIVITY", "10"
+        }
     }
+
+    flavorDimensions "provider"
+    productFlavors {
+        gps {
+            dimension "provider"
+            buildConfigField "String", "LOCATION_PROVIDER", "\"gps\""
+        }
+        network {
+            dimension "provider"
+            buildConfigField "String", "LOCATION_PROVIDER", "\"network\""
+        }
+        passive {
+            dimension "provider"
+            buildConfigField "String", "LOCATION_PROVIDER", "\"passive\""
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

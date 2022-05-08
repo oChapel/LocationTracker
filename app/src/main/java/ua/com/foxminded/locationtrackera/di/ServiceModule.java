@@ -13,6 +13,7 @@ import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
 import ua.com.foxminded.locationtrackera.model.gps.DefaultGpsModel;
 import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
 import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
 
 @Module
 public class ServiceModule {
@@ -34,8 +35,9 @@ public class ServiceModule {
     public LocationServiceContract.Presenter provideServicePresenter(
             GpsSource gpsSource,
             LocationRepository repository,
-            TrackerCache cache
+            TrackerCache cache,
+            SendLocationsUseCase sendLocationsUseCase
     ) {
-        return new LocationServicePresenter(gpsSource, repository, cache);
+        return new LocationServicePresenter(gpsSource, repository, cache, sendLocationsUseCase);
     }
 }

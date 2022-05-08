@@ -11,6 +11,7 @@ import ua.com.foxminded.locationtrackera.di.AppComponent;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
 import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
 import ua.com.foxminded.locationtrackera.ui.auth.login.LoginViewModel;
 import ua.com.foxminded.locationtrackera.ui.auth.registration.RegistrationViewModel;
 import ua.com.foxminded.locationtrackera.ui.auth.reset.ResetPasswordViewModel;
@@ -29,6 +30,9 @@ public class AuthViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     @Inject
     LocationRepository repository;
 
+    @Inject
+    SendLocationsUseCase sendLocationsUseCase;
+
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
@@ -41,7 +45,7 @@ public class AuthViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         } else if (modelClass.isAssignableFrom(ResetPasswordViewModel.class)) {
             return (T) new ResetPasswordViewModel(authNetwork);
         } else if (modelClass.isAssignableFrom(TrackerViewModel.class)) {
-            return (T) new TrackerViewModel(authNetwork, cache, repository);
+            return (T) new TrackerViewModel(authNetwork, cache, repository, sendLocationsUseCase);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

@@ -17,12 +17,14 @@ import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
 import ua.com.foxminded.locationtrackera.mvi.MviViewModel;
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenState;
+import ua.com.foxminded.locationtrackera.util.Result;
 
 public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerScreenEffect>
-        implements TrackerContract.ViewModel, SendLocationsUseCase.Listener {
+        implements TrackerContract.ViewModel {
 
     private final PublishSubject<Integer> logoutSupplier = PublishSubject.create();
-    private final SendLocationsUseCase sendLocationsUseCase = new SendLocationsUseCase(this);
+    private final PublishSubject<Integer> responseSupplier = PublishSubject.create();
+    private final SendLocationsUseCase sendLocationsUseCase;
     private final AuthNetwork authNetwork;
     private final TrackerCache cache;
     private final LocationRepository repository;
@@ -33,10 +35,12 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
     public TrackerViewModel(
             AuthNetwork authNetwork,
             TrackerCache cache,
-            LocationRepository repository) {
+            LocationRepository repository,
+            SendLocationsUseCase sendLocationsUseCase) {
         this.authNetwork = authNetwork;
         this.cache = cache;
         this.repository = repository;
+        this.sendLocationsUseCase = sendLocationsUseCase;
     }
 
     @Override
@@ -71,8 +75,36 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
                                         R.string.send_uppercase
                                 ));
                             }
-                        })
+                        }),
+
+                responseSupplier.flatMapSingle(code -> {
+                    if (code == 0) {
+                        return sendLocationsUseCase.execute();
+                    } else {
+                        return Single.just(new Result.Success<>(null));
+                    }
+                }).subscribe(result -> {
+                    if (result.isSuccessful()) {
+                        repository.deleteLocationsFromDb();
+                        authNetwork.logout();
+                        postAction(new TrackerScreenEffect.Logout());
+                    } else {
+                        showFailedToSendDialogFragment();
+                    }
+                }, error -> {
+                    error.printStackTrace();
+                    showFailedToSendDialogFragment();
+                })
         );
+    }
+
+    private void showFailedToSendDialogFragment() {
+        postAction(new TrackerScreenEffect.ShowDialogFragment(
+                1,
+                R.string.failed_to_send_alert_message,
+                android.R.string.cancel,
+                R.string.logout_uppercase
+        ));
     }
 
     @Override
@@ -82,28 +114,7 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
 
     @Override
     public void setDialogResponse(int code) {
-        if (code == 0) {
-            sendLocationsUseCase.execute();
-        } else {
-            onLocationsSent();
-        }
-    }
-
-    @Override
-    public void onLocationsSent() {
-        repository.deleteLocationsFromDb();
-        authNetwork.logout();
-        postAction(new TrackerScreenEffect.Logout());
-    }
-
-    @Override
-    public void onSendingFailed() {
-        postAction(new TrackerScreenEffect.ShowDialogFragment(
-                1,
-                R.string.failed_to_send_alert_message,
-                android.R.string.cancel,
-                R.string.logout_uppercase
-        ));
+        responseSupplier.onNext(code);
     }
 
     @Override

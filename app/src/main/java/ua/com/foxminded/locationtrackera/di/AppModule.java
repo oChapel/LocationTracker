@@ -9,6 +9,9 @@ import dagger.Provides;
 
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.auth.FirebaseAuthNetwork;
+import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
+import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCaseImpl;
 
 @Module
 public class AppModule {
@@ -17,5 +20,10 @@ public class AppModule {
     @Singleton
     public AuthNetwork provideFirebaseAuthNetwork() {
         return new FirebaseAuthNetwork(FirebaseAuth.getInstance());
+    }
+
+    @Provides
+    public SendLocationsUseCase provideSendLocationsUseCase(LocationRepository repository) {
+        return new SendLocationsUseCaseImpl(repository);
     }
 }
