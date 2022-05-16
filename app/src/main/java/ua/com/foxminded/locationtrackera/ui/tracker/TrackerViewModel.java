@@ -116,10 +116,4 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
     public void setDialogResponse(int code) {
         responseSupplier.onNext(code);
     }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        sendLocationsUseCase.dispose();
-    }
 }

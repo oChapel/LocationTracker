@@ -53,6 +53,5 @@ public class LocationsUploader extends Worker {
     public void onStopped() {
         super.onStopped();
         compositeDisposable.dispose();
-        sendLocationsUseCase.dispose();
     }
 }

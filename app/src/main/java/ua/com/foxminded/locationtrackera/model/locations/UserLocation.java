@@ -17,4 +17,7 @@ public class UserLocation {
         this.longitude = longitude;
         this.date = date;
     }
+
+    public UserLocation() {
+    }
 }

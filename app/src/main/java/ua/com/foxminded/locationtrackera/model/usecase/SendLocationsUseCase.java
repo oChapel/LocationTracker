@@ -6,6 +6,4 @@ import ua.com.foxminded.locationtrackera.util.Result;
 public interface SendLocationsUseCase {
 
     Single<Result<Void>> execute();
-
-    void dispose();
 }

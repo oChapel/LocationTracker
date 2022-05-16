@@ -28,7 +28,7 @@ public class LoginFragment extends HostedFragment<
         LoginContract.Host>
         implements LoginContract.View, View.OnClickListener {
 
-    private FragmentLoginBinding binding;
+    protected FragmentLoginBinding binding;
 
     @Override
     protected LoginContract.ViewModel createModel() {

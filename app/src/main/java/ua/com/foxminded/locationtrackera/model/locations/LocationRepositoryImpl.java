@@ -1,5 +1,7 @@
 package ua.com.foxminded.locationtrackera.model.locations;
 
+import androidx.core.util.Pair;
+
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Single;
@@ -36,5 +38,10 @@ public class LocationRepositoryImpl implements LocationRepository {
     @Override
     public Single<Result<Void>> sendLocations(List<UserLocation> locationList) {
         return remoteDataSource.sendLocations(locationList);
+    }
+
+    @Override
+    public Single<Result<?>> retrieveLocations(Pair<Double, Double> period) {
+        return remoteDataSource.retrieveLocations(period);
     }
 }

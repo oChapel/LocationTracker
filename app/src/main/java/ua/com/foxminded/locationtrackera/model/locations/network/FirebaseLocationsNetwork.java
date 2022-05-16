@@ -1,14 +1,20 @@
 package ua.com.foxminded.locationtrackera.model.locations.network;
 
+import androidx.core.util.Pair;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import io.reactivex.rxjava3.core.Single;
+
 import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 import ua.com.foxminded.locationtrackera.util.Result;
 
@@ -48,11 +54,47 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
         });
     }
 
+    @Override
+    public Single<Result<?>> retrieveLocations(Pair<Double, Double> period) {
+        return Single.fromCallable(() -> {
+            final List<UserLocation> locationsList = new ArrayList<>();
+            final Task<QuerySnapshot> task = retrieveFromFirebase(firebaseAuth.getCurrentUser().getUid());
+
+            try {
+                Tasks.await(task);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            if (!task.isSuccessful()) {
+                return new Result.Error(task.getException());
+            }
+
+            if (!task.getResult().isEmpty()) {
+                for (DocumentSnapshot ds : task.getResult().getDocuments()) {
+                    final UserLocation userLocation = ds.toObject(UserLocation.class);
+                    if (userLocation.date >= period.first &&
+                            userLocation.date <= period.second) {
+                        locationsList.add(userLocation);
+                    }
+                }
+            }
+            return new Result.Success<>(locationsList);
+        });
+    }
+
     private Task<Void> sendToFirebase(UserLocation userLocation, String uid) {
         return firestore.collection("Users")
                 .document(uid)
                 .collection("User Locations")
                 .document()
                 .set(userLocation);
+    }
+
+    private Task<QuerySnapshot> retrieveFromFirebase(String uid) {
+        return firestore.collection("Users")
+                .document(uid)
+                .collection("User Locations")
+                .get();
     }
 }

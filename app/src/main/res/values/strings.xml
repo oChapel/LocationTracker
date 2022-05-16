@@ -28,6 +28,9 @@
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
 
+    <!-- Maps Fragment -->
+    <string name="timeline">Timeline</string>
+
     <!-- Errors -->
     <string name="empty_field">This field cannot be empty</string>
     <string name="invalid_email">Not a valid email</string>
@@ -43,6 +46,9 @@
     <string name="successful_reset">"Check your email to reset your password"</string>
     <string name="permission_denied">"To track your location please allow the app to use GPS"</string>
     <string name="logged_out">See you later!</string>
+    <string name="retrieve_failed">Failed to retrieve locations. Check internet connection or try again later</string>
+    <string name="invalid_period">Start date must be anterior to end date</string>
+    <string name="no_locations_in_current_period">There are no locations during chosen period</string>
 
     <!-- Alert dialog -->
     <string name="no_gps_alert_message">"The application requires GPS to work properly. Do you want to enable it?"</string>
@@ -55,8 +61,10 @@
     <string name="send_uppercase">SEND</string>
     <string name="failed_to_send_alert_message">Failed to send. Do you want to delete them and logout?</string>
     <string name="logout_uppercase">LOGOUT</string>
+    <string name="select_date_range">Select date range</string>
 
     <!-- Notification -->
     <string name="service_running">"Location service is running."</string>
     <string name="gps_status_is">GPS is</string>
+    <string name="select">Select</string>
 </resources>

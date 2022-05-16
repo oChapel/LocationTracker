@@ -15,7 +15,7 @@ import ua.com.foxminded.locationtrackera.databinding.FragmentWelcomeBinding;
 
 public class WelcomeFragment extends Fragment implements View.OnClickListener {
 
-    private FragmentWelcomeBinding binding;
+    protected FragmentWelcomeBinding binding;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable  ViewGroup container,

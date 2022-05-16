@@ -10,7 +10,9 @@ public class BootCompletedReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        final Intent serviceIntent = new Intent(context, LocationService.class);
-        ContextCompat.startForegroundService(context, serviceIntent);
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
+            final Intent serviceIntent = new Intent(context, LocationService.class);
+            ContextCompat.startForegroundService(context, serviceIntent);
+        }
     }
 }

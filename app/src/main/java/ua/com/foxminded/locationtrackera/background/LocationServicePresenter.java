@@ -6,7 +6,6 @@ import androidx.work.Constraints;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-import androidx.work.WorkManagerInitializer;
 import androidx.work.WorkRequest;
 
 import java.util.Calendar;
@@ -31,8 +30,6 @@ public class LocationServicePresenter implements LocationServiceContract.Present
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final BehaviorSubject<Integer> gpsStatusSupplier = BehaviorSubject.create();
-    private final WorkManagerInitializer workManagerInitializer = new WorkManagerInitializer();
-    private final WorkManager workManager = workManagerInitializer.create(App.getInstance());
     private final SendLocationsUseCase sendLocationsUseCase;
     private final GpsSource gpsServices;
     private final LocationRepository repository;
@@ -101,7 +98,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
                             if (result.isSuccessful()) {
                                 repository.deleteLocationsFromDb();
                             } else {
-                                workManager.enqueue(request);
+                                WorkManager.getInstance(App.getInstance()).enqueue(request);
                             }
                         }, Throwable::printStackTrace)
         );
@@ -126,7 +123,6 @@ public class LocationServicePresenter implements LocationServiceContract.Present
     public void onDestroy() {
         gpsServices.onDestroy();
         compositeDisposable.dispose();
-        sendLocationsUseCase.dispose();
         cache.serviceStatusChanged(false);
     }
 }

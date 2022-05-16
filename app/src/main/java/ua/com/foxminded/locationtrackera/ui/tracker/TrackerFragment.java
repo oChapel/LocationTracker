@@ -193,4 +193,10 @@ public class TrackerFragment extends HostedFragment<
         }
         return false;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

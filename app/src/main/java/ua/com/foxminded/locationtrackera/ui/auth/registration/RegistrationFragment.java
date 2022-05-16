@@ -30,7 +30,7 @@ public class RegistrationFragment extends HostedFragment<
         RegistrationContract.Host>
         implements RegistrationContract.View, View.OnClickListener {
 
-    private FragmentRegistrationBinding binding;
+    protected FragmentRegistrationBinding binding;
 
     @Override
     protected RegistrationContract.ViewModel createModel() {
