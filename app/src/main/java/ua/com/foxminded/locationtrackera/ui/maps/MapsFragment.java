@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -25,8 +24,12 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import ua.com.foxminded.locationtrackera.R;
@@ -49,7 +52,8 @@ public class MapsFragment extends HostedFragment<
     private final List<Marker> markerList = new ArrayList<>();
     private FragmentMapsBinding binding;
     private GoogleMap googleMap;
-    private MaterialDatePicker<Pair<Long, Long>> picker;
+    private long startTimePoint;
+    private long endTimePoint;
 
     @Override
     protected MapsContract.ViewModel createModel() {
@@ -81,15 +85,6 @@ public class MapsFragment extends HostedFragment<
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
-
-        picker = MaterialDatePicker.Builder.dateRangePicker()
-                .setTitleText(R.string.select_date_range)
-                .setTheme(R.style.ThemeOverlay_MaterialComponents_MaterialCalendar)
-                .build();
-
-        picker.addOnNegativeButtonClickListener(click -> picker.dismiss());
-        picker.addOnPositiveButtonClickListener(selection ->
-                getModel().retrieveLocationsByDate(selection.first, selection.second));
     }
 
     @Override
@@ -107,7 +102,7 @@ public class MapsFragment extends HostedFragment<
         if (item.getItemId() == R.id.maps_menu_item_logout) {
             getModel().logout();
         } else if (item.getItemId() == R.id.maps_menu_timeline) {
-            picker.show(getChildFragmentManager(), "date_picker");
+            getDatePicker(0, R.string.select_start_date).show(getChildFragmentManager(), "date_picker_0");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -141,6 +136,49 @@ public class MapsFragment extends HostedFragment<
     @Override
     public void showToastMessage(int resId) {
         Toast.makeText(getContext(), resId, Toast.LENGTH_LONG).show();
+    }
+
+    private MaterialDatePicker<Long> getDatePicker(int code, int resId) {
+        final MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText(resId)
+                .build();
+
+        datePicker.addOnNegativeButtonClickListener(click -> datePicker.dismiss());
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            int stringRes;
+            if (code == 0) {
+                stringRes = R.string.select_start_time;
+            } else {
+                stringRes = R.string.select_end_time;
+            }
+            getTimePicker(code, stringRes, new Date(selection)).show(getChildFragmentManager(), "time_picker_" + code);
+        });
+
+        return datePicker;
+    }
+
+    private MaterialTimePicker getTimePicker(int code, int resId, Date selectedDate) {
+        final MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
+                .setTitleText(resId)
+                .setTimeFormat(TimeFormat.CLOCK_24H)
+                .build();
+
+        timePicker.addOnNegativeButtonClickListener(click -> timePicker.dismiss());
+        timePicker.addOnPositiveButtonClickListener(click -> {
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTime(selectedDate);
+            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE),
+                    timePicker.getHour(), timePicker.getMinute());
+            if (code == 0) {
+                startTimePoint = calendar.getTimeInMillis();
+                getDatePicker(1, R.string.select_end_date).show(getChildFragmentManager(), "date_picker_1");
+            } else if (code == 1) {
+                endTimePoint = calendar.getTimeInMillis();
+                getModel().retrieveLocationsByDate(startTimePoint, endTimePoint);
+            }
+        });
+
+        return timePicker;
     }
 
     private void zoomCamera() {

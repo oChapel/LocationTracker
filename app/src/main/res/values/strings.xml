@@ -30,6 +30,10 @@
 
     <!-- Maps Fragment -->
     <string name="timeline">Timeline</string>
+    <string name="select_start_time">Select start time</string>
+    <string name="select_end_time">Select end time</string>
+    <string name="select_end_date">Select end date</string>
+    <string name="select_start_date">Select start date</string>
 
     <!-- Errors -->
     <string name="empty_field">This field cannot be empty</string>
@@ -47,7 +51,7 @@
     <string name="permission_denied">"To track your location please allow the app to use GPS"</string>
     <string name="logged_out">See you later!</string>
     <string name="retrieve_failed">Failed to retrieve locations. Check internet connection or try again later</string>
-    <string name="invalid_period">Start date must be anterior to end date</string>
+    <string name="invalid_time_period">Start date must be anterior to end date</string>
     <string name="no_locations_in_current_period">There are no locations during chosen period</string>
 
     <!-- Alert dialog -->

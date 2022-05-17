@@ -1,6 +1,7 @@
 package ua.com.foxminded.locationtrackera.model.locations;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity
@@ -18,6 +19,7 @@ public class UserLocation {
         this.date = date;
     }
 
+    @Ignore
     public UserLocation() {
     }
 }

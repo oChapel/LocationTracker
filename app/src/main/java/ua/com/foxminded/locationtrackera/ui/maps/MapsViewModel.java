@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleOwner;
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
@@ -43,7 +44,13 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
     private void setUpMapsChain() {
         addTillDestroy(
                 locationsSupplier.observeOn(Schedulers.io())
-                        .flatMapSingle(repository::retrieveLocations)
+                        .flatMapSingle(pair -> {
+                            if (pair.first < pair.second) {
+                                return repository.retrieveLocations(pair);
+                            } else {
+                                return Single.just(new Result.Error(new IllegalArgumentException("Start date must be anterior to end date")));
+                            }
+                        })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
                                     if (result.isSuccessful()) {
@@ -54,8 +61,11 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
                                             setAction(new MapsScreenEffect.PlaceMarkers(list));
                                         }
                                     } else {
-                                        setAction(new MapsScreenEffect.ShowToast(R.string.retrieve_failed));
-
+                                        if (((Result.Error) result).getError() instanceof IllegalArgumentException) {
+                                            setAction(new MapsScreenEffect.ShowToast(R.string.invalid_time_period));
+                                        } else {
+                                            setAction(new MapsScreenEffect.ShowToast(R.string.retrieve_failed));
+                                        }
                                     }
                                 }
                         )
