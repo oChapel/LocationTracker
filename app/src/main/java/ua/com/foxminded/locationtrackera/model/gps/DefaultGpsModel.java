@@ -19,7 +19,6 @@ import com.google.android.gms.location.LocationServices;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
-
 import ua.com.foxminded.locationtrackera.BuildConfig;
 
 public class DefaultGpsModel implements GpsSource {
@@ -70,8 +69,9 @@ public class DefaultGpsModel implements GpsSource {
     @SuppressLint("MissingPermission")
     @Override
     public void startLocationUpdates() {
-        fusedLocationClient
-                .requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+        fusedLocationClient.requestLocationUpdates(
+                locationRequest, locationCallback, Looper.getMainLooper()
+        );
     }
 
     @SuppressLint("MissingPermission")

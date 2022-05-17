@@ -167,8 +167,10 @@ public class MapsFragment extends HostedFragment<
         timePicker.addOnPositiveButtonClickListener(click -> {
             final Calendar calendar = Calendar.getInstance();
             calendar.setTime(selectedDate);
-            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE),
-                    timePicker.getHour(), timePicker.getMinute());
+            calendar.set(
+                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DATE), timePicker.getHour(), timePicker.getMinute()
+            );
             if (code == 0) {
                 startTimePoint = calendar.getTimeInMillis();
                 getDatePicker(1, R.string.select_end_date).show(getChildFragmentManager(), "date_picker_1");

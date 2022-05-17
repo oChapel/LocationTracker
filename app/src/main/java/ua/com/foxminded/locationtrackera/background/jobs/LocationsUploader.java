@@ -48,7 +48,6 @@ public class LocationsUploader extends Worker {
         return workResult.get();
     }
 
-
     @Override
     public void onStopped() {
         super.onStopped();

@@ -1,12 +1,12 @@
 package ua.com.foxminded.locationtrackera.model.auth;
 
-import java.util.concurrent.ExecutionException;
-
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.rxjava3.core.Single;
 import ua.com.foxminded.locationtrackera.util.Result;
@@ -22,8 +22,9 @@ public class FirebaseAuthNetwork implements AuthNetwork {
     @Override
     public Single<Result<Void>> firebaseRegister(String username, String email, String password) {
         return Single.fromCallable(() -> {
-            final Task<AuthResult> task =
-                    firebaseAuth.createUserWithEmailAndPassword(email, password);
+            final Task<AuthResult> task = firebaseAuth.createUserWithEmailAndPassword(
+                    email, password
+            );
 
             try {
                 Tasks.await(task);

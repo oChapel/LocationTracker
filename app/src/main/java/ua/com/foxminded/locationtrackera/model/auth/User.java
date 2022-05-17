@@ -2,8 +2,8 @@ package ua.com.foxminded.locationtrackera.model.auth;
 
 public class User {
 
-    public String username;
-    public String email;
+    public final String username;
+    public final String email;
 
     public User(String username, String email) {
         this.username = username;

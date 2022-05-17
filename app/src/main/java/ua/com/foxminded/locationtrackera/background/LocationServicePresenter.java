@@ -14,8 +14,6 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
-
 import ua.com.foxminded.locationtrackera.App;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.background.jobs.LocationsUploader;
@@ -29,7 +27,6 @@ import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
 public class LocationServicePresenter implements LocationServiceContract.Presenter {
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private final BehaviorSubject<Integer> gpsStatusSupplier = BehaviorSubject.create();
     private final SendLocationsUseCase sendLocationsUseCase;
     private final GpsSource gpsServices;
     private final LocationRepository repository;
@@ -72,18 +69,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
 
     private void setObservers() {
         compositeDisposable.addAll(
-                gpsServices.getGpsStatusObservable().subscribe(status -> {
-                    cache.setGpsStatus(status);
-                    int resourceStatusString = 0;
-                    if (status == GpsStatusConstants.CONNECTING) {
-                        resourceStatusString = R.string.connecting;
-                    } else if (status == GpsStatusConstants.FIX_ACQUIRED) {
-                        resourceStatusString = R.string.enabled;
-                    } else if (status == GpsStatusConstants.FIX_NOT_ACQUIRED) {
-                        resourceStatusString = R.string.disabled;
-                    }
-                    gpsStatusSupplier.onNext(resourceStatusString);
-                }),
+                gpsServices.getGpsStatusObservable().subscribe(cache::setGpsStatus),
 
                 gpsServices.getLocationObservable()
                         .observeOn(Schedulers.io())
@@ -116,7 +102,17 @@ public class LocationServicePresenter implements LocationServiceContract.Present
 
     @Override
     public Observable<Integer> getGpsStatusObservable() {
-        return gpsStatusSupplier;
+        return gpsServices.getGpsStatusObservable().map(status -> {
+            if (status == GpsStatusConstants.CONNECTING) {
+                return R.string.connecting;
+            } else if (status == GpsStatusConstants.FIX_ACQUIRED) {
+                return R.string.enabled;
+            } else if (status == GpsStatusConstants.FIX_NOT_ACQUIRED) {
+                return R.string.disabled;
+            } else {
+                return 0;
+            }
+        });
     }
 
     @Override
