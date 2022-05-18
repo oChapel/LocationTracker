@@ -43,7 +43,7 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
                     }
 
                     if (!task.isSuccessful()) {
-                        return new Result.Error(task.getException());
+                        return new Result.Error<>(task.getException());
                     }
                 }
                 return new Result.Success<>(null);
@@ -53,7 +53,7 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
     }
 
     @Override
-    public Single<Result<?>> retrieveLocations(double startDate, double endDate) {
+    public Single<Result<List<UserLocation>>> retrieveLocations(double startDate, double endDate) {
         return Single.fromCallable(() -> {
             final List<UserLocation> locationsList = new ArrayList<>();
             final Task<QuerySnapshot> task = retrieveFromFirebase(
@@ -67,7 +67,7 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
             }
 
             if (!task.isSuccessful()) {
-                return new Result.Error(task.getException());
+                return new Result.Error<>(task.getException());
             }
 
             if (!task.getResult().isEmpty()) {

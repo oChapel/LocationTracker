@@ -14,7 +14,7 @@ public class Result<T> {
             Result.Success<T> success = (Result.Success<T>) this;
             return "Success[data=" + success.getData().toString() + "]";
         } else if (this instanceof Result.Error) {
-            Result.Error error = (Result.Error) this;
+            Result.Error<T> error = (Result.Error<T>) this;
             return "Error[exception=" + error.getError().toString() + "]";
         }
         return "";
@@ -36,7 +36,7 @@ public class Result<T> {
         }
     }
 
-    public final static class Error extends Result<Void> {
+    public final static class Error<T> extends Result<T> {
         private final Throwable error;
 
         public Error(Throwable error) {

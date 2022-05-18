@@ -42,6 +42,7 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void setUpMapsChain() {
         addTillDestroy(
                 locationsSupplier.observeOn(Schedulers.io())
@@ -49,7 +50,7 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
                             if (pair.first < pair.second) {
                                 return repository.retrieveLocations(pair.first, pair.second);
                             } else {
-                                return Single.just(new Result.Error(new IllegalArgumentException("Start date must be anterior to end date")));
+                                return Single.just(new Result.Error<Void>(new IllegalArgumentException("Start date must be anterior to end date")));
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
@@ -62,7 +63,7 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
                                             setAction(new MapsScreenEffect.PlaceMarkers(list));
                                         }
                                     } else {
-                                        if (((Result.Error) result).getError() instanceof IllegalArgumentException) {
+                                        if (((Result.Error<Void>) result).getError() instanceof IllegalArgumentException) {
                                             setAction(new MapsScreenEffect.ShowToast(R.string.invalid_time_period));
                                         } else {
                                             setAction(new MapsScreenEffect.ShowToast(R.string.retrieve_failed));

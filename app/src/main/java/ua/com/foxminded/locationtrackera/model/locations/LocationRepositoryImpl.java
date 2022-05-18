@@ -38,7 +38,7 @@ public class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
-    public Single<Result<?>> retrieveLocations(double startDate, double endDate) {
+    public Single<Result<List<UserLocation>>> retrieveLocations(double startDate, double endDate) {
         return remoteDataSource.retrieveLocations(startDate, endDate);
     }
 }
