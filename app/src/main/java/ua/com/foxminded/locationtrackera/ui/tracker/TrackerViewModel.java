@@ -8,7 +8,6 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
-
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
@@ -77,24 +76,25 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
                             }
                         }),
 
-                responseSupplier.flatMapSingle(code -> {
-                    if (code == 0) {
-                        return sendLocationsUseCase.execute();
-                    } else {
-                        return Single.just(new Result.Success<>(null));
-                    }
-                }).subscribe(result -> {
-                    if (result.isSuccessful()) {
-                        repository.deleteLocationsFromDb();
-                        authNetwork.logout();
-                        postAction(new TrackerScreenEffect.Logout());
-                    } else {
-                        showFailedToSendDialogFragment();
-                    }
-                }, error -> {
-                    error.printStackTrace();
-                    showFailedToSendDialogFragment();
-                })
+                responseSupplier.observeOn(Schedulers.io())
+                        .flatMapSingle(code -> {
+                            if (code == 0) {
+                                return sendLocationsUseCase.execute();
+                            } else {
+                                return Single.just(new Result.Success<>(null));
+                            }
+                        }).subscribe(result -> {
+                            if (result.isSuccessful()) {
+                                repository.deleteLocationsFromDb();
+                                authNetwork.logout();
+                                postAction(new TrackerScreenEffect.Logout());
+                            } else {
+                                showFailedToSendDialogFragment();
+                            }
+                        }, error -> {
+                            error.printStackTrace();
+                            showFailedToSendDialogFragment();
+                        })
         );
     }
 

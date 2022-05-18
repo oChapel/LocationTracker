@@ -34,7 +34,7 @@ public class FirebaseAuthNetwork implements AuthNetwork {
 
             if (task.isSuccessful()) {
                 final Task<Void> task2 = FirebaseFirestore.getInstance()
-                        .collection("Users")
+                        .collection(FirebaseNetworkConstants.COLLECTION_PATH_USERS)
                         .document(firebaseAuth.getCurrentUser().getUid())
                         .set(new User(username, email));
 

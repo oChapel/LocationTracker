@@ -41,7 +41,7 @@ public class LocationService extends LifecycleService {
     @Override
     public void onStart(@Nullable Intent intent, int startId) {
         super.onStart(intent, startId);
-        presenter.onStart();
+        presenter.onStart(getApplicationContext());
         startForeground(NOTIFICATION_ID, getNotificationBuilder().build());
         setGpsStatusObserver();
     }
@@ -49,7 +49,7 @@ public class LocationService extends LifecycleService {
     private void setGpsStatusObserver() {
         compositeDisposable.add(
                 presenter.getGpsStatusObservable().subscribe(status -> {
-                    notification.setContentText(getString(R.string.gps_status_is) + " " + getString(status));
+                    notification.setContentText(getString(R.string.gps_status_notification, getString(status)));
                     notificationManager.notify(NOTIFICATION_ID, notification.build());
                 })
         );

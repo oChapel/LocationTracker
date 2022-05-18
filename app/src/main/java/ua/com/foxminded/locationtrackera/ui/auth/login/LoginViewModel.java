@@ -8,10 +8,10 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
-
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.mvi.MviViewModel;
+import ua.com.foxminded.locationtrackera.ui.auth.AuthErrorConstants;
 import ua.com.foxminded.locationtrackera.ui.auth.Credentials;
 import ua.com.foxminded.locationtrackera.ui.auth.login.state.LoginScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.auth.login.state.LoginScreenState;
@@ -44,7 +44,9 @@ public class LoginViewModel extends MviViewModel<LoginScreenState, LoginScreenEf
                             if (creds.isEmailValid() && creds.isPasswordValid()) {
                                 return authNetwork.firebaseLogin(creds.email, creds.password);
                             } else {
-                                return Single.just(new Result.Error(new Throwable("Email or password is invalid. Error code: " + creds.getLoginErrorCode())));
+                                return Single.just(new Result.Error(
+                                        new Throwable(AuthErrorConstants.INVALID_EMAIL_PASSWORD + creds.getLoginErrorCode())
+                                ));
                             }
                         }).observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
@@ -52,11 +54,11 @@ public class LoginViewModel extends MviViewModel<LoginScreenState, LoginScreenEf
                             if (result.isSuccessful()) {
                                 setAction(new LoginScreenEffect.LoginSuccessful());
                             } else {
-                                if (result.toString().contains("Error code: 1")) {
+                                if (result.toString().contains(AuthErrorConstants.ERROR_CODE_1)) {
                                     setState(new LoginScreenState.LoginError(R.string.invalid_email, R.string.enter_password));
-                                } else if (result.toString().contains("Error code: 2")) {
+                                } else if (result.toString().contains(AuthErrorConstants.ERROR_CODE_2)) {
                                     setState(new LoginScreenState.LoginError(R.string.invalid_email, 0));
-                                } else if (result.toString().contains("Error code: 3")) {
+                                } else if (result.toString().contains(AuthErrorConstants.ERROR_CODE_3)) {
                                     setState(new LoginScreenState.LoginError(0, R.string.enter_password));
                                 } else {
                                     setAction(new LoginScreenEffect.LoginFailed());

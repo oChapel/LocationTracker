@@ -12,5 +12,5 @@ public interface LocationsNetwork {
 
     Single<Result<Void>> sendLocations(List<UserLocation> locationList);
 
-    Single<Result<?>> retrieveLocations(Pair<Double, Double> period);
+    Single<Result<?>> retrieveLocations(double startDate, double endDate);
 }

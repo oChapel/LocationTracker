@@ -8,10 +8,10 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
-
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.mvi.MviViewModel;
+import ua.com.foxminded.locationtrackera.ui.auth.AuthErrorConstants;
 import ua.com.foxminded.locationtrackera.ui.auth.Credentials;
 import ua.com.foxminded.locationtrackera.ui.auth.registration.state.RegistrationScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.auth.registration.state.RegistrationScreenState;
@@ -45,7 +45,7 @@ public class RegistrationViewModel extends MviViewModel<RegistrationScreenState,
                                 return authNetwork.firebaseRegister(creds.username, creds.email, creds.password);
                             } else {
                                 postState(getErrorState(creds));
-                                return Single.just(new Result.Error(new Throwable("Username or email or password invalid")));
+                                return Single.just(new Result.Error(new Throwable(AuthErrorConstants.INVALID_USERNAME_EMAIL_PASSWORD)));
                             }
                         }).observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
@@ -53,7 +53,7 @@ public class RegistrationViewModel extends MviViewModel<RegistrationScreenState,
                                 setState(new RegistrationScreenState.RegistrationProgress(false));
                                 setAction(new RegistrationScreenEffect.RegistrationSuccessful());
                             } else {
-                                if (!result.toString().contains("Username or email or password invalid")) {
+                                if (!result.toString().contains(AuthErrorConstants.INVALID_USERNAME_EMAIL_PASSWORD)) {
                                     setState(new RegistrationScreenState.RegistrationProgress(false));
                                     setAction(new RegistrationScreenEffect.RegistrationFailed());
                                 }
@@ -75,7 +75,7 @@ public class RegistrationViewModel extends MviViewModel<RegistrationScreenState,
         if (creds.isEmailValid()) {
             emailError = 0;
         } else {
-            emailError =  R.string.invalid_email;
+            emailError = R.string.invalid_email;
         }
         if (creds.isRegistrationPasswordValid()) {
             passwordError = 0;

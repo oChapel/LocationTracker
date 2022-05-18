@@ -1,6 +1,8 @@
 package ua.com.foxminded.locationtrackera.model.locations.network;
 
-import androidx.core.util.Pair;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -9,12 +11,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import io.reactivex.rxjava3.core.Single;
-
+import ua.com.foxminded.locationtrackera.model.auth.FirebaseNetworkConstants;
 import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 import ua.com.foxminded.locationtrackera.util.Result;
 
@@ -55,10 +53,12 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
     }
 
     @Override
-    public Single<Result<?>> retrieveLocations(Pair<Double, Double> period) {
+    public Single<Result<?>> retrieveLocations(double startDate, double endDate) {
         return Single.fromCallable(() -> {
             final List<UserLocation> locationsList = new ArrayList<>();
-            final Task<QuerySnapshot> task = retrieveFromFirebase(firebaseAuth.getCurrentUser().getUid());
+            final Task<QuerySnapshot> task = retrieveFromFirebase(
+                    firebaseAuth.getCurrentUser().getUid(), startDate, endDate
+            );
 
             try {
                 Tasks.await(task);
@@ -72,11 +72,7 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
 
             if (!task.getResult().isEmpty()) {
                 for (DocumentSnapshot ds : task.getResult().getDocuments()) {
-                    final UserLocation userLocation = ds.toObject(UserLocation.class);
-                    if (userLocation.date >= period.first &&
-                            userLocation.date <= period.second) {
-                        locationsList.add(userLocation);
-                    }
+                    locationsList.add(ds.toObject(UserLocation.class));
                 }
             }
             return new Result.Success<>(locationsList);
@@ -84,17 +80,19 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
     }
 
     private Task<Void> sendToFirebase(UserLocation userLocation, String uid) {
-        return firestore.collection("Users")
+        return firestore.collection(FirebaseNetworkConstants.COLLECTION_PATH_USERS)
                 .document(uid)
-                .collection("User Locations")
+                .collection(FirebaseNetworkConstants.COLLECTION_PATH_USER_LOCATIONS)
                 .document()
                 .set(userLocation);
     }
 
-    private Task<QuerySnapshot> retrieveFromFirebase(String uid) {
-        return firestore.collection("Users")
+    private Task<QuerySnapshot> retrieveFromFirebase(String uid, double startDate, double endDate) {
+        return firestore.collection(FirebaseNetworkConstants.COLLECTION_PATH_USERS)
                 .document(uid)
-                .collection("User Locations")
+                .collection(FirebaseNetworkConstants.COLLECTION_PATH_USER_LOCATIONS)
+                .whereGreaterThanOrEqualTo("date", startDate)
+                .whereLessThanOrEqualTo("date", endDate)
                 .get();
     }
 }

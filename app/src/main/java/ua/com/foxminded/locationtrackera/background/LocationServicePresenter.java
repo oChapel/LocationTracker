@@ -1,5 +1,8 @@
 package ua.com.foxminded.locationtrackera.background;
 
+import java.util.Calendar;
+
+import android.content.Context;
 import android.location.Location;
 
 import androidx.work.Constraints;
@@ -8,13 +11,10 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
-import java.util.Calendar;
-
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import ua.com.foxminded.locationtrackera.App;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.background.jobs.LocationsUploader;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
@@ -46,8 +46,8 @@ public class LocationServicePresenter implements LocationServiceContract.Present
     }
 
     @Override
-    public void onStart() {
-        setObservers();
+    public void onStart(Context context) {
+        setObservers(context);
         gpsServices.setUpServices();
         gpsServices.startLocationUpdates();
         gpsServices.registerGpsOrGnssStatusChanges();
@@ -67,7 +67,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
         return repository.getAllLocations().size() >= 5;
     }
 
-    private void setObservers() {
+    private void setObservers(Context context) {
         compositeDisposable.addAll(
                 gpsServices.getGpsStatusObservable().subscribe(cache::setGpsStatus),
 
@@ -84,7 +84,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
                             if (result.isSuccessful()) {
                                 repository.deleteLocationsFromDb();
                             } else {
-                                WorkManager.getInstance(App.getInstance()).enqueue(request);
+                                WorkManager.getInstance(context).enqueue(request);
                             }
                         }, Throwable::printStackTrace)
         );

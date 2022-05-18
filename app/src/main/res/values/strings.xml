@@ -69,6 +69,6 @@
 
     <!-- Notification -->
     <string name="service_running">"Location service is running."</string>
-    <string name="gps_status_is">GPS is</string>
+    <string name="gps_status_notification">GPS is %1$s</string>
     <string name="select">Select</string>
 </resources>

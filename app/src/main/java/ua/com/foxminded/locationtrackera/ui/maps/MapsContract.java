@@ -13,6 +13,8 @@ public class MapsContract {
         void logout();
 
         void retrieveLocationsByDate(double startDate, double endDate);
+
+        void retrieveDefaultLocations();
     }
 
     public interface View extends FragmentContract.View {

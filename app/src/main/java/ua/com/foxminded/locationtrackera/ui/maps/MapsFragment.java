@@ -1,5 +1,10 @@
 package ua.com.foxminded.locationtrackera.ui.maps;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,11 +32,6 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.FragmentMapsBinding;
 import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
@@ -47,13 +47,10 @@ public class MapsFragment extends HostedFragment<
         MapsContract.ViewModel,
         MapsContract.Host> implements MapsContract.View, OnMapReadyCallback {
 
-    private static final double DEFAULT_LOCATIONS_RETRIEVING_TIME_HOURS = 12;
-
     private final List<Marker> markerList = new ArrayList<>();
     private FragmentMapsBinding binding;
     private GoogleMap googleMap;
     private long startTimePoint;
-    private long endTimePoint;
 
     @Override
     protected MapsContract.ViewModel createModel() {
@@ -90,11 +87,7 @@ public class MapsFragment extends HostedFragment<
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
-
-        getModel().retrieveLocationsByDate(
-                System.currentTimeMillis() - DEFAULT_LOCATIONS_RETRIEVING_TIME_HOURS * 3600,
-                System.currentTimeMillis()
-        );
+        getModel().retrieveDefaultLocations();
     }
 
     @Override
@@ -166,17 +159,18 @@ public class MapsFragment extends HostedFragment<
         timePicker.addOnNegativeButtonClickListener(click -> timePicker.dismiss());
         timePicker.addOnPositiveButtonClickListener(click -> {
             final Calendar calendar = Calendar.getInstance();
+
             calendar.setTime(selectedDate);
             calendar.set(
                     calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DATE), timePicker.getHour(), timePicker.getMinute()
             );
+
             if (code == 0) {
                 startTimePoint = calendar.getTimeInMillis();
                 getDatePicker(1, R.string.select_end_date).show(getChildFragmentManager(), "date_picker_1");
             } else if (code == 1) {
-                endTimePoint = calendar.getTimeInMillis();
-                getModel().retrieveLocationsByDate(startTimePoint, endTimePoint);
+                getModel().retrieveLocationsByDate(startTimePoint, calendar.getTimeInMillis());
             }
         });
 

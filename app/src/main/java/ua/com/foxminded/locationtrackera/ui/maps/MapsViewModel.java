@@ -1,17 +1,16 @@
 package ua.com.foxminded.locationtrackera.ui.maps;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
-import java.util.List;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
-
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
@@ -23,6 +22,8 @@ import ua.com.foxminded.locationtrackera.util.Result;
 
 public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffect>
         implements MapsContract.ViewModel {
+
+    private static final double DEFAULT_LOCATIONS_RETRIEVING_TIME_HOURS = 12;
 
     private final AuthNetwork authNetwork;
     private final LocationRepository repository;
@@ -46,7 +47,7 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
                 locationsSupplier.observeOn(Schedulers.io())
                         .flatMapSingle(pair -> {
                             if (pair.first < pair.second) {
-                                return repository.retrieveLocations(pair);
+                                return repository.retrieveLocations(pair.first, pair.second);
                             } else {
                                 return Single.just(new Result.Error(new IllegalArgumentException("Start date must be anterior to end date")));
                             }
@@ -75,6 +76,14 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
     @Override
     public void retrieveLocationsByDate(double startDate, double endDate) {
         locationsSupplier.onNext(new Pair<>(startDate, endDate));
+    }
+
+    @Override
+    public void retrieveDefaultLocations() {
+        retrieveLocationsByDate(
+                System.currentTimeMillis() - DEFAULT_LOCATIONS_RETRIEVING_TIME_HOURS * 3600,
+                System.currentTimeMillis()
+        );
     }
 
     @Override

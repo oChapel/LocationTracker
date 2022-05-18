@@ -1,11 +1,8 @@
 package ua.com.foxminded.locationtrackera.model.locations;
 
-import androidx.core.util.Pair;
-
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Single;
-
 import ua.com.foxminded.locationtrackera.model.locations.dao.LocationsDao;
 import ua.com.foxminded.locationtrackera.model.locations.network.LocationsNetwork;
 import ua.com.foxminded.locationtrackera.util.Result;
@@ -41,7 +38,7 @@ public class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
-    public Single<Result<?>> retrieveLocations(Pair<Double, Double> period) {
-        return remoteDataSource.retrieveLocations(period);
+    public Single<Result<?>> retrieveLocations(double startDate, double endDate) {
+        return remoteDataSource.retrieveLocations(startDate, endDate);
     }
 }
