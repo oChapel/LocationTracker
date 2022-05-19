@@ -15,5 +15,5 @@ public interface LocationRepository {
 
     Single<Result<Void>> sendLocations(List<UserLocation> locationList);
 
-    Single<Result<List<UserLocation>>> retrieveLocations(double startDate, double endDate);
+    Single<Result<List<UserLocation>>> retrieveLocations(double fromTime, double toTime);
 }

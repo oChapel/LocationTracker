@@ -12,11 +12,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import io.reactivex.rxjava3.core.Single;
-import ua.com.foxminded.locationtrackera.model.auth.FirebaseNetworkConstants;
 import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 import ua.com.foxminded.locationtrackera.util.Result;
 
 public class FirebaseLocationsNetwork implements LocationsNetwork {
+
+    private static final String COLLECTION_PATH_USERS = "Users";
+    private static final String COLLECTION_PATH_USER_LOCATIONS = "User Locations";
+    private static final String FIELD_DATE = "date";
 
     private final FirebaseFirestore firestore;
     private final FirebaseAuth firebaseAuth;
@@ -53,11 +56,11 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
     }
 
     @Override
-    public Single<Result<List<UserLocation>>> retrieveLocations(double startDate, double endDate) {
+    public Single<Result<List<UserLocation>>> retrieveLocations(double fromTime, double toTime) {
         return Single.fromCallable(() -> {
             final List<UserLocation> locationsList = new ArrayList<>();
             final Task<QuerySnapshot> task = retrieveFromFirebase(
-                    firebaseAuth.getCurrentUser().getUid(), startDate, endDate
+                    firebaseAuth.getCurrentUser().getUid(), fromTime, toTime
             );
 
             try {
@@ -80,19 +83,19 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
     }
 
     private Task<Void> sendToFirebase(UserLocation userLocation, String uid) {
-        return firestore.collection(FirebaseNetworkConstants.COLLECTION_PATH_USERS)
+        return firestore.collection(COLLECTION_PATH_USERS)
                 .document(uid)
-                .collection(FirebaseNetworkConstants.COLLECTION_PATH_USER_LOCATIONS)
+                .collection(COLLECTION_PATH_USER_LOCATIONS)
                 .document()
                 .set(userLocation);
     }
 
     private Task<QuerySnapshot> retrieveFromFirebase(String uid, double startDate, double endDate) {
-        return firestore.collection(FirebaseNetworkConstants.COLLECTION_PATH_USERS)
+        return firestore.collection(COLLECTION_PATH_USERS)
                 .document(uid)
-                .collection(FirebaseNetworkConstants.COLLECTION_PATH_USER_LOCATIONS)
-                .whereGreaterThanOrEqualTo("date", startDate)
-                .whereLessThanOrEqualTo("date", endDate)
+                .collection(COLLECTION_PATH_USER_LOCATIONS)
+                .whereGreaterThanOrEqualTo(FIELD_DATE, startDate)
+                .whereLessThanOrEqualTo(FIELD_DATE, endDate)
                 .get();
     }
 }

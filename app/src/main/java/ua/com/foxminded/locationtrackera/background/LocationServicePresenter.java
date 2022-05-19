@@ -2,21 +2,14 @@ package ua.com.foxminded.locationtrackera.background;
 
 import java.util.Calendar;
 
-import android.content.Context;
 import android.location.Location;
-
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import ua.com.foxminded.locationtrackera.R;
-import ua.com.foxminded.locationtrackera.background.jobs.LocationsUploader;
+import ua.com.foxminded.locationtrackera.background.jobs.UploadWorkModel;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
 import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
 import ua.com.foxminded.locationtrackera.model.gps.GpsStatusConstants;
@@ -31,28 +24,29 @@ public class LocationServicePresenter implements LocationServiceContract.Present
     private final GpsSource gpsServices;
     private final LocationRepository repository;
     private final TrackerCache cache;
-    private WorkRequest request;
+    private final UploadWorkModel workModel;
 
     public LocationServicePresenter(
             GpsSource gpsSource,
             LocationRepository repository,
             TrackerCache cache,
-            SendLocationsUseCase sendLocationsUseCase
-    ) {
+            SendLocationsUseCase sendLocationsUseCase,
+            UploadWorkModel workModel) {
         this.gpsServices = gpsSource;
         this.repository = repository;
         this.cache = cache;
         this.sendLocationsUseCase = sendLocationsUseCase;
+        this.workModel = workModel;
     }
 
     @Override
-    public void onStart(Context context) {
-        setObservers(context);
+    public void onStart() {
+        setObservers();
         gpsServices.setUpServices();
         gpsServices.startLocationUpdates();
         gpsServices.registerGpsOrGnssStatusChanges();
         cache.serviceStatusChanged(true);
-        setLocationsUploader();
+        workModel.setLocationsUploader();
     }
 
     @Override
@@ -67,7 +61,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
         return repository.getAllLocations().size() >= 5;
     }
 
-    private void setObservers(Context context) {
+    private void setObservers() {
         compositeDisposable.addAll(
                 gpsServices.getGpsStatusObservable().subscribe(cache::setGpsStatus),
 
@@ -84,20 +78,10 @@ public class LocationServicePresenter implements LocationServiceContract.Present
                             if (result.isSuccessful()) {
                                 repository.deleteLocationsFromDb();
                             } else {
-                                WorkManager.getInstance(context).enqueue(request);
+                                workModel.enqueueRequest();
                             }
                         }, Throwable::printStackTrace)
         );
-    }
-
-    private void setLocationsUploader() {
-        final Constraints constraints = new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build();
-        request = new OneTimeWorkRequest
-                .Builder(LocationsUploader.class)
-                .setConstraints(constraints)
-                .build();
     }
 
     @Override

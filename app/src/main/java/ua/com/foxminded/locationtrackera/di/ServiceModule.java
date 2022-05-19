@@ -8,6 +8,8 @@ import dagger.Provides;
 import ua.com.foxminded.locationtrackera.App;
 import ua.com.foxminded.locationtrackera.background.LocationServiceContract;
 import ua.com.foxminded.locationtrackera.background.LocationServicePresenter;
+import ua.com.foxminded.locationtrackera.background.jobs.DefaultUploadWorkModel;
+import ua.com.foxminded.locationtrackera.background.jobs.UploadWorkModel;
 import ua.com.foxminded.locationtrackera.model.bus.DefaultTrackerCache;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
 import ua.com.foxminded.locationtrackera.model.gps.DefaultGpsModel;
@@ -32,12 +34,19 @@ public class ServiceModule {
 
     @Provides
     @Singleton
+    public UploadWorkModel provideUploadWorkModel() {
+        return new DefaultUploadWorkModel(App.getInstance());
+    }
+
+    @Provides
+    @Singleton
     public LocationServiceContract.Presenter provideServicePresenter(
             GpsSource gpsSource,
             LocationRepository repository,
             TrackerCache cache,
-            SendLocationsUseCase sendLocationsUseCase
+            SendLocationsUseCase sendLocationsUseCase,
+            UploadWorkModel workModel
     ) {
-        return new LocationServicePresenter(gpsSource, repository, cache, sendLocationsUseCase);
+        return new LocationServicePresenter(gpsSource, repository, cache, sendLocationsUseCase, workModel);
     }
 }

@@ -41,7 +41,7 @@ public class LocationService extends LifecycleService {
     @Override
     public void onStart(@Nullable Intent intent, int startId) {
         super.onStart(intent, startId);
-        presenter.onStart(getApplicationContext());
+        presenter.onStart();
         startForeground(NOTIFICATION_ID, getNotificationBuilder().build());
         setGpsStatusObserver();
     }

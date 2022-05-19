@@ -75,8 +75,8 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
     }
 
     @Override
-    public void retrieveLocationsByDate(double startDate, double endDate) {
-        locationsSupplier.onNext(new Pair<>(startDate, endDate));
+    public void retrieveLocationsByDate(double fromTime, double toTime) {
+        locationsSupplier.onNext(new Pair<>(fromTime, toTime));
     }
 
     @Override

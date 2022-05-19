@@ -13,6 +13,8 @@ import ua.com.foxminded.locationtrackera.util.Result;
 
 public class FirebaseAuthNetwork implements AuthNetwork {
 
+    private static final String COLLECTION_PATH_USERS = "Users";
+
     private final FirebaseAuth firebaseAuth;
 
     public FirebaseAuthNetwork(FirebaseAuth firebaseAuth) {
@@ -34,7 +36,7 @@ public class FirebaseAuthNetwork implements AuthNetwork {
 
             if (task.isSuccessful()) {
                 final Task<Void> task2 = FirebaseFirestore.getInstance()
-                        .collection(FirebaseNetworkConstants.COLLECTION_PATH_USERS)
+                        .collection(COLLECTION_PATH_USERS)
                         .document(firebaseAuth.getCurrentUser().getUid())
                         .set(new User(username, email));
 
@@ -47,10 +49,10 @@ public class FirebaseAuthNetwork implements AuthNetwork {
                 if (task.isSuccessful()) {
                     return new Result.Success<>(null);
                 } else {
-                    return new Result.Error(task2.getException());
+                    return new Result.Error<>(task2.getException());
                 }
             } else {
-                return new Result.Error(task.getException());
+                return new Result.Error<>(task.getException());
             }
         });
     }
@@ -69,7 +71,7 @@ public class FirebaseAuthNetwork implements AuthNetwork {
             if (task.isSuccessful()) {
                 return new Result.Success<>(null);
             } else {
-                return new Result.Error(task.getException());
+                return new Result.Error<>(task.getException());
             }
         });
     }
@@ -88,7 +90,7 @@ public class FirebaseAuthNetwork implements AuthNetwork {
             if (task.isSuccessful()) {
                 return new Result.Success<>(null);
             } else {
-                return new Result.Error(task.getException());
+                return new Result.Error<>(task.getException());
             }
         });
     }
