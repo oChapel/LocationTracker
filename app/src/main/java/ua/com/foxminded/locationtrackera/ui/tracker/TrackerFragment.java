@@ -46,6 +46,8 @@ public class TrackerFragment extends HostedFragment<
         TrackerContract.Host> implements TrackerContract.View {
 
     private static final int GOOGLE_API_AVAILABILITY_REQUEST_CODE = 101;
+    private static final String SHARED_PREFERENCES_FILE_NAME = "ua.com.foxminded.locationtrackera.SERVICE_PREFERENCE_FILE_KEY";
+    private static final String SERVICE_FLAG_KEY = "service_running_flag";
 
     private FragmentTrackerBinding binding;
 
@@ -172,6 +174,7 @@ public class TrackerFragment extends HostedFragment<
 
     private void startService() {
         if (!isLocationServiceRunning()) {
+            setSharedPreferencesServiceFlag(true);
             final Intent serviceIntent = new Intent(getContext(), LocationService.class);
             ContextCompat.startForegroundService(requireContext(), serviceIntent);
         }
@@ -179,9 +182,18 @@ public class TrackerFragment extends HostedFragment<
 
     private void stopService() {
         if (isLocationServiceRunning()) {
+            setSharedPreferencesServiceFlag(false);
             final Intent serviceIntent = new Intent(getContext(), LocationService.class);
             requireActivity().stopService(serviceIntent);
         }
+    }
+
+    private void setSharedPreferencesServiceFlag(boolean flag) {
+        requireActivity()
+                .getSharedPreferences(SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean(SERVICE_FLAG_KEY, flag)
+                .apply();
     }
 
     private boolean isLocationServiceRunning() {
