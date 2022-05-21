@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.tracker.TrackerFragment">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/green_500"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintBottom_toTopOf="@id/tracker_child_constraint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tracker_child_constraint"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/tracker_guide_line_start"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/tracker_guide_line_end"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/tracker_guide_line_top"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.03" />
+
+        <TextView
+            android:id="@+id/tv_gps_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gps_status"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toStartOf="@id/gps_status"
+            app:layout_constraintStart_toEndOf="@id/tracker_guide_line_start"
+            app:layout_constraintTop_toTopOf="@id/tracker_guide_line_top" />
+
+        <TextView
+            android:id="@+id/gps_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textSize="15sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_gps_status"
+            app:layout_constraintEnd_toStartOf="@id/tracker_space"
+            app:layout_constraintStart_toEndOf="@id/tv_gps_status"
+            app:layout_constraintTop_toBottomOf="@id/tracker_guide_line_top" />
+
+        <Space
+            android:id="@+id/tracker_space"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toStartOf="@id/tv_service_status"
+            app:layout_constraintStart_toEndOf="@id/gps_status"
+            app:layout_constraintTop_toBottomOf="@id/tracker_guide_line_top" />
+
+        <TextView
+            android:id="@+id/tv_service_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/service_status"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toStartOf="@id/service_status"
+            app:layout_constraintStart_toEndOf="@id/tracker_space"
+            app:layout_constraintTop_toBottomOf="@id/tracker_guide_line_top" />
+
+        <TextView
+            android:id="@+id/service_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textSize="15sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_service_status"
+            app:layout_constraintEnd_toStartOf="@id/tracker_guide_line_end"
+            app:layout_constraintStart_toEndOf="@id/tv_service_status"
+            app:layout_constraintTop_toBottomOf="@id/tracker_guide_line_top" />
+
+
+        <!-- <TextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_adress"
+        app:layout_constraintTop_toBottomOf="@id/lon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteY="277dp" />
+
+    <TextView
+        android:id="@+id/tv_adress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_lon"
+        app:layout_constraintStart_toEndOf="@+id/address" />
+
+    <TextView
+
+        android:id="@+id/speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Speed: "
+        app:layout_constraintBottom_toTopOf="@+id/address"
+        app:layout_constraintEnd_toStartOf="@+id/tv_lon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lon" />
+
+    <TextView
+        android:id="@+id/tv_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.0"
+        app:layout_constraintBottom_toTopOf="@+id/tv_adress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lon"
+        app:layout_constraintTop_toBottomOf="@+id/tv_lon" />
+
+    <TextView
+
+        android:id="@+id/lon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lon: "
+        app:layout_constraintBottom_toTopOf="@+id/speed"
+        app:layout_constraintEnd_toStartOf="@+id/tv_lon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/latitude" />
+
+    <TextView
+        android:id="@+id/tv_lon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.0"
+        app:layout_constraintBottom_toTopOf="@+id/tv_speed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lon"
+        app:layout_constraintTop_toBottomOf="@+id/tv_latitude" />
+
+    <TextView
+
+        android:id="@+id/latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Latitude: "
+        app:layout_constraintEnd_toStartOf="@+id/tv_latitude"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/lon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.0"
+        app:layout_constraintBaseline_toBaselineOf="@id/latitude"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/latitude"
+        app:layout_constraintTop_toTopOf="parent" />-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

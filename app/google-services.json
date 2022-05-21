@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "733443762441",
+    "firebase_url": "https://location-tracker-dd929-default-rtdb.firebaseio.com",
+    "project_id": "location-tracker-dd929",
+    "storage_bucket": "location-tracker-dd929.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:733443762441:android:5eb66d11bb0cbb55530bd8",
+        "android_client_info": {
+          "package_name": "ua.com.foxminded.locationtrackera"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "733443762441-e2uergt0easprf4irkmkokpvd1kvpn1i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_WTp4Csy2zaiTQJaLA7CC-nAP7HWbU6c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "733443762441-e2uergt0easprf4irkmkokpvd1kvpn1i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

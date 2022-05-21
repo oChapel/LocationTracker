@@ -1,3 +1,74 @@
 <resources>
     <string name="app_name">Location Tracker A</string>
+    <string name="app_name_short">Location Tracker</string>
+
+    <string name="login_uppercase">LOG IN</string>
+    <string name="login_underlined"><u>Log in</u></string>
+    <string name="sign_up_underlined"><u>Sign Up</u></string>
+    <string name="register_uppercase">REGISTER</string>
+    <string name="reset_password_uppercase">RESET PASSWORD</string>
+    <string name="logout">Logout</string>
+
+    <string name="user_name">User Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+
+    <string name="forgot_password">Forgot password?</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="have_account">Already have an account?</string>
+
+    <!-- Welcome Fragment -->
+    <string name="welcome_message">Welcome to Location Tracker App</string>
+    <string name="welcome_description">Track your location whenever you want wherever you are</string>
+
+    <!-- Tracker Fragment -->
+    <string name="gps_status">Gps status:</string>
+    <string name="service_status">Service status:</string>
+    <string name="connecting">connecting</string>
+    <string name="enabled">enabled</string>
+    <string name="disabled">disabled</string>
+
+    <!-- Maps Fragment -->
+    <string name="timeline">Timeline</string>
+    <string name="select_start_time">Select start time</string>
+    <string name="select_end_time">Select end time</string>
+    <string name="select_end_date">Select end date</string>
+    <string name="select_start_date">Select start date</string>
+
+    <!-- Errors -->
+    <string name="empty_field">This field cannot be empty</string>
+    <string name="invalid_email">Not a valid email</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="enter_password">Please enter password</string>
+
+    <!-- Toasts -->
+    <string name="successful_registration">Registration is successful</string>
+    <string name="registration_failed">Failed to register. Try again</string>
+    <string name="login_failed">"Failed to login. Please check your email and password"</string>
+    <string name="successful_login">"Welcome back!"</string>
+    <string name="reset_failed">"Failed to reset password. Please check your email or internet connection"</string>
+    <string name="successful_reset">"Check your email to reset your password"</string>
+    <string name="permission_denied">"To track your location please allow the app to use GPS"</string>
+    <string name="logged_out">See you later!</string>
+    <string name="retrieve_failed">Failed to retrieve locations. Check internet connection or try again later</string>
+    <string name="invalid_time_period">Start date must be anterior to end date</string>
+    <string name="no_locations_in_current_period">There are no locations during chosen period</string>
+
+    <!-- Alert dialog -->
+    <string name="no_gps_alert_message">"The application requires GPS to work properly. Do you want to enable it?"</string>
+    <string name="settings">"Settings"</string>
+    <string name="cancel">"Cancel"</string>
+
+    <!-- FragmentDialog -->
+    <string name="db_not_empty_alert_message">There are some unsent locations. Send them now or delete permanently?</string>
+    <string name="delete_uppercase">DELETE</string>
+    <string name="send_uppercase">SEND</string>
+    <string name="failed_to_send_alert_message">Failed to send. Do you want to delete them and logout?</string>
+    <string name="logout_uppercase">LOGOUT</string>
+    <string name="select_date_range">Select date range</string>
+
+    <!-- Notification -->
+    <string name="service_running">"Location service is running."</string>
+    <string name="gps_status_notification">GPS is %1$s</string>
+    <string name="select">Select</string>
 </resources>
