@@ -140,8 +140,8 @@ public class TrackerFragment extends HostedFragment<
     }
 
     public void doNegativeButton(int code) {
-        if (code == 1) {
-            getModel().setDialogResponse(code);
+        if (code == 0) {
+            getModel().setDialogResponse(1);
         }
     }
 
