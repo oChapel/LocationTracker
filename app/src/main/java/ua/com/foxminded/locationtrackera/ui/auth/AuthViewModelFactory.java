@@ -11,6 +11,7 @@ import ua.com.foxminded.locationtrackera.di.AppComponent;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
 import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.model.shared_preferences.SharedPreferencesModel;
 import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
 import ua.com.foxminded.locationtrackera.ui.auth.login.LoginViewModel;
 import ua.com.foxminded.locationtrackera.ui.auth.registration.RegistrationViewModel;
@@ -34,6 +35,9 @@ public class AuthViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     @Inject
     SendLocationsUseCase sendLocationsUseCase;
 
+    @Inject
+    SharedPreferencesModel sharedPreferencesModel;
+
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
@@ -46,7 +50,7 @@ public class AuthViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         } else if (modelClass.isAssignableFrom(ResetPasswordViewModel.class)) {
             return (T) new ResetPasswordViewModel(authNetwork);
         } else if (modelClass.isAssignableFrom(TrackerViewModel.class)) {
-            return (T) new TrackerViewModel(authNetwork, cache, repository, sendLocationsUseCase);
+            return (T) new TrackerViewModel(authNetwork, cache, repository, sendLocationsUseCase, sharedPreferencesModel);
         } else if (modelClass.isAssignableFrom(MapsViewModel.class)) {
             return (T) new MapsViewModel(authNetwork, repository);
         }

@@ -12,6 +12,7 @@ import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
 import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.model.shared_preferences.SharedPreferencesModel;
 import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
 import ua.com.foxminded.locationtrackera.mvi.MviViewModel;
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenEffect;
@@ -27,6 +28,7 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
     private final AuthNetwork authNetwork;
     private final TrackerCache cache;
     private final LocationRepository repository;
+    private final SharedPreferencesModel sharedPreferencesModel;
 
     private int gpsStatus;
     private boolean serviceStatus;
@@ -35,11 +37,13 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
             AuthNetwork authNetwork,
             TrackerCache cache,
             LocationRepository repository,
-            SendLocationsUseCase sendLocationsUseCase) {
+            SendLocationsUseCase sendLocationsUseCase,
+            SharedPreferencesModel sharedPreferencesModel) {
         this.authNetwork = authNetwork;
         this.cache = cache;
         this.repository = repository;
         this.sendLocationsUseCase = sendLocationsUseCase;
+        this.sharedPreferencesModel = sharedPreferencesModel;
     }
 
     @Override
@@ -105,6 +109,11 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
                 android.R.string.cancel,
                 R.string.logout_uppercase
         ));
+    }
+
+    @Override
+    public void setSharedPreferencesServiceFlag(boolean flag) {
+        sharedPreferencesModel.setSharedPreferencesServiceFlag(flag);
     }
 
     @Override

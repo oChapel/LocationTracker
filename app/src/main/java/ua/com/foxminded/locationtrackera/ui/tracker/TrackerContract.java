@@ -10,6 +10,8 @@ public class TrackerContract {
         void logout();
 
         void setDialogResponse(int code);
+
+        void setSharedPreferencesServiceFlag(boolean flag);
     }
 
     public interface View extends FragmentContract.View {
