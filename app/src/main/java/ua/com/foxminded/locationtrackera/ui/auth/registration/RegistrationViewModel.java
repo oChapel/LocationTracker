@@ -45,16 +45,15 @@ public class RegistrationViewModel extends MviViewModel<RegistrationScreenState,
                                 return authNetwork.firebaseRegister(creds.username, creds.email, creds.password);
                             } else {
                                 postState(getErrorState(creds));
-                                return Single.just(new Result.Error(new Throwable(AuthErrorConstants.INVALID_USERNAME_EMAIL_PASSWORD)));
+                                return Single.just(new Result.Error<>(new Throwable(AuthErrorConstants.INVALID_USERNAME_EMAIL_PASSWORD)));
                             }
                         }).observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
+                            setState(new RegistrationScreenState.RegistrationProgress(false));
                             if (result.isSuccessful()) {
-                                setState(new RegistrationScreenState.RegistrationProgress(false));
                                 setAction(new RegistrationScreenEffect.RegistrationSuccessful());
                             } else {
                                 if (!result.toString().contains(AuthErrorConstants.INVALID_USERNAME_EMAIL_PASSWORD)) {
-                                    setState(new RegistrationScreenState.RegistrationProgress(false));
                                     setAction(new RegistrationScreenEffect.RegistrationFailed());
                                 }
                             }

@@ -69,6 +69,9 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
                                             setAction(new MapsScreenEffect.ShowToast(R.string.retrieve_failed));
                                         }
                                     }
+                                }, error -> {
+                                    error.printStackTrace();
+                                    setAction(new MapsScreenEffect.ShowToast(R.string.retrieve_failed));
                                 }
                         )
         );

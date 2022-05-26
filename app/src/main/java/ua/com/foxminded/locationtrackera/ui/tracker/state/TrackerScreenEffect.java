@@ -14,10 +14,10 @@ public abstract class TrackerScreenEffect extends AbstractEffect<TrackerContract
 
     public static class ShowDialogFragment extends TrackerScreenEffect {
 
-        private final int argType;
-        private final int message;
-        private final int negativeButton;
-        private final int positiveButton;
+        public final int argType;
+        public final int message;
+        public final int negativeButton;
+        public final int positiveButton;
 
         public ShowDialogFragment(int argType, int message, int negativeButton, int positiveButton) {
             this.argType = argType;

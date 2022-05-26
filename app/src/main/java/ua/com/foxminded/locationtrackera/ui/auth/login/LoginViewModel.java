@@ -44,7 +44,7 @@ public class LoginViewModel extends MviViewModel<LoginScreenState, LoginScreenEf
                             if (creds.isEmailValid() && creds.isPasswordValid()) {
                                 return authNetwork.firebaseLogin(creds.email, creds.password);
                             } else {
-                                return Single.just(new Result.Error(
+                                return Single.just(new Result.Error<>(
                                         new Throwable(AuthErrorConstants.INVALID_EMAIL_PASSWORD + creds.getLoginErrorCode())
                                 ));
                             }

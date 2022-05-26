@@ -44,7 +44,7 @@ public class ResetPasswordViewModel extends MviViewModel<ResetPasswordScreenStat
                             if (creds.isEmailValid()) {
                                 return authNetwork.resetPassword(creds.email);
                             } else {
-                                return Single.just(new Result.Error(new Throwable(AuthErrorConstants.INVALID_EMAIL)));
+                                return Single.just(new Result.Error<>(new Throwable(AuthErrorConstants.INVALID_EMAIL)));
                             }
                         }).observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {

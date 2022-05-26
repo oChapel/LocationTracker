@@ -16,6 +16,6 @@ public class SendLocationsUseCaseImpl implements SendLocationsUseCase {
     @Override
     public Single<Result<Void>> execute() {
         return repository.sendLocations(repository.getAllLocations())
-                .onErrorResumeNext(e -> Single.just(new Result.Error(e)));
+                .onErrorResumeNext(e -> Single.just(new Result.Error<>(e)));
     }
 }

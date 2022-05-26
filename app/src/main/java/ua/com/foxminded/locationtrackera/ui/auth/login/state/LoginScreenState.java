@@ -5,9 +5,9 @@ import ua.com.foxminded.locationtrackera.ui.auth.login.LoginContract;
 
 public abstract class LoginScreenState extends ScreenState<LoginContract.View> {
 
-    private final boolean isProgressVisible;
-    protected final int emailError;
-    protected final int passwordError;
+    public final boolean isProgressVisible;
+    public final int emailError;
+    public final int passwordError;
 
     public LoginScreenState(boolean isProgressVisible) {
         this.isProgressVisible = isProgressVisible;
