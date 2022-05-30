@@ -7,11 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.ui.auth.login.LoginContract;
 
-public class MainActivity extends AppCompatActivity implements LoginContract.Host {
+public class TrackerActivity extends AppCompatActivity implements LoginContract.Host {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_tracker);
     }
 }

@@ -68,6 +68,7 @@ public class LoginViewModelTest {
 
     private void verifyNoMore() {
         verifyNoMoreInteractions(stateObserver, effectObserver);
+        verifyNoMoreInteractions(authNetwork);
     }
 
     private void checkErrorsAndStateCount(int emailError, int passwordError) {
@@ -92,10 +93,24 @@ public class LoginViewModelTest {
     private void checkAuthStateCount() {
         verify(stateObserver, times(2)).onChanged(stateCaptor.capture());
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
+        verify(authNetwork, times(1)).firebaseLogin(anyString(), anyString());
         for (LoginScreenState value : stateCaptor.getAllValues()) {
             assertTrue(value instanceof LoginScreenState.LoginProgress);
         }
         verifyNoMore();
+    }
+
+    private void checkFailedLogin() {
+        model.login("kraken@ukr.net", "123");
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        checkAuthStateCount();
+        assertTrue(actionCaptor.getValue() instanceof LoginScreenEffect.LoginFailed);
     }
 
     @Test
@@ -138,19 +153,17 @@ public class LoginViewModelTest {
     }
 
     @Test
+    public void loginTest_ThrowError() {
+        when(authNetwork.firebaseLogin(anyString(), anyString()))
+                .thenThrow(new RuntimeException("some error"));
+        checkFailedLogin();
+    }
+
+    @Test
     public void loginTest_AuthUnsuccessful() {
         when(authNetwork.firebaseLogin(anyString(), anyString()))
                 .thenReturn(Single.just(new Result.Error<>(new Throwable("some error"))));
-        model.login("kraken@ukr.net", "123");
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        checkAuthStateCount();
-        assertTrue(actionCaptor.getValue() instanceof LoginScreenEffect.LoginFailed);
+        checkFailedLogin();
     }
 
     @Test

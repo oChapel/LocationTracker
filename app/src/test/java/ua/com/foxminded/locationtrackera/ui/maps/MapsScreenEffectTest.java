@@ -49,4 +49,13 @@ public class MapsScreenEffectTest {
         verify(view, times(1)).showToastMessage(100);
         verifyNoMoreInteractions(view);
     }
+
+    @Test
+    public void test_ShowDialogFragmentEffect() {
+        final MapsScreenEffect action = new MapsScreenEffect.ShowDialogFragment();
+        action.visit(view);
+
+        verify(view, times(1)).showDialogFragment();
+        verifyNoMoreInteractions(view);
+    }
 }

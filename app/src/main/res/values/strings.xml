@@ -27,6 +27,8 @@
     <string name="connecting">connecting</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
+    <string name="stop_service">Stop service</string>
+    <string name="start_service">Start service</string>
 
     <!-- Maps Fragment -->
     <string name="timeline">Timeline</string>
@@ -44,6 +46,7 @@
     <!-- Toasts -->
     <string name="successful_registration">Registration is successful</string>
     <string name="registration_failed">Failed to register. Try again</string>
+    <string name="user_already_exists">User with such email already exists</string>
     <string name="login_failed">"Failed to login. Please check your email and password"</string>
     <string name="successful_login">"Welcome back!"</string>
     <string name="reset_failed">"Failed to reset password. Please check your email or internet connection"</string>
@@ -66,6 +69,7 @@
     <string name="failed_to_send_alert_message">Failed to send. Do you want to delete them and logout?</string>
     <string name="logout_uppercase">LOGOUT</string>
     <string name="select_date_range">Select date range</string>
+    <string name="logout_dialog_message">Do you want to logout?</string>
 
     <!-- Notification -->
     <string name="service_running">"Location service is running."</string>

@@ -1,5 +1,6 @@
 package ua.com.foxminded.locationtrackera.ui.tracker;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.TrampolineSchedulerRule;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
@@ -88,6 +90,7 @@ public class TrackerViewModelTest {
 
     private void verifyNoMore() {
         verifyNoMoreInteractions(stateObserver, effectObserver);
+        verifyNoMoreInteractions(authNetwork, cache, repository, sendLocationsUseCase, sharedPreferencesModel);
     }
 
     private void verifyTwoStatesOneAction() {
@@ -95,9 +98,43 @@ public class TrackerViewModelTest {
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
     }
 
+    private void verifyCacheInteractions() {
+        verify(cache, times(1)).setGpsStatusObservable();
+        verify(cache, times(1)).setServiceStatusObservable();
+    }
+
+    private void assertDialogFragmentArgsEqual(
+            int argType, int message, int negativeButton, int positiveButton
+    ) {
+        assertEquals(argType, ((TrackerScreenEffect.ShowDialogFragment) actionCaptor.getValue()).argType);
+        assertEquals(message, ((TrackerScreenEffect.ShowDialogFragment) actionCaptor.getValue()).message);
+        assertEquals(negativeButton, ((TrackerScreenEffect.ShowDialogFragment) actionCaptor.getValue()).negativeButton);
+        assertEquals(positiveButton, ((TrackerScreenEffect.ShowDialogFragment) actionCaptor.getValue()).positiveButton);
+    }
+
+    private void checkResponseFailed() {
+        model.setDialogResponse(0);
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        verifyTwoStatesOneAction();
+        verifyCacheInteractions();
+        verify(sendLocationsUseCase, times(1)).execute();
+        assertTrue(actionCaptor.getValue() instanceof TrackerScreenEffect.ShowDialogFragment);
+        assertDialogFragmentArgsEqual(
+                1, R.string.failed_to_send_alert_message, R.string.cancel, R.string.logout_uppercase
+        );
+        verifyNoMore();
+    }
+
     @Test
     public void test_DoNothing() {
         verify(stateObserver, times(2)).onChanged(stateCaptor.capture());
+        verifyCacheInteractions();
         verifyNoMore();
     }
 
@@ -113,6 +150,9 @@ public class TrackerViewModelTest {
         }
 
         verifyTwoStatesOneAction();
+        verifyCacheInteractions();
+        verify(repository, times(1)).getAllLocations();
+        verify(authNetwork, times(1)).logout();
         assertTrue(actionCaptor.getValue() instanceof TrackerScreenEffect.Logout);
         verifyNoMore();
     }
@@ -131,8 +171,19 @@ public class TrackerViewModelTest {
         }
 
         verifyTwoStatesOneAction();
+        verifyCacheInteractions();
+        verify(repository, times(1)).getAllLocations();
         assertTrue(actionCaptor.getValue() instanceof TrackerScreenEffect.ShowDialogFragment);
+        assertDialogFragmentArgsEqual(
+                0, R.string.db_not_empty_alert_message, R.string.delete_uppercase, R.string.send_uppercase
+        );
         verifyNoMore();
+    }
+
+    @Test
+    public void responseTest_CodeZero_ThrowError() {
+        when(sendLocationsUseCase.execute()).thenThrow(new RuntimeException("some error"));
+        checkResponseFailed();
     }
 
     @Test
@@ -149,6 +200,10 @@ public class TrackerViewModelTest {
         }
 
         verifyTwoStatesOneAction();
+        verifyCacheInteractions();
+        verify(sendLocationsUseCase, times(1)).execute();
+        verify(repository, times(1)).deleteLocationsFromDb();
+        verify(authNetwork, times(1)).logout();
         assertTrue(actionCaptor.getValue() instanceof TrackerScreenEffect.Logout);
         verifyNoMore();
     }
@@ -157,16 +212,29 @@ public class TrackerViewModelTest {
     public void responseTest_CodeZero_Failure() {
         when(sendLocationsUseCase.execute())
                 .thenReturn(Single.just(new Result.Error<>(new Throwable("some error"))));
-        model.setDialogResponse(0);
+        checkResponseFailed();
+    }
 
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    @Test
+    public void setSharedPreferencesFlagTest() {
+        model.setSharedPreferencesServiceFlag(true);
+
+        verifyCacheInteractions();
+        verify(stateObserver, times(2)).onChanged(stateCaptor.capture());
+        verify(sharedPreferencesModel, times(1)).setSharedPreferencesServiceFlag(true);
+        verifyNoMore();
+    }
+
+    @Test
+    public void onBackPressedTest() {
+        model.onBackPressed();
 
         verifyTwoStatesOneAction();
+        verifyCacheInteractions();
         assertTrue(actionCaptor.getValue() instanceof TrackerScreenEffect.ShowDialogFragment);
+        assertDialogFragmentArgsEqual(
+                3, R.string.logout_dialog_message, R.string.cancel, R.string.logout
+        );
         verifyNoMore();
     }
 }

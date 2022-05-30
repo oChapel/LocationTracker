@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +38,7 @@ import ua.com.foxminded.locationtrackera.databinding.FragmentMapsBinding;
 import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 import ua.com.foxminded.locationtrackera.mvi.HostedFragment;
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
+import ua.com.foxminded.locationtrackera.ui.maps.dialog.MapsDialogFragment;
 import ua.com.foxminded.locationtrackera.ui.maps.state.MapsScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.maps.state.MapsScreenState;
 
@@ -82,6 +84,14 @@ public class MapsFragment extends HostedFragment<
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
+        final OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                getModel().onBackPressed();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
     }
 
     @Override
@@ -129,6 +139,16 @@ public class MapsFragment extends HostedFragment<
     @Override
     public void showToastMessage(int resId) {
         Toast.makeText(getContext(), resId, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showDialogFragment() {
+        final MapsDialogFragment dialog = new MapsDialogFragment();
+        dialog.show(getChildFragmentManager(), "logout_dialog");
+    }
+
+    public void doPositiveButton() {
+        getModel().logout();
     }
 
     private MaterialDatePicker<Long> getDatePicker(int code, int resId) {

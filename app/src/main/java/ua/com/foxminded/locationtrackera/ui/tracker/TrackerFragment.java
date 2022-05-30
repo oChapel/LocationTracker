@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -43,7 +44,7 @@ public class TrackerFragment extends HostedFragment<
         TrackerScreenState,
         TrackerScreenEffect,
         TrackerContract.ViewModel,
-        TrackerContract.Host> implements TrackerContract.View {
+        TrackerContract.Host> implements TrackerContract.View, View.OnClickListener {
 
     private static final int GOOGLE_API_AVAILABILITY_REQUEST_CODE = 101;
 
@@ -83,6 +84,16 @@ public class TrackerFragment extends HostedFragment<
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        final OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                getModel().onBackPressed();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
+
+        binding.trackerStartStopBtn.setOnClickListener(this);
         checkGoogleServicesAvailability();
     }
 
@@ -121,11 +132,12 @@ public class TrackerFragment extends HostedFragment<
         if (isEnabled) {
             binding.serviceStatus.setText(R.string.enabled);
             binding.serviceStatus.setTextColor(getResources().getColor(R.color.green_500));
+            binding.trackerStartStopBtn.setText(R.string.stop_service);
         } else {
             binding.serviceStatus.setText(R.string.disabled);
             binding.serviceStatus.setTextColor(getResources().getColor(R.color.red_500));
+            binding.trackerStartStopBtn.setText(R.string.start_service);
         }
-
     }
 
     @Override
@@ -135,8 +147,23 @@ public class TrackerFragment extends HostedFragment<
         dialog.show(getChildFragmentManager(), "logout_dialog");
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view == binding.trackerStartStopBtn) {
+            if (isLocationServiceRunning()) {
+                stopService();
+            } else {
+                startService();
+            }
+        }
+    }
+
     public void doPositiveButton(int code) {
-        getModel().setDialogResponse(code);
+        if (code == 3) {
+            getModel().logout();
+        } else {
+            getModel().setDialogResponse(code);
+        }
     }
 
     public void doNegativeButton(int code) {

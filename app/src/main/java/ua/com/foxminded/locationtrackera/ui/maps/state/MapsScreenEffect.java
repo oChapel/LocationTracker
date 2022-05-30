@@ -40,4 +40,12 @@ public abstract class MapsScreenEffect extends AbstractEffect<MapsContract.View>
             screen.showToastMessage(resId);
         }
     }
+
+    public static class ShowDialogFragment extends MapsScreenEffect{
+
+        @Override
+        public void handle(MapsContract.View screen) {
+            screen.showDialogFragment();
+        }
+    }
 }

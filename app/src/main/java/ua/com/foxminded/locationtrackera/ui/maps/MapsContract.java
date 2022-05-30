@@ -15,6 +15,8 @@ public class MapsContract {
         void retrieveLocationsByDate(double startDate, double endDate);
 
         void retrieveDefaultLocations();
+
+        void onBackPressed();
     }
 
     public interface View extends FragmentContract.View {
@@ -23,6 +25,8 @@ public class MapsContract {
         void placeLocationMarkers(List<UserLocation> locationList);
 
         void showToastMessage(int resId);
+
+        void showDialogFragment();
     }
 
     public interface Host extends FragmentContract.Host {

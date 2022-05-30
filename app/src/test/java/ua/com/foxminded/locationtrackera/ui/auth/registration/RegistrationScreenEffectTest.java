@@ -29,11 +29,11 @@ public class RegistrationScreenEffectTest {
 
     @Test
     public void test_RegistrationFailedEffect() {
-        final RegistrationScreenEffect action = new RegistrationScreenEffect.RegistrationFailed();
+        final RegistrationScreenEffect action = new RegistrationScreenEffect.RegistrationFailed(100);
 
         action.visit(view);
 
-        verify(view, times(1)).showFailureToastMessage();
+        verify(view, times(1)).showFailureToastMessage(100);
         verifyNoMoreInteractions(view);
     }
 }

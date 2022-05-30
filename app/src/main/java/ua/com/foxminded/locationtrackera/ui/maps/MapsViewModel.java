@@ -85,9 +85,14 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
     @Override
     public void retrieveDefaultLocations() {
         retrieveLocationsByDate(
-                System.currentTimeMillis() - DEFAULT_LOCATIONS_RETRIEVING_TIME_HOURS * 3600,
+                System.currentTimeMillis() - DEFAULT_LOCATIONS_RETRIEVING_TIME_HOURS * 3600000,
                 System.currentTimeMillis()
         );
+    }
+
+    @Override
+    public void onBackPressed() {
+        setAction(new MapsScreenEffect.ShowDialogFragment());
     }
 
     @Override

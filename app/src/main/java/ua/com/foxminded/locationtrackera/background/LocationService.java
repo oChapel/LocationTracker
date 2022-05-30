@@ -7,6 +7,7 @@ import android.os.Build;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.LifecycleService;
 
 import javax.inject.Inject;
@@ -23,7 +24,6 @@ public class LocationService extends LifecycleService {
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    private NotificationManager notificationManager;
     private NotificationCompat.Builder notification;
 
     @Inject
@@ -47,6 +47,7 @@ public class LocationService extends LifecycleService {
     }
 
     private void setGpsStatusObserver() {
+        final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         compositeDisposable.add(
                 presenter.getGpsStatusObservable().subscribe(status -> {
                     notification.setContentText(getString(R.string.gps_status_notification, getString(status)));
@@ -59,7 +60,7 @@ public class LocationService extends LifecycleService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID, "Channel_1", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager = getSystemService(NotificationManager.class);
+            final NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
         notification = new NotificationCompat.Builder(this, CHANNEL_ID)

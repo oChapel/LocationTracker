@@ -14,13 +14,13 @@ public class MapsRegistrationFragment extends RegistrationFragment {
             super.onClick(view);
         } else if (view == binding.registerLogInTxt) {
             Navigation.findNavController(binding.getRoot())
-                    .navigate(R.id.nav_from_mapsWelcomeFragment_to_mapsLoginFragment);
+                    .navigate(R.id.nav_from_mapsRegistrationFragment_to_mapsLoginFragment);
         }
     }
 
     @Override
     public void proceedToNextScreen() {
         Navigation.findNavController(binding.getRoot())
-                .navigate(R.id.nav_from_mapsWelcomeFragment_to_mapsLoginFragment);
+                .navigate(R.id.nav_from_mapsRegistrationFragment_to_mapsFragment);
     }
 }

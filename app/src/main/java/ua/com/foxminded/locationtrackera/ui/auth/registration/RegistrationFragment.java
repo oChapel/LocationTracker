@@ -119,12 +119,12 @@ public class RegistrationFragment extends HostedFragment<
     public void proceedToNextScreen() {
         Toast.makeText(getContext(), R.string.successful_registration, Toast.LENGTH_SHORT).show();
         Navigation.findNavController(binding.getRoot())
-                .navigate(R.id.nav_from_registrationFragment_to_loginFragment);
+                .navigate(R.id.nav_from_registrationFragment_to_trackerFragment);
     }
 
     @Override
-    public void showFailureToastMessage() {
-        Toast.makeText(getContext(), R.string.registration_failed, Toast.LENGTH_LONG).show();
+    public void showFailureToastMessage(int resId) {
+        Toast.makeText(getContext(), resId, Toast.LENGTH_LONG).show();
     }
 
     private void setUpProgressBarVisibility(boolean isVisible) {

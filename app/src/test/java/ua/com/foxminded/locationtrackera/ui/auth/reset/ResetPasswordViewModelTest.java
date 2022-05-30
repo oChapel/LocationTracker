@@ -67,15 +67,33 @@ public class ResetPasswordViewModelTest {
 
     private void verifyNoMore() {
         verifyNoMoreInteractions(stateObserver, effectObserver);
+        verifyNoMoreInteractions(authNetwork);
     }
 
     private void checkResetStateCount() {
         verify(stateObserver, times(2)).onChanged(stateCaptor.capture());
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
+        verify(authNetwork, times(1)).resetPassword(anyString());
         for (ResetPasswordScreenState value : stateCaptor.getAllValues()) {
             assertTrue(value instanceof ResetPasswordScreenState.ResetPasswordProgress);
         }
         verifyNoMore();
+    }
+
+    private void checkFailedResetPassword() {
+        model.resetPassword("kraken@ukr.net");
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        checkResetStateCount();
+        assertEquals(
+                R.string.reset_failed,
+                ((ResetPasswordScreenEffect.ResetPasswordShowStatus) actionCaptor.getValue()).idStringResource
+        );
     }
 
     @Test
@@ -105,22 +123,17 @@ public class ResetPasswordViewModelTest {
     }
 
     @Test
+    public void resetTest_ThrowError() {
+        when(authNetwork.resetPassword(anyString()))
+                .thenThrow(new RuntimeException("some error"));
+        checkFailedResetPassword();
+    }
+
+    @Test
     public void resetTest_ResetUnsuccessful() {
         when(authNetwork.resetPassword(anyString()))
                 .thenReturn(Single.just(new Result.Error<>(new Throwable("some error"))));
-        model.resetPassword("kraken@ukr.net");
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        checkResetStateCount();
-        assertEquals(
-                R.string.reset_failed,
-                ((ResetPasswordScreenEffect.ResetPasswordShowStatus) actionCaptor.getValue()).idStringResource
-        );
+        checkFailedResetPassword();
     }
 
     @Test

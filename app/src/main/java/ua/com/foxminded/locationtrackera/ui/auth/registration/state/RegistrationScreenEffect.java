@@ -13,9 +13,15 @@ public abstract class RegistrationScreenEffect extends AbstractEffect<Registrati
     }
 
     public static class RegistrationFailed extends RegistrationScreenEffect {
+        public final int stringResId;
+
+        public RegistrationFailed(int stringResId) {
+            this.stringResId = stringResId;
+        }
+
         @Override
         public void handle(RegistrationContract.View screen) {
-            screen.showFailureToastMessage();
+            screen.showFailureToastMessage(stringResId);
         }
     }
 }

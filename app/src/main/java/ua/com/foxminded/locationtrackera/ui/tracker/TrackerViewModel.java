@@ -106,7 +106,7 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
         postAction(new TrackerScreenEffect.ShowDialogFragment(
                 1,
                 R.string.failed_to_send_alert_message,
-                android.R.string.cancel,
+                R.string.cancel,
                 R.string.logout_uppercase
         ));
     }
@@ -114,6 +114,16 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
     @Override
     public void setSharedPreferencesServiceFlag(boolean flag) {
         sharedPreferencesModel.setSharedPreferencesServiceFlag(flag);
+    }
+
+    @Override
+    public void onBackPressed() {
+        setAction(new TrackerScreenEffect.ShowDialogFragment(
+                3,
+                R.string.logout_dialog_message,
+                R.string.cancel,
+                R.string.logout
+        ));
     }
 
     @Override

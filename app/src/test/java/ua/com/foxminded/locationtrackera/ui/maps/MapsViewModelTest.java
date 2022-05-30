@@ -73,6 +73,23 @@ public class MapsViewModelTest {
 
     private void verifyNoMore() {
         verifyNoMoreInteractions(stateObserver, effectObserver);
+        verifyNoMoreInteractions(authNetwork, repository);
+    }
+
+    private void checkRetrievingFailed() {
+        model.retrieveLocationsByDate(100, 101);
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
+        verify(repository, times(1)).retrieveLocations(anyDouble(), anyDouble());
+        assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.ShowToast);
+        assertEquals(R.string.retrieve_failed, ((MapsScreenEffect.ShowToast) actionCaptor.getValue()).resId);
+        verifyNoMore();
     }
 
     @Test
@@ -92,6 +109,13 @@ public class MapsViewModelTest {
     }
 
     @Test
+    public void retrieveLocationsTest_ThrowError() {
+        when(repository.retrieveLocations(anyDouble(), anyDouble()))
+                .thenThrow(new RuntimeException("some error"));
+        checkRetrievingFailed();
+    }
+
+    @Test
     public void retrieveLocationsTest_NoLocations() {
         when(repository.retrieveLocations(anyDouble(), anyDouble()))
                 .thenReturn(Single.just(new Result.Success<>(new ArrayList<>())));
@@ -104,10 +128,33 @@ public class MapsViewModelTest {
         }
 
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
+        verify(repository, times(1)).retrieveLocations(anyDouble(), anyDouble());
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.ShowToast);
         assertEquals(R.string.no_locations_in_current_period, ((MapsScreenEffect.ShowToast) actionCaptor.getValue()).resId);
         verifyNoMore();
     }
+
+    @Test
+    public void retrieveLocationsTest_DefaultTimePeriod() {
+        final List<UserLocation> locationList = new ArrayList<>();
+        locationList.add(mock(UserLocation.class));
+        when(repository.retrieveLocations(anyDouble(), anyDouble()))
+                .thenReturn(Single.just(new Result.Success<>(locationList)));
+        model.retrieveDefaultLocations();
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
+        verify(repository, times(1)).retrieveLocations(anyDouble(), anyDouble());
+        assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.PlaceMarkers);
+        assertEquals(locationList, ((MapsScreenEffect.PlaceMarkers) actionCaptor.getValue()).locationList);
+        verifyNoMore();
+    }
+
 
     @Test
     public void retrieveLocationsTest_Success() {
@@ -124,6 +171,7 @@ public class MapsViewModelTest {
         }
 
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
+        verify(repository, times(1)).retrieveLocations(anyDouble(), anyDouble());
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.PlaceMarkers);
         assertEquals(locationList, ((MapsScreenEffect.PlaceMarkers) actionCaptor.getValue()).locationList);
         verifyNoMore();
@@ -133,18 +181,7 @@ public class MapsViewModelTest {
     public void retrieveLocationsTest_Failure() {
         when(repository.retrieveLocations(anyDouble(), anyDouble()))
                 .thenReturn(Single.just(new Result.Error<>(new Throwable("some error"))));
-        model.retrieveLocationsByDate(100, 101);
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
-        assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.ShowToast);
-        assertEquals(R.string.retrieve_failed, ((MapsScreenEffect.ShowToast) actionCaptor.getValue()).resId);
-        verifyNoMore();
+        checkRetrievingFailed();
     }
 
     @Test
@@ -152,7 +189,17 @@ public class MapsViewModelTest {
         model.logout();
 
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
+        verify(authNetwork, times(1)).logout();
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.Logout);
+        verifyNoMore();
+    }
+
+    @Test
+    public void onBackPressedTest() {
+        model.onBackPressed();
+
+        verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
+        assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.ShowDialogFragment);
         verifyNoMore();
     }
 }
