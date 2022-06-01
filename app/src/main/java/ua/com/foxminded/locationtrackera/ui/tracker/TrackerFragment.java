@@ -24,7 +24,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -38,6 +37,7 @@ import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
 import ua.com.foxminded.locationtrackera.ui.tracker.dialog.TrackerDialogFragment;
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenState;
+import ua.com.foxminded.locationtrackera.util.SafeNavigation;
 
 public class TrackerFragment extends HostedFragment<
         TrackerContract.View,
@@ -109,8 +109,8 @@ public class TrackerFragment extends HostedFragment<
     public void proceedToSplashScreen() {
         stopService();
         Toast.makeText(getContext(), R.string.logged_out, Toast.LENGTH_SHORT).show();
-        Navigation.findNavController(binding.getRoot())
-                .navigate(R.id.nav_from_trackerFragment_to_welcomeFragment);
+        SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+                R.id.nav_from_trackerFragment_to_welcomeFragment);
     }
 
     @Override

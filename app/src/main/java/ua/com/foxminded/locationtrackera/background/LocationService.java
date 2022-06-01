@@ -66,7 +66,7 @@ public class LocationService extends LifecycleService {
         notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(getString(R.string.service_running))
-                .setSmallIcon(R.drawable.icon);
+                .setSmallIcon(R.drawable.icon_a);
         return notification;
     }
 

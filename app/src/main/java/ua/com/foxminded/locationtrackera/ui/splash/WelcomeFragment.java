@@ -8,17 +8,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.FragmentWelcomeBinding;
+import ua.com.foxminded.locationtrackera.util.SafeNavigation;
 
 public class WelcomeFragment extends Fragment implements View.OnClickListener {
 
     protected FragmentWelcomeBinding binding;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable  ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable  Bundle savedInstanceState) {
         binding = FragmentWelcomeBinding.inflate(inflater, container, false);
         return binding.getRoot();
@@ -35,11 +35,11 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (view == binding.welcomeRegisterBtn) {
-            Navigation.findNavController(binding.getRoot())
-                    .navigate(R.id.nav_from_welcomeFragment_to_registrationFragment);
+            SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+                    R.id.nav_from_welcomeFragment_to_registrationFragment);
         } else if (view == binding.welcomeLoginTxt) {
-            Navigation.findNavController(binding.getRoot())
-                    .navigate(R.id.nav_from_welcomeFragment_to_loginFragment);
+            SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+                    R.id.nav_from_welcomeFragment_to_loginFragment);
         }
     }
 

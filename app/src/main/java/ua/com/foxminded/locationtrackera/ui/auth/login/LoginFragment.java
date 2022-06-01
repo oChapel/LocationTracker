@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.FragmentLoginBinding;
@@ -18,6 +17,7 @@ import ua.com.foxminded.locationtrackera.mvi.HostedFragment;
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
 import ua.com.foxminded.locationtrackera.ui.auth.login.state.LoginScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.auth.login.state.LoginScreenState;
+import ua.com.foxminded.locationtrackera.util.SafeNavigation;
 import ua.com.foxminded.locationtrackera.util.Utils;
 
 public class LoginFragment extends HostedFragment<
@@ -60,11 +60,11 @@ public class LoginFragment extends HostedFragment<
                     Utils.getTextFromEditText(binding.loginEditTextPassword)
             );
         } else if (view == binding.signUpTxt) {
-            Navigation.findNavController(binding.getRoot())
-                    .navigate(R.id.nav_from_loginFragment_to_registrationFragment);
+            SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+                    R.id.nav_from_loginFragment_to_registrationFragment);
         } else if (view == binding.forgotPasswordTxt) {
-            Navigation.findNavController(binding.getRoot())
-                    .navigate(R.id.nav_from_loginFragment_to_resetPasswordFragment);
+            SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+                    R.id.nav_from_loginFragment_to_resetPasswordFragment);
         }
     }
 
@@ -76,8 +76,8 @@ public class LoginFragment extends HostedFragment<
     @Override
     public void proceedToNextScreen() {
         Toast.makeText(getContext(), R.string.successful_login, Toast.LENGTH_SHORT).show();
-        Navigation.findNavController(binding.getRoot())
-                .navigate(R.id.nav_from_loginFragment_to_trackerFragment);
+        SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+                R.id.nav_from_loginFragment_to_trackerFragment);
     }
 
     @Override

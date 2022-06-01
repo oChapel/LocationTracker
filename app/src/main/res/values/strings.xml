@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">Location Tracker A</string>
-    <string name="app_name_short">Location Tracker</string>
+    <string name="app_name">Location Tracker</string>
+    <string name="app_name_a">Location Tracker A</string>
+    <string name="app_name_b">Location Tracker B</string>
 
     <string name="login_uppercase">LOG IN</string>
     <string name="login_underlined"><u>Log in</u></string>

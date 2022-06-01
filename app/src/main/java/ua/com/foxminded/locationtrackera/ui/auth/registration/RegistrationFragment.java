@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.databinding.FragmentRegistrationBinding;
@@ -20,6 +19,7 @@ import ua.com.foxminded.locationtrackera.mvi.HostedFragment;
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
 import ua.com.foxminded.locationtrackera.ui.auth.registration.state.RegistrationScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.auth.registration.state.RegistrationScreenState;
+import ua.com.foxminded.locationtrackera.util.SafeNavigation;
 import ua.com.foxminded.locationtrackera.util.Utils;
 
 public class RegistrationFragment extends HostedFragment<
@@ -86,8 +86,8 @@ public class RegistrationFragment extends HostedFragment<
                     Utils.getTextFromEditText(binding.registerEditTextPassword)
             );
         } else if (view == binding.registerLogInTxt) {
-            Navigation.findNavController(binding.getRoot())
-                    .navigate(R.id.nav_from_registrationFragment_to_loginFragment);
+            SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+                    R.id.nav_from_registrationFragment_to_loginFragment);
         }
     }
 
@@ -118,8 +118,8 @@ public class RegistrationFragment extends HostedFragment<
     @Override
     public void proceedToNextScreen() {
         Toast.makeText(getContext(), R.string.successful_registration, Toast.LENGTH_SHORT).show();
-        Navigation.findNavController(binding.getRoot())
-                .navigate(R.id.nav_from_registrationFragment_to_trackerFragment);
+        SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+                R.id.nav_from_registrationFragment_to_trackerFragment);
     }
 
     @Override
