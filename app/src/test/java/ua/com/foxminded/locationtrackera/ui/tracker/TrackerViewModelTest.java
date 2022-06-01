@@ -224,17 +224,4 @@ public class TrackerViewModelTest {
         verify(sharedPreferencesModel, times(1)).setSharedPreferencesServiceFlag(true);
         verifyNoMore();
     }
-
-    @Test
-    public void onBackPressedTest() {
-        model.onBackPressed();
-
-        verifyTwoStatesOneAction();
-        verifyCacheInteractions();
-        assertTrue(actionCaptor.getValue() instanceof TrackerScreenEffect.ShowDialogFragment);
-        assertDialogFragmentArgsEqual(
-                3, R.string.logout_dialog_message, R.string.cancel, R.string.logout
-        );
-        verifyNoMore();
-    }
 }

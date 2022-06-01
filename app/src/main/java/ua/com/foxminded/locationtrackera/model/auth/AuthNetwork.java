@@ -11,5 +11,7 @@ public interface AuthNetwork {
 
     Single<Result<Void>> resetPassword(String email);
 
+    boolean isUserLoggedIn();
+
     void logout();
 }

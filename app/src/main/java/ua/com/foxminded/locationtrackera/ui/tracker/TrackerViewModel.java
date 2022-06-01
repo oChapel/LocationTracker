@@ -49,7 +49,7 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
     @Override
     public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
         super.onStateChanged(source, event);
-        if (event == Lifecycle.Event.ON_CREATE) {
+        if (event == Lifecycle.Event.ON_RESUME) {
             setUpTrackerChain();
         }
     }
@@ -114,16 +114,6 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
     @Override
     public void setSharedPreferencesServiceFlag(boolean flag) {
         sharedPreferencesModel.setSharedPreferencesServiceFlag(flag);
-    }
-
-    @Override
-    public void onBackPressed() {
-        setAction(new TrackerScreenEffect.ShowDialogFragment(
-                3,
-                R.string.logout_dialog_message,
-                R.string.cancel,
-                R.string.logout
-        ));
     }
 
     @Override

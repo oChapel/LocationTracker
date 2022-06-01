@@ -193,13 +193,4 @@ public class MapsViewModelTest {
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.Logout);
         verifyNoMore();
     }
-
-    @Test
-    public void onBackPressedTest() {
-        model.onBackPressed();
-
-        verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
-        assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.ShowDialogFragment);
-        verifyNoMore();
-    }
 }

@@ -37,7 +37,7 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
     @Override
     public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
         super.onStateChanged(source, event);
-        if (event == Lifecycle.Event.ON_CREATE) {
+        if (event == Lifecycle.Event.ON_RESUME) {
             setUpMapsChain();
         }
     }
@@ -88,11 +88,6 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
                 System.currentTimeMillis() - DEFAULT_LOCATIONS_RETRIEVING_TIME_HOURS * 3600000,
                 System.currentTimeMillis()
         );
-    }
-
-    @Override
-    public void onBackPressed() {
-        setAction(new MapsScreenEffect.ShowDialogFragment());
     }
 
     @Override

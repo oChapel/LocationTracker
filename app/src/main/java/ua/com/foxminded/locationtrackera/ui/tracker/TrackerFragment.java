@@ -88,7 +88,7 @@ public class TrackerFragment extends HostedFragment<
         final OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                getModel().onBackPressed();
+                requireActivity().moveTaskToBack(true);
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
@@ -159,11 +159,7 @@ public class TrackerFragment extends HostedFragment<
     }
 
     public void doPositiveButton(int code) {
-        if (code == 3) {
-            getModel().logout();
-        } else {
-            getModel().setDialogResponse(code);
-        }
+        getModel().setDialogResponse(code);
     }
 
     public void doNegativeButton(int code) {

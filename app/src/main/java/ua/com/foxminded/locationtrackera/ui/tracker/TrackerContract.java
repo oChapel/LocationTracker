@@ -12,8 +12,6 @@ public class TrackerContract {
         void setDialogResponse(int code);
 
         void setSharedPreferencesServiceFlag(boolean flag);
-
-        void onBackPressed();
     }
 
     public interface View extends FragmentContract.View {
