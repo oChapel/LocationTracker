@@ -3,6 +3,7 @@
     package="ua.com.foxminded.locationtrackera">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
@@ -40,6 +41,7 @@
             android:name=".ui.MapsActivity"
             android:exported="true"
             android:icon="@drawable/icon_b"
+            android:taskAffinity="ua.com.foxminded.locationtrackera.b"
             android:label="@string/app_name_b">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,6 +53,7 @@
             android:name=".ui.TrackerActivity"
             android:exported="true"
             android:icon="@drawable/icon_a"
+            android:taskAffinity="ua.com.foxminded.locationtrackera.a"
             android:label="@string/app_name_a">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
