@@ -86,7 +86,7 @@ public class RegistrationFragment extends HostedFragment<
                     Utils.getTextFromEditText(binding.registerEditTextPassword)
             );
         } else if (view == binding.registerLogInTxt) {
-            SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+            SafeNavigation.navigate(binding.getRoot(), R.id.registrationFragment,
                     R.id.nav_from_registrationFragment_to_loginFragment);
         }
     }
@@ -118,7 +118,7 @@ public class RegistrationFragment extends HostedFragment<
     @Override
     public void proceedToNextScreen() {
         Toast.makeText(getContext(), R.string.successful_registration, Toast.LENGTH_SHORT).show();
-        SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+        SafeNavigation.navigate(binding.getRoot(), R.id.registrationFragment,
                 R.id.nav_from_registrationFragment_to_trackerFragment);
     }
 

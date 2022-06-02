@@ -35,10 +35,10 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (view == binding.welcomeRegisterBtn) {
-            SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+            SafeNavigation.navigate(binding.getRoot(), R.id.welcomeFragment,
                     R.id.nav_from_welcomeFragment_to_registrationFragment);
         } else if (view == binding.welcomeLoginTxt) {
-            SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+            SafeNavigation.navigate(binding.getRoot(), R.id.welcomeFragment,
                     R.id.nav_from_welcomeFragment_to_loginFragment);
         }
     }

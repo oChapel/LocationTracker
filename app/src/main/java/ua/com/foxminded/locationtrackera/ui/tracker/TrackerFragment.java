@@ -109,7 +109,7 @@ public class TrackerFragment extends HostedFragment<
     public void proceedToSplashScreen() {
         stopService();
         Toast.makeText(getContext(), R.string.logged_out, Toast.LENGTH_SHORT).show();
-        SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+        SafeNavigation.navigate(binding.getRoot(), R.id.trackerFragment,
                 R.id.nav_from_trackerFragment_to_welcomeFragment);
     }
 

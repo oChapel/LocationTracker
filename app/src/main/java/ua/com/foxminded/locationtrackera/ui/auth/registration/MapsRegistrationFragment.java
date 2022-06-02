@@ -2,9 +2,8 @@ package ua.com.foxminded.locationtrackera.ui.auth.registration;
 
 import android.view.View;
 
-import androidx.navigation.Navigation;
-
 import ua.com.foxminded.locationtrackera.R;
+import ua.com.foxminded.locationtrackera.util.SafeNavigation;
 
 public class MapsRegistrationFragment extends RegistrationFragment {
 
@@ -13,14 +12,14 @@ public class MapsRegistrationFragment extends RegistrationFragment {
         if (view == binding.registerBtn) {
             super.onClick(view);
         } else if (view == binding.registerLogInTxt) {
-            Navigation.findNavController(binding.getRoot())
-                    .navigate(R.id.nav_from_mapsRegistrationFragment_to_mapsLoginFragment);
+            SafeNavigation.navigate(binding.getRoot(), R.id.mapsRegistrationFragment,
+                    R.id.nav_from_mapsRegistrationFragment_to_mapsLoginFragment);
         }
     }
 
     @Override
     public void proceedToNextScreen() {
-        Navigation.findNavController(binding.getRoot())
-                .navigate(R.id.nav_from_mapsRegistrationFragment_to_mapsFragment);
+        SafeNavigation.navigate(binding.getRoot(), R.id.mapsRegistrationFragment,
+                R.id.nav_from_mapsRegistrationFragment_to_mapsFragment);
     }
 }

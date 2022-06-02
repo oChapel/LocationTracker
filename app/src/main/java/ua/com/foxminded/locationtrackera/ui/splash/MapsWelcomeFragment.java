@@ -10,10 +10,10 @@ public class MapsWelcomeFragment extends WelcomeFragment {
     @Override
     public void onClick(View view) {
         if (view == binding.welcomeRegisterBtn) {
-            SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+            SafeNavigation.navigate(binding.getRoot(), R.id.mapsWelcomeFragment,
                     R.id.nav_from_mapsWelcomeFragment_to_mapsRegistrationFragment);
         } else if (view == binding.welcomeLoginTxt) {
-            SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+            SafeNavigation.navigate(binding.getRoot(), R.id.mapsWelcomeFragment,
                     R.id.nav_from_mapsWelcomeFragment_to_mapsLoginFragment);
         }
     }

@@ -112,7 +112,7 @@ public class MapsFragment extends HostedFragment<
     @Override
     public void proceedToSplashScreen() {
         Toast.makeText(getContext(), R.string.logged_out, Toast.LENGTH_SHORT).show();
-        SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+        SafeNavigation.navigate(binding.getRoot(), R.id.mapsFragment,
                 R.id.nav_from_mapsFragment_to_mapsWelcomeFragment);
     }
 

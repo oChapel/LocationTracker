@@ -13,10 +13,10 @@ public class MapsLoginFragment extends LoginFragment {
         if (view == binding.loginBtn) {
             super.onClick(view);
         } else if (view == binding.signUpTxt) {
-            SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+            SafeNavigation.navigate(binding.getRoot(), R.id.mapsLoginFragment,
                     R.id.nav_from_mapsLoginFragment_to_mapsRegistrationFragment);
         } else if (view == binding.forgotPasswordTxt) {
-            SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+            SafeNavigation.navigate(binding.getRoot(), R.id.mapsLoginFragment,
                     R.id.nav_from_mapsLoginFragment_to_resetPasswordFragment);
         }
     }
@@ -24,7 +24,7 @@ public class MapsLoginFragment extends LoginFragment {
     @Override
     public void proceedToNextScreen() {
         Toast.makeText(requireContext(), R.string.successful_login, Toast.LENGTH_SHORT).show();
-        SafeNavigation.navigate(binding.getRoot(), this.getClass().getName(),
+        SafeNavigation.navigate(binding.getRoot(), R.id.mapsLoginFragment,
                 R.id.nav_from_mapsLoginFragment_to_mapsFragment);
     }
 }
