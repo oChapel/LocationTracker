@@ -10,9 +10,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.location.Location;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
@@ -23,6 +20,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -247,7 +247,7 @@ public class LocationServicePresenterTest {
 
     @Test
     public void gpsStatusObservableTest_StatusConnecting() {
-        checkGpsStatusObservableValue(GpsStatusConstants.CONNECTING, R.string.connecting);
+        checkGpsStatusObservableValue(GpsStatusConstants.ACTIVE, R.string.connecting);
     }
 
     @Test

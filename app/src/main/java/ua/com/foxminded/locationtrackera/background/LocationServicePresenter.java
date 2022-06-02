@@ -1,8 +1,8 @@
 package ua.com.foxminded.locationtrackera.background;
 
-import java.util.Calendar;
-
 import android.location.Location;
+
+import java.util.Calendar;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -87,7 +87,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
     @Override
     public Observable<Integer> getGpsStatusObservable() {
         return gpsServices.getGpsStatusObservable().map(status -> {
-            if (status == GpsStatusConstants.CONNECTING) {
+            if (status == GpsStatusConstants.ACTIVE) {
                 return R.string.connecting;
             } else if (status == GpsStatusConstants.FIX_ACQUIRED) {
                 return R.string.enabled;
