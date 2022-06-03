@@ -25,7 +25,7 @@
     <!-- Tracker Fragment -->
     <string name="gps_status">Gps status:</string>
     <string name="service_status">Service status:</string>
-    <string name="connecting">connecting</string>
+    <string name="connecting">active</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
     <string name="stop_service">Stop service</string>

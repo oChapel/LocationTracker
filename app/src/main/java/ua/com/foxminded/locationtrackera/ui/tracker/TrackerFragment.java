@@ -125,7 +125,7 @@ public class TrackerFragment extends HostedFragment<
         } else if (gpsStatus == GpsStatusConstants.FIX_NOT_ACQUIRED) {
             binding.gpsStatus.setText(R.string.disabled);
             binding.gpsStatus.setTextColor(getResources().getColor(R.color.red_500));
-        } else if (gpsStatus == GpsStatusConstants.CONNECTING) {
+        } else if (gpsStatus == GpsStatusConstants.ACTIVE) {
             binding.gpsStatus.setText(R.string.connecting);
             binding.gpsStatus.setTextColor(getResources().getColor(R.color.yellow_700));
         }

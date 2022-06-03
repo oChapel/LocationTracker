@@ -81,7 +81,7 @@ public class DefaultGpsModel implements GpsSource {
             gnssStatusCallback = new GnssStatus.Callback() {
                 @Override
                 public void onStarted() {
-                    gpsStatusSupplier.onNext(GpsStatusConstants.CONNECTING);
+                    gpsStatusSupplier.onNext(GpsStatusConstants.ACTIVE);
                 }
 
                 @Override
@@ -98,9 +98,12 @@ public class DefaultGpsModel implements GpsSource {
         } else {
             gpsStatusListener = event -> {
                 switch (event) {
-                    case GpsStatus.GPS_EVENT_STARTED: gpsStatusSupplier.onNext(GpsStatusConstants.CONNECTING);
-                    case GpsStatus.GPS_EVENT_FIRST_FIX: gpsStatusSupplier.onNext(GpsStatusConstants.FIX_ACQUIRED);
-                    case GpsStatus.GPS_EVENT_STOPPED: gpsStatusSupplier.onNext(GpsStatusConstants.FIX_NOT_ACQUIRED);
+                    case GpsStatus.GPS_EVENT_STARTED:
+                        gpsStatusSupplier.onNext(GpsStatusConstants.ACTIVE);
+                    case GpsStatus.GPS_EVENT_FIRST_FIX:
+                        gpsStatusSupplier.onNext(GpsStatusConstants.FIX_ACQUIRED);
+                    case GpsStatus.GPS_EVENT_STOPPED:
+                        gpsStatusSupplier.onNext(GpsStatusConstants.FIX_NOT_ACQUIRED);
                 }
             };
             locationManager.addGpsStatusListener(gpsStatusListener);
