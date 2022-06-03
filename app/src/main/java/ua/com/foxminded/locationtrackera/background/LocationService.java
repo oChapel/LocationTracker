@@ -3,7 +3,9 @@ package ua.com.foxminded.locationtrackera.background;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.os.Build;
 
 import androidx.annotation.Nullable;
@@ -30,6 +32,10 @@ public class LocationService extends LifecycleService {
     @Inject
     LocationServiceContract.Presenter presenter;
 
+    public static Intent getIntent(Context context) {
+        return new Intent(context, LocationService.class);
+    }
+
     public LocationService() {
     }
 
@@ -43,7 +49,11 @@ public class LocationService extends LifecycleService {
     public void onStart(@Nullable Intent intent, int startId) {
         super.onStart(intent, startId);
         presenter.onStart();
-        startForeground(NOTIFICATION_ID, getNotificationBuilder().build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(NOTIFICATION_ID, getNotificationBuilder().build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION);
+        } else {
+            startForeground(NOTIFICATION_ID, getNotificationBuilder().build());
+        }
         setGpsStatusObserver();
     }
 
@@ -76,9 +86,13 @@ public class LocationService extends LifecycleService {
         final Intent notifyIntent = new Intent(this, TrackerActivity.class);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        return PendingIntent.getActivity(
-                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
-        );
+        final int flags;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+        } else {
+            flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        }
+        return PendingIntent.getActivity(this, 0, notifyIntent, flags);
     }
 
     @Override

@@ -3,7 +3,6 @@ package ua.com.foxminded.locationtrackera.ui.tracker;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,11 +52,7 @@ public class TrackerFragment extends HostedFragment<
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        checkBackgroundLocationPermissionGranted();
-                    } else {
-                        startService();
-                    }
+                    checkBackgroundLocationPermissionGranted();
                 } else {
                     Toast.makeText(getContext(), R.string.permission_denied, Toast.LENGTH_LONG).show();
                 }
@@ -95,10 +90,9 @@ public class TrackerFragment extends HostedFragment<
                 requireActivity().moveTaskToBack(true);
             }
         };
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backPressedCallback);
 
         binding.trackerStartStopBtn.setOnClickListener(this);
-        checkGoogleServicesAvailability();
     }
 
     @Override
@@ -146,9 +140,8 @@ public class TrackerFragment extends HostedFragment<
 
     @Override
     public void showDialogFragment(int argType, int message, int negativeButton, int positiveButton) {
-        final TrackerDialogFragment dialog
-                = TrackerDialogFragment.newInstance(argType, message, negativeButton, positiveButton);
-        dialog.show(getChildFragmentManager(), "logout_dialog");
+        TrackerDialogFragment.newInstance(argType, message, negativeButton, positiveButton)
+                .show(getChildFragmentManager(), "logout_dialog");
     }
 
     @Override
@@ -157,7 +150,7 @@ public class TrackerFragment extends HostedFragment<
             if (isLocationServiceRunning()) {
                 stopService();
             } else {
-                startService();
+                checkGoogleServicesAvailability();
             }
         }
     }
@@ -188,12 +181,9 @@ public class TrackerFragment extends HostedFragment<
 
     private void checkPermissionGranted() {
         if (ActivityCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                checkBackgroundLocationPermissionGranted();
-            } else {
-                startService();
-            }
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ) {
+            checkBackgroundLocationPermissionGranted();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -202,29 +192,30 @@ public class TrackerFragment extends HostedFragment<
     }
 
     private void checkBackgroundLocationPermissionGranted() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            startService();
+            return;
+        }
         if (ActivityCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ) {
             startService();
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                requestPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-            }
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
         }
     }
 
     private void startService() {
         if (!isLocationServiceRunning()) {
             getModel().setSharedPreferencesServiceFlag(true);
-            final Intent serviceIntent = new Intent(getContext(), LocationService.class);
-            ContextCompat.startForegroundService(requireContext(), serviceIntent);
+            ContextCompat.startForegroundService(requireContext(), LocationService.getIntent(getContext()));
         }
     }
 
     private void stopService() {
         if (isLocationServiceRunning()) {
             getModel().setSharedPreferencesServiceFlag(false);
-            final Intent serviceIntent = new Intent(getContext(), LocationService.class);
-            requireActivity().stopService(serviceIntent);
+            requireActivity().stopService(LocationService.getIntent(getContext()));
         }
     }
 
