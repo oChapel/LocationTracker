@@ -2,6 +2,7 @@ package ua.com.foxminded.locationtrackera.background;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 
@@ -13,9 +14,9 @@ import androidx.lifecycle.LifecycleService;
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
 import ua.com.foxminded.locationtrackera.App;
 import ua.com.foxminded.locationtrackera.R;
+import ua.com.foxminded.locationtrackera.ui.TrackerActivity;
 
 public class LocationService extends LifecycleService {
 
@@ -66,8 +67,18 @@ public class LocationService extends LifecycleService {
         notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(getString(R.string.service_running))
-                .setSmallIcon(R.drawable.icon_a);
+                .setSmallIcon(R.drawable.ic_location_icon)
+                .setContentIntent(getPendingIntent());
         return notification;
+    }
+
+    private PendingIntent getPendingIntent() {
+        final Intent notifyIntent = new Intent(this, TrackerActivity.class);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        return PendingIntent.getActivity(
+                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
     }
 
     @Override

@@ -16,6 +16,4 @@ public interface AppComponent {
     void inject(AuthViewModelFactory factory);
     void inject(LocationService service);
     void inject(LocationsUploader worker);
-    void inject(TrackerActivity trackerActivity);
-    void inject(MapsActivity mapsActivity);
 }

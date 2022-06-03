@@ -53,7 +53,11 @@ public class TrackerFragment extends HostedFragment<
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
-                    startService();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        checkBackgroundLocationPermissionGranted();
+                    } else {
+                        startService();
+                    }
                 } else {
                     Toast.makeText(getContext(), R.string.permission_denied, Toast.LENGTH_LONG).show();
                 }
@@ -185,10 +189,25 @@ public class TrackerFragment extends HostedFragment<
     private void checkPermissionGranted() {
         if (ActivityCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            startService();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                checkBackgroundLocationPermissionGranted();
+            } else {
+                startService();
+            }
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+        }
+    }
+
+    private void checkBackgroundLocationPermissionGranted() {
+        if (ActivityCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startService();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
             }
         }
     }

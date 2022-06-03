@@ -3,6 +3,7 @@
     package="ua.com.foxminded.locationtrackera">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
@@ -23,6 +24,12 @@
 
         <service
             android:name=".background.LocationService"
+            android:description="@string/service_description"
+            android:directBootAware="true"
+            android:exported="false"
+            android:foregroundServiceType="location"
+            android:label="@string/service_label"
+            android:permission="android.permission.ACCESS_FINE_LOCATION"
             android:stopWithTask="true" />
 
         <receiver
