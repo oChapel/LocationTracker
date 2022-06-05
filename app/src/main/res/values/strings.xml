@@ -28,6 +28,7 @@
     <string name="connecting">active</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
+    <string name="no_permission">-</string>
     <string name="stop_service">Stop service</string>
     <string name="start_service">Start service</string>
 

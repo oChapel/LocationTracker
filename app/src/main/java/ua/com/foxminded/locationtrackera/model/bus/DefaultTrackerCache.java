@@ -10,7 +10,7 @@ public class DefaultTrackerCache implements TrackerCache {
 
     @Override
     public void setGpsStatus(int status) {
-        gpsStatusSupplier.onNext(status);
+        gpsStatusSupplier.onNext(status); //TODO: probably delete as well
     }
 
     @Override

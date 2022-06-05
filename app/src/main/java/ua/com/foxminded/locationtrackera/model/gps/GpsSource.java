@@ -6,6 +6,8 @@ import io.reactivex.rxjava3.core.Observable;
 
 public interface GpsSource {
 
+    void onServiceStarted();
+
     void setUpServices();
 
     void startLocationUpdates();
@@ -15,6 +17,8 @@ public interface GpsSource {
     Observable<Integer> getGpsStatusObservable();
 
     Observable<Location> getLocationObservable();
+
+    void onServiceStopped();
 
     void onDestroy();
 }

@@ -60,9 +60,11 @@ public class LocationService extends LifecycleService {
     private void setGpsStatusObserver() {
         final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         compositeDisposable.add(
-                presenter.getGpsStatusObservable().subscribe(status -> {
-                    notification.setContentText(getString(R.string.gps_status_notification, getString(status)));
-                    notificationManager.notify(NOTIFICATION_ID, notification.build());
+                presenter.getGpsStatusObservable(). subscribe(status -> {
+                    if (status != 0) {
+                        notification.setContentText(getString(R.string.gps_status_notification, getString(status)));
+                        notificationManager.notify(NOTIFICATION_ID, notification.build());
+                    }
                 })
         );
     }
@@ -78,7 +80,8 @@ public class LocationService extends LifecycleService {
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(getString(R.string.service_running))
                 .setSmallIcon(R.drawable.ic_location_icon)
-                .setContentIntent(getPendingIntent());
+                .setContentIntent(getPendingIntent())
+                .setShowWhen(false);
         return notification;
     }
 

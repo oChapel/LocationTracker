@@ -42,9 +42,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
     @Override
     public void onStart() {
         setObservers();
-        gpsServices.setUpServices();
-        gpsServices.startLocationUpdates();
-        gpsServices.registerGpsOrGnssStatusChanges();
+        gpsServices.onServiceStarted();
         cache.serviceStatusChanged(true);
         workModel.setLocationsUploader();
     }
@@ -63,7 +61,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
 
     private void setObservers() {
         compositeDisposable.addAll(
-                gpsServices.getGpsStatusObservable().subscribe(cache::setGpsStatus),
+                //gpsServices.getGpsStatusObservable().subscribe(cache::setGpsStatus), //TODO: probably delete
 
                 gpsServices.getLocationObservable()
                         .observeOn(Schedulers.io())
@@ -101,7 +99,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
 
     @Override
     public void onDestroy() {
-        gpsServices.onDestroy();
+        gpsServices.onServiceStopped();
         compositeDisposable.dispose();
         cache.serviceStatusChanged(false);
     }

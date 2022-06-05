@@ -11,6 +11,7 @@ import io.reactivex.rxjava3.subjects.PublishSubject;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
+import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
 import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
 import ua.com.foxminded.locationtrackera.model.shared_preferences.SharedPreferencesModel;
 import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
@@ -29,6 +30,7 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
     private final TrackerCache cache;
     private final LocationRepository repository;
     private final SharedPreferencesModel sharedPreferencesModel;
+    private final GpsSource gpsServices;
 
     private int gpsStatus;
     private boolean serviceStatus;
@@ -38,25 +40,36 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
             TrackerCache cache,
             LocationRepository repository,
             SendLocationsUseCase sendLocationsUseCase,
-            SharedPreferencesModel sharedPreferencesModel) {
+            SharedPreferencesModel sharedPreferencesModel,
+            GpsSource gpsServices
+    ) {
         this.authNetwork = authNetwork;
         this.cache = cache;
         this.repository = repository;
         this.sendLocationsUseCase = sendLocationsUseCase;
         this.sharedPreferencesModel = sharedPreferencesModel;
+        this.gpsServices = gpsServices;
     }
 
     @Override
     public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
         super.onStateChanged(source, event);
+        if (event == Lifecycle.Event.ON_CREATE) {
+            gpsServices.setUpServices();
+            gpsServices.startLocationUpdates();
+            gpsServices.registerGpsOrGnssStatusChanges();
+        }
         if (event == Lifecycle.Event.ON_RESUME) {
             setUpTrackerChain();
+        }
+        if (event == Lifecycle.Event.ON_DESTROY) {
+            gpsServices.onDestroy();
         }
     }
 
     private void setUpTrackerChain() {
         addTillDestroy(
-                cache.setGpsStatusObservable()
+                gpsServices.getGpsStatusObservable() /*cache.setGpsStatusObservable()*/
                         .doOnNext(status -> gpsStatus = status)
                         .subscribe(status -> setState(new TrackerScreenState(gpsStatus, serviceStatus))),
                 cache.setServiceStatusObservable()
