@@ -72,7 +72,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
                             if (aBoolean) {
                                 return sendLocationsUseCase.execute();
                             }
-                            return null;
+                            return Single.never();
                         })
                         .subscribe(result -> {
                             if (result.isSuccessful()) {
