@@ -73,13 +73,9 @@ public class LocationServicePresenterTest {
     }
 
     private void verifyServiceSetUp() {
-        verify(gpsServices, times(1)).getGpsStatusObservable();
+        verify(gpsServices, times(1)).onServiceStarted();
         verify(gpsServices, times(1)).getLocationObservable();
-        verify(gpsServices, times(1)).setUpServices();
-        verify(gpsServices, times(1)).startLocationUpdates();
-        verify(gpsServices, times(1)).registerGpsOrGnssStatusChanges();
         verify(cache, times(1)).serviceStatusChanged(true);
-        verify(cache, times(1)).setGpsStatus(0);
         verify(workModel, times(1)).setLocationsUploader();
     }
 
@@ -99,7 +95,7 @@ public class LocationServicePresenterTest {
         verifyServiceSetUp();
 
         presenter.onDestroy();
-        verify(gpsServices, times(1)).onDestroy();
+        verify(gpsServices, times(1)).onServiceStopped();
         verify(cache, times(1)).serviceStatusChanged(false);
         verifyNoMore();
     }

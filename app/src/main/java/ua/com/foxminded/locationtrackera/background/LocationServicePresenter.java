@@ -61,8 +61,6 @@ public class LocationServicePresenter implements LocationServiceContract.Present
 
     private void setObservers() {
         compositeDisposable.addAll(
-                //gpsServices.getGpsStatusObservable().subscribe(cache::setGpsStatus), //TODO: probably delete
-
                 gpsServices.getLocationObservable()
                         .observeOn(Schedulers.io())
                         .flatMapSingle(location -> Single.just(saveUserLocation(location)))

@@ -69,7 +69,7 @@ public class TrackerViewModel extends MviViewModel<TrackerScreenState, TrackerSc
 
     private void setUpTrackerChain() {
         addTillDestroy(
-                gpsServices.getGpsStatusObservable() /*cache.setGpsStatusObservable()*/
+                gpsServices.getGpsStatusObservable()
                         .doOnNext(status -> gpsStatus = status)
                         .subscribe(status -> setState(new TrackerScreenState(gpsStatus, serviceStatus))),
                 cache.setServiceStatusObservable()

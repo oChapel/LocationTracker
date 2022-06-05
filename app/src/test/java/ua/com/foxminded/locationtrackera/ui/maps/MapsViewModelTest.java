@@ -62,7 +62,7 @@ public class MapsViewModelTest {
         model.getEffectObservable().observeForever(effectObserver);
 
         actionCaptor = ArgumentCaptor.forClass(MapsScreenEffect.class);
-        model.onStateChanged(null, Lifecycle.Event.ON_CREATE);
+        model.onStateChanged(null, Lifecycle.Event.ON_RESUME);
     }
 
     @After

@@ -31,6 +31,7 @@ import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.TrampolineSchedulerRule;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
+import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
 import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
 import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 import ua.com.foxminded.locationtrackera.model.shared_preferences.SharedPreferencesModel;
@@ -59,6 +60,8 @@ public class TrackerViewModelTest {
     @Mock
     SharedPreferencesModel sharedPreferencesModel;
     @Mock
+    GpsSource gpsServices;
+    @Mock
     Observer<TrackerScreenState> stateObserver;
     @Mock
     Observer<TrackerScreenEffect> effectObserver;
@@ -69,17 +72,17 @@ public class TrackerViewModelTest {
     @Before
     public void setUp() {
         this.model = new TrackerViewModel(
-                authNetwork, cache, repository, sendLocationsUseCase, sharedPreferencesModel
-        );
+                authNetwork, cache, repository, sendLocationsUseCase, sharedPreferencesModel, gpsServices);
         model.getStateObservable().observeForever(stateObserver);
         model.getEffectObservable().observeForever(effectObserver);
 
         stateCaptor = ArgumentCaptor.forClass(TrackerScreenState.class);
         actionCaptor = ArgumentCaptor.forClass(TrackerScreenEffect.class);
 
-        when(cache.setGpsStatusObservable()).thenReturn(Observable.just(0));
+        when(gpsServices.getGpsStatusObservable()).thenReturn(Observable.just(0));
         when(cache.setServiceStatusObservable()).thenReturn(Observable.just(true));
         model.onStateChanged(null, Lifecycle.Event.ON_CREATE);
+        model.onStateChanged(null, Lifecycle.Event.ON_RESUME);
     }
 
     @After
@@ -90,7 +93,9 @@ public class TrackerViewModelTest {
 
     private void verifyNoMore() {
         verifyNoMoreInteractions(stateObserver, effectObserver);
-        verifyNoMoreInteractions(authNetwork, cache, repository, sendLocationsUseCase, sharedPreferencesModel);
+        verifyNoMoreInteractions(
+                authNetwork, cache, repository, sendLocationsUseCase, sharedPreferencesModel, gpsServices
+        );
     }
 
     private void verifyTwoStatesOneAction() {
@@ -98,8 +103,12 @@ public class TrackerViewModelTest {
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
     }
 
-    private void verifyCacheInteractions() {
-        verify(cache, times(1)).setGpsStatusObservable();
+    private void verifyGpsSourceInteractions() {
+        verify(gpsServices, times(1)).setUpServices();
+        verify(gpsServices, times(1)).startLocationUpdates();
+        verify(gpsServices, times(1)).registerGpsOrGnssStatusChanges();
+
+        verify(gpsServices, times(1)).getGpsStatusObservable();
         verify(cache, times(1)).setServiceStatusObservable();
     }
 
@@ -122,7 +131,7 @@ public class TrackerViewModelTest {
         }
 
         verifyTwoStatesOneAction();
-        verifyCacheInteractions();
+        verifyGpsSourceInteractions();
         verify(sendLocationsUseCase, times(1)).execute();
         assertTrue(actionCaptor.getValue() instanceof TrackerScreenEffect.ShowDialogFragment);
         assertDialogFragmentArgsEqual(
@@ -134,7 +143,10 @@ public class TrackerViewModelTest {
     @Test
     public void test_DoNothing() {
         verify(stateObserver, times(2)).onChanged(stateCaptor.capture());
-        verifyCacheInteractions();
+        verifyGpsSourceInteractions();
+
+        model.onStateChanged(null, Lifecycle.Event.ON_DESTROY);
+        verify(gpsServices, times(1)).onDestroy();
         verifyNoMore();
     }
 
@@ -150,7 +162,7 @@ public class TrackerViewModelTest {
         }
 
         verifyTwoStatesOneAction();
-        verifyCacheInteractions();
+        verifyGpsSourceInteractions();
         verify(repository, times(1)).getAllLocations();
         verify(authNetwork, times(1)).logout();
         assertTrue(actionCaptor.getValue() instanceof TrackerScreenEffect.Logout);
@@ -171,7 +183,7 @@ public class TrackerViewModelTest {
         }
 
         verifyTwoStatesOneAction();
-        verifyCacheInteractions();
+        verifyGpsSourceInteractions();
         verify(repository, times(1)).getAllLocations();
         assertTrue(actionCaptor.getValue() instanceof TrackerScreenEffect.ShowDialogFragment);
         assertDialogFragmentArgsEqual(
@@ -200,7 +212,7 @@ public class TrackerViewModelTest {
         }
 
         verifyTwoStatesOneAction();
-        verifyCacheInteractions();
+        verifyGpsSourceInteractions();
         verify(sendLocationsUseCase, times(1)).execute();
         verify(repository, times(1)).deleteLocationsFromDb();
         verify(authNetwork, times(1)).logout();
@@ -219,7 +231,7 @@ public class TrackerViewModelTest {
     public void setSharedPreferencesFlagTest() {
         model.setSharedPreferencesServiceFlag(true);
 
-        verifyCacheInteractions();
+        verifyGpsSourceInteractions();
         verify(stateObserver, times(2)).onChanged(stateCaptor.capture());
         verify(sharedPreferencesModel, times(1)).setSharedPreferencesServiceFlag(true);
         verifyNoMore();
