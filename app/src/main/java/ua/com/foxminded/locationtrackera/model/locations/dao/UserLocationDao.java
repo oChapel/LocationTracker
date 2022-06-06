@@ -14,9 +14,9 @@ public interface UserLocationDao {
     @Insert
     void saveLocation(UserLocation location);
 
-    @Query("SELECT * FROM userlocation")
+    @Query("SELECT * FROM UserLocation")
     List<UserLocation> getAllLocations();
 
-    @Query("DELETE FROM userlocation")
+    @Query("DELETE FROM UserLocation")
     void deleteAllLocation();
 }

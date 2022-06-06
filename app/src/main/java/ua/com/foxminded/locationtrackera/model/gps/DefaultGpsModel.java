@@ -19,24 +19,30 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.Calendar;
+
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import ua.com.foxminded.locationtrackera.BuildConfig;
+import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 
 public class DefaultGpsModel implements GpsSource {
 
     private final Context context;
     private final BehaviorSubject<Integer> gpsStatusSupplier = BehaviorSubject.create();
-    private final BehaviorSubject<Location> locationSupplier = BehaviorSubject.create();
+    private final BehaviorSubject<UserLocation> locationSupplier = BehaviorSubject.create();
     private final LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(@NonNull LocationResult locationResult) {
-            if (serviceRunningFlag) {
-                super.onLocationResult(locationResult);
-                if (locationManager.isProviderEnabled(BuildConfig.LOCATION_PROVIDER)) {
-                    locationSupplier.onNext(locationResult.getLastLocation());
-                }
+            if (!serviceRunningFlag
+                    || locationManager.isProviderEnabled(BuildConfig.LOCATION_PROVIDER)) {
+                return;
             }
+            final Location loc = locationResult.getLastLocation();
+            locationSupplier.onNext(new UserLocation(
+                    loc.getLatitude(), loc.getLongitude(),
+                    Calendar.getInstance().getTimeInMillis()
+            ));
         }
     };
 
@@ -134,7 +140,7 @@ public class DefaultGpsModel implements GpsSource {
     }
 
     @Override
-    public Observable<Location> getLocationObservable() {
+    public Observable<UserLocation> getLocationObservable() {
         return locationSupplier;
     }
 

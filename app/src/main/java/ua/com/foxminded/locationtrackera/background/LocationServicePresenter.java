@@ -1,11 +1,8 @@
 package ua.com.foxminded.locationtrackera.background;
 
-import android.location.Location;
-
-import java.util.Calendar;
-
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import ua.com.foxminded.locationtrackera.R;
@@ -48,28 +45,16 @@ public class LocationServicePresenter implements LocationServiceContract.Present
     }
 
     @Override
-    public boolean saveUserLocation(Location location) {
-        if (location != null) {
-            repository.saveLocation(new UserLocation(
-                    location.getLatitude(),
-                    location.getLongitude(),
-                    Calendar.getInstance().getTimeInMillis()
-            ));
-        }
-        return repository.getAllLocations().size() >= 5;
+    public @NonNull Completable saveUserLocation(UserLocation location) {
+        return Completable.fromRunnable(() -> repository.saveLocation(location));
     }
 
     private void setObservers() {
         compositeDisposable.addAll(
                 gpsServices.getLocationObservable()
                         .observeOn(Schedulers.io())
-                        .flatMapSingle(location -> Single.just(saveUserLocation(location)))
-                        .flatMapSingle(aBoolean -> {
-                            if (aBoolean) {
-                                return sendLocationsUseCase.execute();
-                            }
-                            return Single.never();
-                        })
+                        .flatMapCompletable(this::saveUserLocation)
+                        .andThen(sendLocationsUseCase.execute())
                         .subscribe(result -> {
                             if (result.isSuccessful()) {
                                 repository.deleteLocationsFromDb();

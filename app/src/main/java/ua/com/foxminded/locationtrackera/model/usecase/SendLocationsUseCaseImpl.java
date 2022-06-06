@@ -1,7 +1,6 @@
 package ua.com.foxminded.locationtrackera.model.usecase;
 
 import io.reactivex.rxjava3.core.Single;
-
 import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
 import ua.com.foxminded.locationtrackera.util.Result;
 
@@ -15,7 +14,8 @@ public class SendLocationsUseCaseImpl implements SendLocationsUseCase {
 
     @Override
     public Single<Result<Void>> execute() {
-        return repository.sendLocations(repository.getAllLocations())
+        return Single.fromCallable(repository::getAllLocations)
+                .flatMap(repository::sendLocations)
                 .onErrorResumeNext(e -> Single.just(new Result.Error<>(e)));
     }
 }

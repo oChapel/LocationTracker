@@ -10,5 +10,5 @@ public interface LocationsNetwork {
 
     Single<Result<Void>> sendLocations(List<UserLocation> locationList);
 
-    Single<Result<List<UserLocation>>> retrieveLocations(double fromTime, double toTime);
+    Single<Result<List<UserLocation>>> retrieveLocations(long fromTime, long toTime);
 }

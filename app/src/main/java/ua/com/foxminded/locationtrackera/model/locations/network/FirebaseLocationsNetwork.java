@@ -1,15 +1,15 @@
 package ua.com.foxminded.locationtrackera.model.locations.network;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.rxjava3.core.Single;
 import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
@@ -56,7 +56,7 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
     }
 
     @Override
-    public Single<Result<List<UserLocation>>> retrieveLocations(double fromTime, double toTime) {
+    public Single<Result<List<UserLocation>>> retrieveLocations(long fromTime, long toTime) {
         return Single.fromCallable(() -> {
             final List<UserLocation> locationsList = new ArrayList<>();
             final Task<QuerySnapshot> task = retrieveFromFirebase(
@@ -90,12 +90,12 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
                 .set(userLocation);
     }
 
-    private Task<QuerySnapshot> retrieveFromFirebase(String uid, double startDate, double endDate) {
+    private Task<QuerySnapshot> retrieveFromFirebase(String uid, long fromTime, long toTime) {
         return firestore.collection(COLLECTION_PATH_USERS)
                 .document(uid)
                 .collection(COLLECTION_PATH_USER_LOCATIONS)
-                .whereGreaterThanOrEqualTo(FIELD_DATE, startDate)
-                .whereLessThanOrEqualTo(FIELD_DATE, endDate)
+                .whereGreaterThanOrEqualTo(FIELD_DATE, fromTime)
+                .whereLessThanOrEqualTo(FIELD_DATE, toTime)
                 .get();
     }
 }

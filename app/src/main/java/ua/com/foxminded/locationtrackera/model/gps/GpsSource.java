@@ -1,8 +1,7 @@
 package ua.com.foxminded.locationtrackera.model.gps;
 
-import android.location.Location;
-
 import io.reactivex.rxjava3.core.Observable;
+import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 
 public interface GpsSource {
 
@@ -16,7 +15,7 @@ public interface GpsSource {
 
     Observable<Integer> getGpsStatusObservable();
 
-    Observable<Location> getLocationObservable();
+    Observable<UserLocation> getLocationObservable();
 
     void onServiceStopped();
 
