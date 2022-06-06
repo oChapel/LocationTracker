@@ -102,7 +102,7 @@ public class LocationRepositoryTest {
         when(remoteDataSource.retrieveLocations(anyDouble(), anyDouble()))
                 .thenReturn(Single.just(new Result.Success<>(locationList)));
 
-        repository.retrieveLocations(10.05, 10.6)
+        repository.retrieveLocations(100, 101)
                 .test()
                 .assertValue(result -> ((Result.Success<List<UserLocation>>) result).getData() == locationList);
 
@@ -115,7 +115,7 @@ public class LocationRepositoryTest {
         when(remoteDataSource.retrieveLocations(anyDouble(), anyDouble()))
                 .thenReturn(Single.just(new Result.Error<>(new Throwable("some error"))));
 
-        repository.retrieveLocations(10.05, 10.6)
+        repository.retrieveLocations(100, 101)
                 .test()
                 .assertValue(result -> result instanceof Result.Error);
 

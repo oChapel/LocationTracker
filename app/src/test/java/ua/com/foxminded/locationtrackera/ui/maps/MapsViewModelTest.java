@@ -2,7 +2,7 @@ package ua.com.foxminded.locationtrackera.ui.maps;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -86,7 +86,7 @@ public class MapsViewModelTest {
         }
 
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
-        verify(repository, times(1)).retrieveLocations(anyDouble(), anyDouble());
+        verify(repository, times(1)).retrieveLocations(anyLong(), anyLong());
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.ShowToast);
         assertEquals(R.string.retrieve_failed, ((MapsScreenEffect.ShowToast) actionCaptor.getValue()).resId);
         verifyNoMore();
@@ -110,14 +110,14 @@ public class MapsViewModelTest {
 
     @Test
     public void retrieveLocationsTest_ThrowError() {
-        when(repository.retrieveLocations(anyDouble(), anyDouble()))
+        when(repository.retrieveLocations(anyLong(), anyLong()))
                 .thenThrow(new RuntimeException("some error"));
         checkRetrievingFailed();
     }
 
     @Test
     public void retrieveLocationsTest_NoLocations() {
-        when(repository.retrieveLocations(anyDouble(), anyDouble()))
+        when(repository.retrieveLocations(anyLong(), anyLong()))
                 .thenReturn(Single.just(new Result.Success<>(new ArrayList<>())));
         model.retrieveLocationsByDate(100, 101);
 
@@ -128,7 +128,7 @@ public class MapsViewModelTest {
         }
 
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
-        verify(repository, times(1)).retrieveLocations(anyDouble(), anyDouble());
+        verify(repository, times(1)).retrieveLocations(anyLong(), anyLong());
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.ShowToast);
         assertEquals(R.string.no_locations_in_current_period, ((MapsScreenEffect.ShowToast) actionCaptor.getValue()).resId);
         verifyNoMore();
@@ -138,7 +138,7 @@ public class MapsViewModelTest {
     public void retrieveLocationsTest_DefaultTimePeriod() {
         final List<UserLocation> locationList = new ArrayList<>();
         locationList.add(mock(UserLocation.class));
-        when(repository.retrieveLocations(anyDouble(), anyDouble()))
+        when(repository.retrieveLocations(anyLong(), anyLong()))
                 .thenReturn(Single.just(new Result.Success<>(locationList)));
         model.retrieveDefaultLocations();
 
@@ -149,7 +149,7 @@ public class MapsViewModelTest {
         }
 
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
-        verify(repository, times(1)).retrieveLocations(anyDouble(), anyDouble());
+        verify(repository, times(1)).retrieveLocations(anyLong(), anyLong());
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.PlaceMarkers);
         assertEquals(locationList, ((MapsScreenEffect.PlaceMarkers) actionCaptor.getValue()).locationList);
         verifyNoMore();
@@ -160,7 +160,7 @@ public class MapsViewModelTest {
     public void retrieveLocationsTest_Success() {
         final List<UserLocation> locationList = new ArrayList<>();
         locationList.add(mock(UserLocation.class));
-        when(repository.retrieveLocations(anyDouble(), anyDouble()))
+        when(repository.retrieveLocations(anyLong(), anyLong()))
                 .thenReturn(Single.just(new Result.Success<>(locationList)));
         model.retrieveLocationsByDate(100, 101);
 
@@ -171,7 +171,7 @@ public class MapsViewModelTest {
         }
 
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
-        verify(repository, times(1)).retrieveLocations(anyDouble(), anyDouble());
+        verify(repository, times(1)).retrieveLocations(anyLong(), anyLong());
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.PlaceMarkers);
         assertEquals(locationList, ((MapsScreenEffect.PlaceMarkers) actionCaptor.getValue()).locationList);
         verifyNoMore();
@@ -179,7 +179,7 @@ public class MapsViewModelTest {
 
     @Test
     public void retrieveLocationsTest_Failure() {
-        when(repository.retrieveLocations(anyDouble(), anyDouble()))
+        when(repository.retrieveLocations(anyLong(), anyLong()))
                 .thenReturn(Single.just(new Result.Error<>(new Throwable("some error"))));
         checkRetrievingFailed();
     }

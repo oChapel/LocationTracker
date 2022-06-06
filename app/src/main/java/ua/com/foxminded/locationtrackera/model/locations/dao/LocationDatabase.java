@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 
 import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
 
-@Database(entities = UserLocation.class, version = 2, exportSchema = false)
+@Database(entities = UserLocation.class, version = 3, exportSchema = false)
 public abstract class LocationDatabase extends RoomDatabase {
 
     private static LocationDatabase instance;

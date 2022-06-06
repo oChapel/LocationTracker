@@ -23,11 +23,11 @@ import ua.com.foxminded.locationtrackera.util.Result;
 public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffect>
         implements MapsContract.ViewModel {
 
-    private static final double DEFAULT_LOCATIONS_RETRIEVING_TIME_HOURS = 12;
+    private static final long DEFAULT_LOCATIONS_RETRIEVING_TIME_HOURS = 12;
 
     private final AuthNetwork authNetwork;
     private final LocationRepository repository;
-    private final PublishSubject<Pair<Double, Double>> locationsSupplier = PublishSubject.create();
+    private final PublishSubject<Pair<Long, Long>> locationsSupplier = PublishSubject.create();
 
     public MapsViewModel(AuthNetwork authNetwork, LocationRepository repository) {
         this.authNetwork = authNetwork;
@@ -78,7 +78,7 @@ public class MapsViewModel extends MviViewModel<MapsScreenState, MapsScreenEffec
     }
 
     @Override
-    public void retrieveLocationsByDate(double fromTime, double toTime) {
+    public void retrieveLocationsByDate(long fromTime, long toTime) {
         locationsSupplier.onNext(new Pair<>(fromTime, toTime));
     }
 
