@@ -56,7 +56,7 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
     }
 
     @Override
-    public Single<Result<List<UserLocation>>> retrieveLocations(double fromTime, double toTime) {
+    public Single<Result<List<UserLocation>>> retrieveLocations(long fromTime, long toTime) {
         return Single.fromCallable(() -> {
             final List<UserLocation> locationsList = new ArrayList<>();
             final Task<QuerySnapshot> task = retrieveFromFirebase(
@@ -90,7 +90,7 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
                 .set(userLocation);
     }
 
-    private Task<QuerySnapshot> retrieveFromFirebase(String uid, double startDate, double endDate) {
+    private Task<QuerySnapshot> retrieveFromFirebase(String uid, long startDate, long endDate) {
         return firestore.collection(COLLECTION_PATH_USERS)
                 .document(uid)
                 .collection(COLLECTION_PATH_USER_LOCATIONS)
