@@ -90,12 +90,12 @@ public class FirebaseLocationsNetwork implements LocationsNetwork {
                 .set(userLocation);
     }
 
-    private Task<QuerySnapshot> retrieveFromFirebase(String uid, long fromTime, long toTime) {
+    private Task<QuerySnapshot> retrieveFromFirebase(String uid, long startDate, long endDate) {
         return firestore.collection(COLLECTION_PATH_USERS)
                 .document(uid)
                 .collection(COLLECTION_PATH_USER_LOCATIONS)
-                .whereGreaterThanOrEqualTo(FIELD_DATE, fromTime)
-                .whereLessThanOrEqualTo(FIELD_DATE, toTime)
+                .whereGreaterThanOrEqualTo(FIELD_DATE, startDate)
+                .whereLessThanOrEqualTo(FIELD_DATE, endDate)
                 .get();
     }
 }
