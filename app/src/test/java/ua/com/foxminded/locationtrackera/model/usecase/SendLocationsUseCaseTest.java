@@ -32,7 +32,9 @@ public class SendLocationsUseCaseTest {
 
     private void verifyExecuteTestInteractions() {
         when(repository.getAllLocations()).thenReturn(new ArrayList<>());
-        useCase.execute();
+        useCase.execute().test()
+                .assertComplete()
+                .assertNoErrors();
 
         verify(repository, times(1)).getAllLocations();
         verify(repository, times(1)).sendLocations(anyList());
@@ -49,6 +51,13 @@ public class SendLocationsUseCaseTest {
     public void executeTest_Failure() {
         when(repository.sendLocations(anyList()))
                 .thenReturn(Single.just(new Result.Error<>(new Throwable("some error"))));
+        verifyExecuteTestInteractions();
+    }
+
+    @Test
+    public void executeTest_ThrowError() {
+        when(repository.sendLocations(anyList()))
+                .thenThrow(new RuntimeException("some error"));
         verifyExecuteTestInteractions();
     }
 }

@@ -35,7 +35,7 @@ public class DefaultGpsModel implements GpsSource {
         @Override
         public void onLocationResult(@NonNull LocationResult locationResult) {
             if (!serviceRunningFlag
-                    || locationManager.isProviderEnabled(BuildConfig.LOCATION_PROVIDER)) {
+                    || !locationManager.isProviderEnabled(BuildConfig.LOCATION_PROVIDER)) {
                 return;
             }
             final Location loc = locationResult.getLastLocation();

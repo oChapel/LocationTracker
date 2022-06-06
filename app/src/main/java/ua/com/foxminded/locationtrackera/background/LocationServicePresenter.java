@@ -3,6 +3,7 @@ package ua.com.foxminded.locationtrackera.background;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import ua.com.foxminded.locationtrackera.R;
@@ -54,7 +55,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
                 gpsServices.getLocationObservable()
                         .observeOn(Schedulers.io())
                         .flatMapCompletable(this::saveUserLocation)
-                        .andThen(sendLocationsUseCase.execute())
+                        .andThen(Single.defer(sendLocationsUseCase::execute))
                         .subscribe(result -> {
                             if (result.isSuccessful()) {
                                 repository.deleteLocationsFromDb();

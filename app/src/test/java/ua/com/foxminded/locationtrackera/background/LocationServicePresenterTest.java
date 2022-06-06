@@ -1,7 +1,5 @@
 package ua.com.foxminded.locationtrackera.background;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -9,8 +7,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-
-import android.location.Location;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
@@ -20,9 +16,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -80,83 +73,30 @@ public class LocationServicePresenterTest {
     }
 
     @Test
-    public void serviceStartedTest() {
-        when(gpsServices.getLocationObservable()).thenReturn(Observable.empty());
-        presenter.onStart();
-
-        verifyServiceSetUp();
-        verifyNoMore();
-    }
-
-    @Test
     public void serviceDestroyedTest() {
-        when(gpsServices.getLocationObservable()).thenReturn(Observable.empty());
-        presenter.onStart();
-        verifyServiceSetUp();
-
         presenter.onDestroy();
+
         verify(gpsServices, times(1)).onServiceStopped();
         verify(cache, times(1)).serviceStatusChanged(false);
         verifyNoMore();
     }
 
     @Test
-    public void saveLocationTest_LessThenFiveLocationsInDb() {
+    public void saveLocationTest() {
         doNothing().when(repository).saveLocation(any(UserLocation.class));
-        when(repository.getAllLocations()).thenReturn(new ArrayList<>());
+        presenter.saveUserLocation(mock(UserLocation.class))
+                .test()
+                .assertComplete()
+                .assertNoErrors();
 
-        assertFalse(presenter.saveUserLocation(mock(Location.class)));
 
         verify(repository, times(1)).saveLocation(any(UserLocation.class));
-        verify(repository, times(1)).getAllLocations();
         verifyNoMore();
     }
 
     @Test
-    public void saveLocationTest_FiveOrMoreLocationsInDb() {
-        final List<UserLocation> locationList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            locationList.add(mock(UserLocation.class));
-        }
-
-        doNothing().when(repository).saveLocation(any(UserLocation.class));
-        when(repository.getAllLocations()).thenReturn(locationList);
-
-        assertTrue(presenter.saveUserLocation(mock(Location.class)));
-
-        verify(repository, times(1)).saveLocation(any(UserLocation.class));
-        verify(repository, times(1)).getAllLocations();
-        verifyNoMore();
-    }
-
-    @Test
-    public void locationReceivedTest_LessThenFiveLocationsInDb() {
-        when(gpsServices.getLocationObservable()).thenReturn(Observable.just(mock(Location.class)));
-        when(repository.getAllLocations()).thenReturn(new ArrayList<>());
-
-        presenter.onStart();
-
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        verifyServiceSetUp();
-        verify(repository, times(1)).saveLocation(any(UserLocation.class));
-        verify(repository, times(1)).getAllLocations();
-        verifyNoMore();
-    }
-
-    @Test
-    public void locationReceivedTest_FiveOrMoreLocationInDb_SendingSuccess() {
-        final List<UserLocation> locationList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            locationList.add(mock(UserLocation.class));
-        }
-
-        when(gpsServices.getLocationObservable()).thenReturn(Observable.just(mock(Location.class)));
-        when(repository.getAllLocations()).thenReturn(locationList);
+    public void locationReceivedTest_SendingSuccess() {
+        when(gpsServices.getLocationObservable()).thenReturn(Observable.just(mock(UserLocation.class)));
         when(sendLocationsUseCase.execute()).thenReturn(Single.just(new Result.Success<>(null)));
         doNothing().when(repository).deleteLocationsFromDb();
 
@@ -170,21 +110,14 @@ public class LocationServicePresenterTest {
 
         verifyServiceSetUp();
         verify(repository, times(1)).saveLocation(any(UserLocation.class));
-        verify(repository, times(1)).getAllLocations();
         verify(repository, times(1)).deleteLocationsFromDb();
         verify(sendLocationsUseCase, times(1)).execute();
         verifyNoMore();
     }
 
     @Test
-    public void locationReceivedTest_FiveOrMoreLocationInDb_SendingFailure() {
-        final List<UserLocation> locationList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            locationList.add(mock(UserLocation.class));
-        }
-
-        when(gpsServices.getLocationObservable()).thenReturn(Observable.just(mock(Location.class)));
-        when(repository.getAllLocations()).thenReturn(locationList);
+    public void locationReceivedTest_SendingFailure() {
+        when(gpsServices.getLocationObservable()).thenReturn(Observable.just(mock(UserLocation.class)));
         when(sendLocationsUseCase.execute()).thenReturn(Single.just(new Result.Error<>(new Throwable("some error"))));
         doNothing().when(workModel).enqueueRequest();
 
@@ -198,21 +131,14 @@ public class LocationServicePresenterTest {
 
         verifyServiceSetUp();
         verify(repository, times(1)).saveLocation(any(UserLocation.class));
-        verify(repository, times(1)).getAllLocations();
         verify(sendLocationsUseCase, times(1)).execute();
         verify(workModel, times(1)).enqueueRequest();
         verifyNoMore();
     }
 
     @Test
-    public void locationReceivedTest_FiveOrMoreLocationInDb_ThrowError() {
-        final List<UserLocation> locationList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            locationList.add(mock(UserLocation.class));
-        }
-
-        when(gpsServices.getLocationObservable()).thenReturn(Observable.just(mock(Location.class)));
-        when(repository.getAllLocations()).thenReturn(locationList);
+    public void locationReceivedTest_ThrowError() {
+        when(gpsServices.getLocationObservable()).thenReturn(Observable.just(mock(UserLocation.class)));
         when(sendLocationsUseCase.execute()).thenThrow(new RuntimeException("some error"));
 
         presenter.onStart();
@@ -225,7 +151,6 @@ public class LocationServicePresenterTest {
 
         verifyServiceSetUp();
         verify(repository, times(1)).saveLocation(any(UserLocation.class));
-        verify(repository, times(1)).getAllLocations();
         verify(sendLocationsUseCase, times(1)).execute();
         verifyNoMore();
     }
