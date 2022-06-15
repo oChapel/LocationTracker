@@ -12,7 +12,7 @@ import ua.com.foxminded.locationtrackera.ui.tracker.TrackerFragmentTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        //SplashAndroidTestSuiteClass.class,
+        SplashAndroidTestSuiteClass.class,
         LoginAndroidTestSuiteClass.class,
         RegistrationAndroidTestSuiteClass.class,
         ResetPasswordAndroidTestSuiteClass.class,
