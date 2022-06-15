@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import ua.com.foxminded.locationtrackera.App;
 import ua.com.foxminded.locationtrackera.R;
+import ua.com.foxminded.locationtrackera.di.DaggerAppComponent;
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
 import ua.com.foxminded.locationtrackera.ui.auth.login.LoginContract;
 
@@ -16,6 +18,8 @@ public class MapsActivity extends AppCompatActivity implements LoginContract.Hos
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        App.setAppComponent(DaggerAppComponent.create());
 
         final MapsHostViewModel viewModel
                 = new ViewModelProvider(this, new AuthViewModelFactory()).get(MapsHostViewModel.class);

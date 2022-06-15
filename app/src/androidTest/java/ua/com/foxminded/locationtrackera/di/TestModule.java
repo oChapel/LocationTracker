@@ -1,25 +1,22 @@
 package ua.com.foxminded.locationtrackera.di;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
-import ua.com.foxminded.locationtrackera.model.auth.FirebaseAuthNetwork;
+import ua.com.foxminded.locationtrackera.model.auth.TestAuthNetwork;
 import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
 import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
 import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCaseImpl;
 
 @Module
-public class AppModule {
+public class TestModule {
 
     @Provides
     @Singleton
-    public AuthNetwork provideFirebaseAuthNetwork() {
-        return new FirebaseAuthNetwork(FirebaseAuth.getInstance());
+    public AuthNetwork provideTestAuthNetwork() {
+        return new TestAuthNetwork();
     }
 
     @Provides

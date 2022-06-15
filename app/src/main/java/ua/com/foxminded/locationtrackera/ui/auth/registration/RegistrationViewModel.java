@@ -40,11 +40,10 @@ public class RegistrationViewModel extends MviViewModel<RegistrationScreenState,
     @SuppressWarnings("unchecked")
     private void setUpRegistrationChain() {
         addTillDestroy(
-                credsSupplier.doOnNext(c -> setState(new RegistrationScreenState.RegistrationProgress(true)))
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .observeOn(Schedulers.io())
+                credsSupplier.observeOn(Schedulers.io())
                         .flatMapSingle(creds -> {
                             if (creds.isUsernameValid() && creds.isEmailValid() && creds.isRegistrationPasswordValid()) {
+                                postState(new RegistrationScreenState.RegistrationProgress(true));
                                 return authNetwork.firebaseRegister(creds.username, creds.email, creds.password);
                             } else {
                                 postState(getErrorState(creds));
@@ -52,11 +51,12 @@ public class RegistrationViewModel extends MviViewModel<RegistrationScreenState,
                             }
                         }).observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
-                            setState(new RegistrationScreenState.RegistrationProgress(false));
                             if (result.isSuccessful()) {
+                                setState(new RegistrationScreenState.RegistrationProgress(false));
                                 setAction(new RegistrationScreenEffect.RegistrationSuccessful());
                             } else {
                                 if (!result.toString().contains(AuthErrorConstants.INVALID_USERNAME_EMAIL_PASSWORD)) {
+                                    setState(new RegistrationScreenState.RegistrationProgress(false));
                                     if (((Result.Error<Void>) result).getError() instanceof FirebaseAuthUserCollisionException) {
                                         setAction(new RegistrationScreenEffect.RegistrationFailed(R.string.user_already_exists));
                                     } else {

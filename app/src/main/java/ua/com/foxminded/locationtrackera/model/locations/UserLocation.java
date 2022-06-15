@@ -5,7 +5,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class  UserLocation {
+public class UserLocation {
 
     @PrimaryKey(autoGenerate = true)
     public int locationId;

@@ -95,6 +95,9 @@ public class DefaultGpsModel implements GpsSource {
         if (ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
         ) {
+            if (!locationManager.isProviderEnabled("gps")) {
+                gpsStatusSupplier.onNext(GpsStatusConstants.FIX_NOT_ACQUIRED);
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 gnssStatusCallback = new GnssStatus.Callback() {
                     @Override

@@ -14,11 +14,18 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         appInstance = this;
-        appComponent = DaggerAppComponent.create();
     }
 
     public static App getInstance() {
         return appInstance;
+    }
+
+    public static AppComponent getAppComponent() {
+        return appComponent;
+    }
+
+    public static void setAppComponent(AppComponent appComponent) {
+        App.appComponent = appComponent;
     }
 
     public static AppComponent getComponent() {
