@@ -1,7 +1,5 @@
 package ua.com.foxminded.locationtrackera.ui.tracker;
 
-import android.content.Context;
-import android.location.LocationManager;
 import android.os.Build;
 import android.view.View;
 
@@ -40,7 +38,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4ClassRunner.class)
 public class TrackerFragmentTest {
 
-    private static final int WAIT_TIMEOUT_TIME = 10000;
+    private static final int WAIT_TIMEOUT_TIME = 2000;
     private final UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     private final Matcher<View> disabledMatcher = allOf(
             withText("disabled"), CustomItemMatchers.withTextColor(R.color.red_500)
@@ -76,7 +74,7 @@ public class TrackerFragmentTest {
         } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
             allowStr = "ALLOW";
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-                allowStr = "Allow only while using the app";
+            allowStr = "Allow only while using the app";
         } else {
             allowStr = "While using the app";
         }
@@ -105,12 +103,6 @@ public class TrackerFragmentTest {
         device.findObject(By.text(denyStr)).click();
     }
 
-    private boolean isGpsEnabled() {
-        final LocationManager locationManager = (LocationManager) ApplicationProvider
-                .getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled("gps");
-    }
-
     private void checkGpsStatus() {
         try {
             Thread.sleep(500);
@@ -118,13 +110,9 @@ public class TrackerFragmentTest {
             e.printStackTrace();
         }
 
-        if (isGpsEnabled()) {
-            onView(withId(R.id.gps_status)).check(matches(activeMatcher));
-            device.wait(Until.hasObject(By.text("Gps status: enabled")), WAIT_TIMEOUT_TIME);
-            onView(withId(R.id.gps_status)).check(matches(enabledMatcher));
-        } else {
-            onView(withId(R.id.gps_status)).check(matches(disabledMatcher));
-        }
+        onView(withId(R.id.gps_status)).check(matches(activeMatcher));
+        device.wait(Until.hasObject(By.text("Gps status: enabled")), WAIT_TIMEOUT_TIME);
+        onView(withId(R.id.gps_status)).check(matches(enabledMatcher));
     }
 
     private void checkNotification() {
@@ -180,10 +168,10 @@ public class TrackerFragmentTest {
         onView(withId(R.id.tracker_start_stop_btn)).perform(click());
         grandPermission();
 
+        device.wait(Until.hasObject(By.text("Gps status: enabled")), WAIT_TIMEOUT_TIME);
         device.pressHome();
         device.openNotification();
-        device.wait(Until.hasObject(By.textStartsWith("Location Tracker")), WAIT_TIMEOUT_TIME);
-        device.findObject(By.textStartsWith("Location Tracker")).click();
+        device.findObject(By.text("Location Tracker")).click();
 
         try {
             Thread.sleep(1000);
@@ -205,7 +193,7 @@ public class TrackerFragmentTest {
     }
 
     @Test
-    public void testLogout_AssertFirstDialogFragmentAppeared() { //this test requires gps to be enabled
+    public void testLogout_AssertFirstDialogFragmentAppeared() {
         performLogoutTestActions();
 
         onView(withText(R.string.db_not_empty_alert_message)).check(matches(isDisplayed()));
@@ -219,7 +207,7 @@ public class TrackerFragmentTest {
     }
 
     @Test
-    public void testLogout_AssertSecondDialogFragmentAppeared_ActionCancel() { //this test requires gps to be enabled
+    public void testLogout_AssertSecondDialogFragmentAppeared_ActionCancel() {
         performLogoutTestActions();
 
         onView(withText(R.string.send_uppercase)).perform(click());
@@ -230,7 +218,7 @@ public class TrackerFragmentTest {
     }
 
     @Test
-    public void testLogout_AssertSecondDialogFragmentAppeared_ActionDelete() { //this test requires gps to be enabled
+    public void testLogout_AssertSecondDialogFragmentAppeared_ActionDelete() {
         performLogoutTestActions();
 
         onView(withText(R.string.send_uppercase)).perform(click());

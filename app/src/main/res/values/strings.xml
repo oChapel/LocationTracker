@@ -69,7 +69,7 @@
     <string name="cancel">"Cancel"</string>
 
     <!-- FragmentDialog -->
-    <string name="db_not_empty_alert_message">There are some unsent locations. Send them now or delete permanently?</string>
+    <string name="db_not_empty_alert_message">There\'re some unsent locations. Send them now or delete permanently?</string>
     <string name="delete_uppercase">DELETE</string>
     <string name="send_uppercase">SEND</string>
     <string name="failed_to_send_alert_message">Failed to send. Do you want to delete them and logout?</string>
