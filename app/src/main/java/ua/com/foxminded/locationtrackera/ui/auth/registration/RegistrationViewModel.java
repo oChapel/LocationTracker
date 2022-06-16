@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -35,17 +37,17 @@ public class RegistrationViewModel extends MviViewModel<RegistrationScreenState,
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void setUpRegistrationChain() {
         addTillDestroy(
-                credsSupplier.doOnNext(c -> setState(new RegistrationScreenState.RegistrationProgress(true)))
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .observeOn(Schedulers.io())
+                credsSupplier.observeOn(Schedulers.io())
                         .flatMapSingle(creds -> {
                             if (creds.isUsernameValid() && creds.isEmailValid() && creds.isRegistrationPasswordValid()) {
+                                postState(new RegistrationScreenState.RegistrationProgress(true));
                                 return authNetwork.firebaseRegister(creds.username, creds.email, creds.password);
                             } else {
                                 postState(getErrorState(creds));
-                                return Single.just(new Result.Error(new Throwable(AuthErrorConstants.INVALID_USERNAME_EMAIL_PASSWORD)));
+                                return Single.just(new Result.Error<>(new Throwable(AuthErrorConstants.INVALID_USERNAME_EMAIL_PASSWORD)));
                             }
                         }).observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
@@ -55,12 +57,17 @@ public class RegistrationViewModel extends MviViewModel<RegistrationScreenState,
                             } else {
                                 if (!result.toString().contains(AuthErrorConstants.INVALID_USERNAME_EMAIL_PASSWORD)) {
                                     setState(new RegistrationScreenState.RegistrationProgress(false));
-                                    setAction(new RegistrationScreenEffect.RegistrationFailed());
+                                    if (((Result.Error<Void>) result).getError() instanceof FirebaseAuthUserCollisionException) {
+                                        setAction(new RegistrationScreenEffect.RegistrationFailed(R.string.user_already_exists));
+                                    } else {
+                                        setAction(new RegistrationScreenEffect.RegistrationFailed(R.string.registration_failed));
+                                    }
                                 }
                             }
                         }, error -> {
                             error.printStackTrace();
-                            setAction(new RegistrationScreenEffect.RegistrationFailed());
+                            setState(new RegistrationScreenState.RegistrationProgress(false));
+                            setAction(new RegistrationScreenEffect.RegistrationFailed(R.string.registration_failed));
                         })
         );
     }

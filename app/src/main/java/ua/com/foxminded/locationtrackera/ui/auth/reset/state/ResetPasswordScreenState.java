@@ -5,8 +5,8 @@ import ua.com.foxminded.locationtrackera.ui.auth.reset.ResetPasswordContract;
 
 public abstract class ResetPasswordScreenState extends ScreenState<ResetPasswordContract.View> {
 
-    private final boolean isProgressVisible;
-    protected final int emailError;
+    public final boolean isProgressVisible;
+    public final int emailError;
 
     public ResetPasswordScreenState(boolean isProgressVisible) {
         this.isProgressVisible = isProgressVisible;

@@ -100,90 +100,15 @@
             app:layout_constraintStart_toEndOf="@id/tv_service_status"
             app:layout_constraintTop_toBottomOf="@id/tracker_guide_line_top" />
 
-
-        <!-- <TextView
-        android:id="@+id/address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Address: "
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_adress"
-        app:layout_constraintTop_toBottomOf="@id/lon"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteY="277dp" />
-
-    <TextView
-        android:id="@+id/tv_adress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0.0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_lon"
-        app:layout_constraintStart_toEndOf="@+id/address" />
-
-    <TextView
-
-        android:id="@+id/speed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Speed: "
-        app:layout_constraintBottom_toTopOf="@+id/address"
-        app:layout_constraintEnd_toStartOf="@+id/tv_lon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lon" />
-
-    <TextView
-        android:id="@+id/tv_speed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0.0"
-        app:layout_constraintBottom_toTopOf="@+id/tv_adress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/lon"
-        app:layout_constraintTop_toBottomOf="@+id/tv_lon" />
-
-    <TextView
-
-        android:id="@+id/lon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lon: "
-        app:layout_constraintBottom_toTopOf="@+id/speed"
-        app:layout_constraintEnd_toStartOf="@+id/tv_lon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/latitude" />
-
-    <TextView
-        android:id="@+id/tv_lon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0.0"
-        app:layout_constraintBottom_toTopOf="@+id/tv_speed"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/lon"
-        app:layout_constraintTop_toBottomOf="@+id/tv_latitude" />
-
-    <TextView
-
-        android:id="@+id/latitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Latitude: "
-        app:layout_constraintEnd_toStartOf="@+id/tv_latitude"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/lon"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_latitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0.0"
-        app:layout_constraintBaseline_toBaselineOf="@id/latitude"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/latitude"
-        app:layout_constraintTop_toTopOf="parent" />-->
+        <Button
+            android:id="@+id/tracker_start_stop_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

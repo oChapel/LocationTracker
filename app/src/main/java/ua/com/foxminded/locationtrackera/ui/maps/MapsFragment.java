@@ -14,11 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,6 +39,7 @@ import ua.com.foxminded.locationtrackera.mvi.HostedFragment;
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
 import ua.com.foxminded.locationtrackera.ui.maps.state.MapsScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.maps.state.MapsScreenState;
+import ua.com.foxminded.locationtrackera.util.SafeNavigation;
 
 public class MapsFragment extends HostedFragment<
         MapsContract.View,
@@ -82,6 +83,14 @@ public class MapsFragment extends HostedFragment<
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
+        final OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                requireActivity().moveTaskToBack(true);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
     }
 
     @Override
@@ -103,8 +112,8 @@ public class MapsFragment extends HostedFragment<
     @Override
     public void proceedToSplashScreen() {
         Toast.makeText(getContext(), R.string.logged_out, Toast.LENGTH_SHORT).show();
-        Navigation.findNavController(binding.getRoot())
-                .navigate(R.id.nav_from_mapsFragment_to_mapsWelcomeFragment);
+        SafeNavigation.navigate(binding.getRoot(), R.id.mapsFragment,
+                R.id.nav_from_mapsFragment_to_mapsWelcomeFragment);
     }
 
     @Override

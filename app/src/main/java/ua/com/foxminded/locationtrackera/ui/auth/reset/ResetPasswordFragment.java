@@ -79,7 +79,9 @@ public class ResetPasswordFragment extends HostedFragment<
         final int shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
         if (progressTargetAlpha != progressBar.getAlpha()) {
             progressBar.animate().alpha(progressTargetAlpha)
+                    .withStartAction(isVisible ? () -> progressBar.setVisibility(View.VISIBLE) : null)
                     .setDuration(shortAnimationDuration)
+                    .withEndAction(isVisible ? null : () -> progressBar.setVisibility(View.INVISIBLE))
                     .start();
         }
     }

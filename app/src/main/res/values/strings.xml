@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">Location Tracker A</string>
-    <string name="app_name_short">Location Tracker</string>
+    <string name="app_name">Location Tracker</string>
+    <string name="app_name_a">Location Tracker A</string>
+    <string name="app_name_b">Location Tracker B</string>
 
     <string name="login_uppercase">LOG IN</string>
     <string name="login_underlined"><u>Log in</u></string>
@@ -24,9 +25,12 @@
     <!-- Tracker Fragment -->
     <string name="gps_status">Gps status:</string>
     <string name="service_status">Service status:</string>
-    <string name="connecting">connecting</string>
+    <string name="connecting">active</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
+    <string name="no_permission">-</string>
+    <string name="stop_service">Stop service</string>
+    <string name="start_service">Start service</string>
 
     <!-- Maps Fragment -->
     <string name="timeline">Timeline</string>
@@ -34,6 +38,10 @@
     <string name="select_end_time">Select end time</string>
     <string name="select_end_date">Select end date</string>
     <string name="select_start_date">Select start date</string>
+
+    <!-- Service -->
+    <string name="service_description">Service that tracks your location</string>
+    <string name="service_label">Location Service</string>
 
     <!-- Errors -->
     <string name="empty_field">This field cannot be empty</string>
@@ -44,6 +52,7 @@
     <!-- Toasts -->
     <string name="successful_registration">Registration is successful</string>
     <string name="registration_failed">Failed to register. Try again</string>
+    <string name="user_already_exists">User with such email already exists</string>
     <string name="login_failed">"Failed to login. Please check your email and password"</string>
     <string name="successful_login">"Welcome back!"</string>
     <string name="reset_failed">"Failed to reset password. Please check your email or internet connection"</string>
@@ -60,7 +69,7 @@
     <string name="cancel">"Cancel"</string>
 
     <!-- FragmentDialog -->
-    <string name="db_not_empty_alert_message">There are some unsent locations. Send them now or delete permanently?</string>
+    <string name="db_not_empty_alert_message">There\'re some unsent locations. Send them now or delete permanently?</string>
     <string name="delete_uppercase">DELETE</string>
     <string name="send_uppercase">SEND</string>
     <string name="failed_to_send_alert_message">Failed to send. Do you want to delete them and logout?</string>

@@ -3,7 +3,6 @@ package ua.com.foxminded.locationtrackera.ui.tracker;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -23,7 +23,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -37,13 +36,14 @@ import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory;
 import ua.com.foxminded.locationtrackera.ui.tracker.dialog.TrackerDialogFragment;
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenState;
+import ua.com.foxminded.locationtrackera.util.SafeNavigation;
 
 public class TrackerFragment extends HostedFragment<
         TrackerContract.View,
         TrackerScreenState,
         TrackerScreenEffect,
         TrackerContract.ViewModel,
-        TrackerContract.Host> implements TrackerContract.View {
+        TrackerContract.Host> implements TrackerContract.View, View.OnClickListener {
 
     private static final int GOOGLE_API_AVAILABILITY_REQUEST_CODE = 101;
 
@@ -52,7 +52,7 @@ public class TrackerFragment extends HostedFragment<
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
-                    startService();
+                    checkBackgroundLocationPermissionGranted();
                 } else {
                     Toast.makeText(getContext(), R.string.permission_denied, Toast.LENGTH_LONG).show();
                 }
@@ -83,7 +83,16 @@ public class TrackerFragment extends HostedFragment<
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        checkGoogleServicesAvailability();
+
+        final OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                requireActivity().moveTaskToBack(true);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backPressedCallback);
+
+        binding.trackerStartStopBtn.setOnClickListener(this);
     }
 
     @Override
@@ -98,8 +107,8 @@ public class TrackerFragment extends HostedFragment<
     public void proceedToSplashScreen() {
         stopService();
         Toast.makeText(getContext(), R.string.logged_out, Toast.LENGTH_SHORT).show();
-        Navigation.findNavController(binding.getRoot())
-                .navigate(R.id.nav_from_trackerFragment_to_welcomeFragment);
+        SafeNavigation.navigate(binding.getRoot(), R.id.trackerFragment,
+                R.id.nav_from_trackerFragment_to_welcomeFragment);
     }
 
     @Override
@@ -110,9 +119,11 @@ public class TrackerFragment extends HostedFragment<
         } else if (gpsStatus == GpsStatusConstants.FIX_NOT_ACQUIRED) {
             binding.gpsStatus.setText(R.string.disabled);
             binding.gpsStatus.setTextColor(getResources().getColor(R.color.red_500));
-        } else if (gpsStatus == GpsStatusConstants.CONNECTING) {
+        } else if (gpsStatus == GpsStatusConstants.ACTIVE) {
             binding.gpsStatus.setText(R.string.connecting);
             binding.gpsStatus.setTextColor(getResources().getColor(R.color.yellow_700));
+        } else if (gpsStatus == GpsStatusConstants.NO_PERMISSION) {
+            binding.gpsStatus.setText(R.string.no_permission);
         }
     }
 
@@ -121,18 +132,29 @@ public class TrackerFragment extends HostedFragment<
         if (isEnabled) {
             binding.serviceStatus.setText(R.string.enabled);
             binding.serviceStatus.setTextColor(getResources().getColor(R.color.green_500));
+            binding.trackerStartStopBtn.setText(R.string.stop_service);
         } else {
             binding.serviceStatus.setText(R.string.disabled);
             binding.serviceStatus.setTextColor(getResources().getColor(R.color.red_500));
+            binding.trackerStartStopBtn.setText(R.string.start_service);
         }
-
     }
 
     @Override
     public void showDialogFragment(int argType, int message, int negativeButton, int positiveButton) {
-        final TrackerDialogFragment dialog
-                = TrackerDialogFragment.newInstance(argType, message, negativeButton, positiveButton);
-        dialog.show(getChildFragmentManager(), "logout_dialog");
+        TrackerDialogFragment.newInstance(argType, message, negativeButton, positiveButton)
+                .show(getChildFragmentManager(), "logout_dialog");
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == binding.trackerStartStopBtn) {
+            if (isLocationServiceRunning()) {
+                stopService();
+            } else {
+                checkGoogleServicesAvailability();
+            }
+        }
     }
 
     public void doPositiveButton(int code) {
@@ -140,8 +162,8 @@ public class TrackerFragment extends HostedFragment<
     }
 
     public void doNegativeButton(int code) {
-        if (code == 1) {
-            getModel().setDialogResponse(code);
+        if (code == 0) {
+            getModel().setDialogResponse(1);
         }
     }
 
@@ -161,8 +183,9 @@ public class TrackerFragment extends HostedFragment<
 
     private void checkPermissionGranted() {
         if (ActivityCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            startService();
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ) {
+            checkBackgroundLocationPermissionGranted();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -170,19 +193,31 @@ public class TrackerFragment extends HostedFragment<
         }
     }
 
+    private void checkBackgroundLocationPermissionGranted() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            startService();
+            return;
+        }
+        if (ActivityCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ) {
+            startService();
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        }
+    }
+
     private void startService() {
         if (!isLocationServiceRunning()) {
             getModel().setSharedPreferencesServiceFlag(true);
-            final Intent serviceIntent = new Intent(getContext(), LocationService.class);
-            ContextCompat.startForegroundService(requireContext(), serviceIntent);
+            ContextCompat.startForegroundService(requireContext(), LocationService.getIntent(getContext()));
         }
     }
 
     private void stopService() {
         if (isLocationServiceRunning()) {
             getModel().setSharedPreferencesServiceFlag(false);
-            final Intent serviceIntent = new Intent(getContext(), LocationService.class);
-            requireActivity().stopService(serviceIntent);
+            requireActivity().stopService(LocationService.getIntent(getContext()));
         }
     }
 

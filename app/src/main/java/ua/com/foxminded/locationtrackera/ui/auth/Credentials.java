@@ -1,7 +1,8 @@
 package ua.com.foxminded.locationtrackera.ui.auth;
 
 import android.text.TextUtils;
-import android.util.Patterns;
+
+import androidx.core.util.PatternsCompat;
 
 import ua.com.foxminded.locationtrackera.util.Utils;
 
@@ -29,7 +30,7 @@ public class Credentials {
     }
 
     public boolean isEmailValid() {
-        return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return !TextUtils.isEmpty(email) && PatternsCompat.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     public boolean isPasswordValid() {

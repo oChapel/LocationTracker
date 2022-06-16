@@ -37,14 +37,13 @@ public class ResetPasswordViewModel extends MviViewModel<ResetPasswordScreenStat
 
     private void setUpResetPasswordChain() {
         addTillDestroy(
-                credsSupplier.doOnNext(c -> setState(new ResetPasswordScreenState.ResetPasswordProgress(true)))
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .observeOn(Schedulers.io())
+                credsSupplier.observeOn(Schedulers.io())
                         .flatMapSingle(creds -> {
                             if (creds.isEmailValid()) {
+                                postState(new ResetPasswordScreenState.ResetPasswordProgress(true));
                                 return authNetwork.resetPassword(creds.email);
                             } else {
-                                return Single.just(new Result.Error(new Throwable(AuthErrorConstants.INVALID_EMAIL)));
+                                return Single.just(new Result.Error<>(new Throwable(AuthErrorConstants.INVALID_EMAIL)));
                             }
                         }).observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {

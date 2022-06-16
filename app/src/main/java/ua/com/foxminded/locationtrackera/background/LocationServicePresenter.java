@@ -1,9 +1,7 @@
 package ua.com.foxminded.locationtrackera.background;
 
-import java.util.Calendar;
-
-import android.location.Location;
-
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -42,38 +40,22 @@ public class LocationServicePresenter implements LocationServiceContract.Present
     @Override
     public void onStart() {
         setObservers();
-        gpsServices.setUpServices();
-        gpsServices.startLocationUpdates();
-        gpsServices.registerGpsOrGnssStatusChanges();
+        gpsServices.onServiceStarted();
         cache.serviceStatusChanged(true);
         workModel.setLocationsUploader();
     }
 
     @Override
-    public boolean saveUserLocation(Location location) {
-        if (location != null) {
-            repository.saveLocation(new UserLocation(
-                    location.getLatitude(),
-                    location.getLongitude(),
-                    Calendar.getInstance().getTimeInMillis()
-            ));
-        }
-        return repository.getAllLocations().size() >= 5;
+    public @NonNull Completable saveUserLocation(UserLocation location) {
+        return Completable.fromRunnable(() -> repository.saveLocation(location));
     }
 
     private void setObservers() {
         compositeDisposable.addAll(
-                gpsServices.getGpsStatusObservable().subscribe(cache::setGpsStatus),
-
                 gpsServices.getLocationObservable()
                         .observeOn(Schedulers.io())
-                        .flatMapSingle(location -> Single.just(saveUserLocation(location)))
-                        .flatMapSingle(aBoolean -> {
-                            if (aBoolean) {
-                                return sendLocationsUseCase.execute();
-                            }
-                            return null;
-                        })
+                        .flatMapCompletable(this::saveUserLocation)
+                        .andThen(Single.defer(sendLocationsUseCase::execute))
                         .subscribe(result -> {
                             if (result.isSuccessful()) {
                                 repository.deleteLocationsFromDb();
@@ -87,7 +69,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
     @Override
     public Observable<Integer> getGpsStatusObservable() {
         return gpsServices.getGpsStatusObservable().map(status -> {
-            if (status == GpsStatusConstants.CONNECTING) {
+            if (status == GpsStatusConstants.ACTIVE) {
                 return R.string.connecting;
             } else if (status == GpsStatusConstants.FIX_ACQUIRED) {
                 return R.string.enabled;
@@ -101,7 +83,7 @@ public class LocationServicePresenter implements LocationServiceContract.Present
 
     @Override
     public void onDestroy() {
-        gpsServices.onDestroy();
+        gpsServices.onServiceStopped();
         compositeDisposable.dispose();
         cache.serviceStatusChanged(false);
     }

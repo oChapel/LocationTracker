@@ -16,7 +16,7 @@ public abstract class MapsScreenEffect extends AbstractEffect<MapsContract.View>
     }
 
     public static class PlaceMarkers extends MapsScreenEffect {
-        private final List<UserLocation> locationList;
+        public final List<UserLocation> locationList;
 
         public PlaceMarkers(List<UserLocation> locationList) {
             this.locationList = locationList;
@@ -29,7 +29,7 @@ public abstract class MapsScreenEffect extends AbstractEffect<MapsContract.View>
     }
 
     public static class ShowToast extends MapsScreenEffect {
-        private final int resId;
+        public final int resId;
 
         public ShowToast(int resId) {
             this.resId = resId;

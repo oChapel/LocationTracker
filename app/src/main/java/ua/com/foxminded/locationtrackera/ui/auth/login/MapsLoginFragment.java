@@ -3,9 +3,8 @@ package ua.com.foxminded.locationtrackera.ui.auth.login;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.navigation.Navigation;
-
 import ua.com.foxminded.locationtrackera.R;
+import ua.com.foxminded.locationtrackera.util.SafeNavigation;
 
 public class MapsLoginFragment extends LoginFragment {
 
@@ -14,18 +13,18 @@ public class MapsLoginFragment extends LoginFragment {
         if (view == binding.loginBtn) {
             super.onClick(view);
         } else if (view == binding.signUpTxt) {
-            Navigation.findNavController(binding.getRoot())
-                    .navigate(R.id.nav_from_mapsLoginFragment_to_mapsRegistrationFragment);
+            SafeNavigation.navigate(binding.getRoot(), R.id.mapsLoginFragment,
+                    R.id.nav_from_mapsLoginFragment_to_mapsRegistrationFragment);
         } else if (view == binding.forgotPasswordTxt) {
-            Navigation.findNavController(binding.getRoot())
-                    .navigate(R.id.nav_from_mapsLoginFragment_to_resetPasswordFragment);
+            SafeNavigation.navigate(binding.getRoot(), R.id.mapsLoginFragment,
+                    R.id.nav_from_mapsLoginFragment_to_resetPasswordFragment);
         }
     }
 
     @Override
     public void proceedToNextScreen() {
         Toast.makeText(requireContext(), R.string.successful_login, Toast.LENGTH_SHORT).show();
-        Navigation.findNavController(binding.getRoot())
-                .navigate(R.id.nav_from_mapsLoginFragment_to_mapsFragment);
+        SafeNavigation.navigate(binding.getRoot(), R.id.mapsLoginFragment,
+                R.id.nav_from_mapsLoginFragment_to_mapsFragment);
     }
 }

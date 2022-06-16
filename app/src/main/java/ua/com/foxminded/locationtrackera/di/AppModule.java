@@ -7,12 +7,9 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-import ua.com.foxminded.locationtrackera.App;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.auth.FirebaseAuthNetwork;
 import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
-import ua.com.foxminded.locationtrackera.model.shared_preferences.DefaultSharedPreferencesModel;
-import ua.com.foxminded.locationtrackera.model.shared_preferences.SharedPreferencesModel;
 import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
 import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCaseImpl;
 
@@ -28,10 +25,5 @@ public class AppModule {
     @Provides
     public SendLocationsUseCase provideSendLocationsUseCase(LocationRepository repository) {
         return new SendLocationsUseCaseImpl(repository);
-    }
-
-    @Provides
-    public SharedPreferencesModel provideSharedPreferenceModel() {
-        return new DefaultSharedPreferencesModel(App.getInstance());
     }
 }

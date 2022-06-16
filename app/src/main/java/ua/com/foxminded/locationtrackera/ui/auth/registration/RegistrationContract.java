@@ -19,7 +19,7 @@ public class RegistrationContract {
 
         void proceedToNextScreen();
 
-        void showFailureToastMessage();
+        void showFailureToastMessage(int resId);
     }
 
     public interface Host extends FragmentContract.Host{

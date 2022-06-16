@@ -5,10 +5,10 @@ import ua.com.foxminded.locationtrackera.ui.auth.registration.RegistrationContra
 
 public abstract class RegistrationScreenState extends ScreenState<RegistrationContract.View> {
 
-    private final boolean isProgressVisible;
-    protected final int usernameError;
-    protected final int emailError;
-    protected final int passwordError;
+    public final boolean isProgressVisible;
+    public final int usernameError;
+    public final int emailError;
+    public final int passwordError;
 
     public RegistrationScreenState(boolean isProgressVisible) {
         this.isProgressVisible = isProgressVisible;

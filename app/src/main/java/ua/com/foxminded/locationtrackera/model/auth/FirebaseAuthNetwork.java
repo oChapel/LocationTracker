@@ -96,6 +96,11 @@ public class FirebaseAuthNetwork implements AuthNetwork {
     }
 
     @Override
+    public boolean isUserLoggedIn() {
+        return firebaseAuth.getCurrentUser() != null;
+    }
+
+    @Override
     public void logout() {
         firebaseAuth.signOut();
     }

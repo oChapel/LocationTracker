@@ -15,6 +15,8 @@ import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
 import ua.com.foxminded.locationtrackera.model.gps.DefaultGpsModel;
 import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
 import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.model.shared_preferences.DefaultSharedPreferencesModel;
+import ua.com.foxminded.locationtrackera.model.shared_preferences.SharedPreferencesModel;
 import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
 
 @Module
@@ -36,6 +38,12 @@ public class ServiceModule {
     @Singleton
     public UploadWorkModel provideUploadWorkModel() {
         return new DefaultUploadWorkModel(App.getInstance());
+    }
+
+    @Provides
+    @Singleton
+    public SharedPreferencesModel provideSharedPreferenceModel() {
+        return new DefaultSharedPreferencesModel(App.getInstance());
     }
 
     @Provides

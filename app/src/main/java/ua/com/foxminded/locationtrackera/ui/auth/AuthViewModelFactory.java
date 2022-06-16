@@ -10,9 +10,12 @@ import ua.com.foxminded.locationtrackera.App;
 import ua.com.foxminded.locationtrackera.di.AppComponent;
 import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
 import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
+import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
 import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
 import ua.com.foxminded.locationtrackera.model.shared_preferences.SharedPreferencesModel;
 import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
+import ua.com.foxminded.locationtrackera.ui.MapsHostViewModel;
+import ua.com.foxminded.locationtrackera.ui.TrackerHostViewModel;
 import ua.com.foxminded.locationtrackera.ui.auth.login.LoginViewModel;
 import ua.com.foxminded.locationtrackera.ui.auth.registration.RegistrationViewModel;
 import ua.com.foxminded.locationtrackera.ui.auth.reset.ResetPasswordViewModel;
@@ -38,6 +41,9 @@ public class AuthViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     @Inject
     SharedPreferencesModel sharedPreferencesModel;
 
+    @Inject
+    GpsSource gpsSource;
+
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
@@ -50,9 +56,15 @@ public class AuthViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         } else if (modelClass.isAssignableFrom(ResetPasswordViewModel.class)) {
             return (T) new ResetPasswordViewModel(authNetwork);
         } else if (modelClass.isAssignableFrom(TrackerViewModel.class)) {
-            return (T) new TrackerViewModel(authNetwork, cache, repository, sendLocationsUseCase, sharedPreferencesModel);
+            return (T) new TrackerViewModel(
+                    authNetwork, cache, repository, sendLocationsUseCase, sharedPreferencesModel, gpsSource
+            );
         } else if (modelClass.isAssignableFrom(MapsViewModel.class)) {
             return (T) new MapsViewModel(authNetwork, repository);
+        } else if (modelClass.isAssignableFrom(MapsHostViewModel.class)) {
+            return (T) new MapsHostViewModel(authNetwork);
+        } else if (modelClass.isAssignableFrom(TrackerHostViewModel.class)) {
+            return (T) new TrackerHostViewModel(authNetwork);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

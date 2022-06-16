@@ -12,7 +12,7 @@ public class MapsContract {
     public interface ViewModel extends FragmentContract.ViewModel<MapsScreenState, MapsScreenEffect> {
         void logout();
 
-        void retrieveLocationsByDate(double startDate, double endDate);
+        void retrieveLocationsByDate(long startDate, long endDate);
 
         void retrieveDefaultLocations();
     }

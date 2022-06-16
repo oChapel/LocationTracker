@@ -7,7 +7,7 @@ public abstract class ResetPasswordScreenEffect extends AbstractEffect<ResetPass
 
     public static class ResetPasswordShowStatus extends ResetPasswordScreenEffect {
 
-        private final int idStringResource;
+        public final int idStringResource;
 
         public ResetPasswordShowStatus(int idStringResource) {
             this.idStringResource = idStringResource;

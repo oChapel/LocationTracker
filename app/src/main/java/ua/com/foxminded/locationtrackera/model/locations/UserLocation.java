@@ -11,9 +11,9 @@ public class UserLocation {
     public int locationId;
     public double latitude;
     public double longitude;
-    public double date;
+    public long date;
 
-    public UserLocation(double latitude, double longitude, double date) {
+    public UserLocation(double latitude, double longitude, long date) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.date = date;
