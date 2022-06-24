@@ -1,22 +1,21 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
-    compileSdkVersion 32
-    buildToolsVersion "31.0.0"
+    compileSdkVersion project.compile
+    buildToolsVersion project.tools
 
     defaultConfig {
         applicationId "ua.com.foxminded.locationtrackera"
-        minSdkVersion 19
-        targetSdkVersion 32
+        minSdkVersion project.min
+        targetSdkVersion project.target
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
-
-        buildConfigField "int", "UPDATE_INTERVAL", "600"
-        buildConfigField "int", "TRACKING_SENSIVITY", "60"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
@@ -27,25 +26,18 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        debug {
-            buildConfigField "int", "UPDATE_INTERVAL", "5"
-            buildConfigField "int", "TRACKING_SENSIVITY", "10"
-        }
     }
 
     flavorDimensions "provider"
     productFlavors {
         gps {
             dimension "provider"
-            buildConfigField "String", "LOCATION_PROVIDER", "\"gps\""
         }
         network {
             dimension "provider"
-            buildConfigField "String", "LOCATION_PROVIDER", "\"network\""
         }
         passive {
             dimension "provider"
-            buildConfigField "String", "LOCATION_PROVIDER", "\"passive\""
         }
     }
 
@@ -65,8 +57,12 @@ android {
 
 dependencies {
 
+    implementation project(path: ':mvi')
+    implementation project(path: ':models')
+    implementation project(path: ':models_impl')
+
     //AndroidX
-    implementation "androidx.core:core:1.8.0"
+    implementation "androidx.core:core-ktx:1.8.0"
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -75,15 +71,9 @@ dependencies {
 
     // Navigation component
     def nav_version = "2.4.2"
-    implementation "androidx.navigation:navigation-fragment:$nav_version"
-    implementation "androidx.navigation:navigation-ui:$nav_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
-
-    //Room
-    def room_version = "2.4.2"
-    implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-rxjava3:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
 
     //WorkManager
     def work_version = "2.7.1"
@@ -92,16 +82,13 @@ dependencies {
     //Dagger 2
     def dagger_version = "2.40"
     implementation "com.google.dagger:dagger:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
-    androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
 
     //Google Play Services
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
-    implementation 'com.google.android.gms:play-services-location:20.0.0'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-firestore:24.1.2'
-    implementation 'com.google.firebase:firebase-core:21.0.0'
     implementation 'com.google.firebase:firebase-auth:21.0.5'
 
     //RxJava, RxAndroid
@@ -111,6 +98,7 @@ dependencies {
     //JUnit, Mockito
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:3.2.4'
+    testImplementation 'org.mockito:mockito-inline:2.8.47'
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
 

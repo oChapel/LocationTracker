@@ -22,13 +22,13 @@ import io.reactivex.rxjava3.core.Single;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.TrampolineSchedulerRule;
 import ua.com.foxminded.locationtrackera.background.jobs.UploadWorkModel;
-import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
-import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
-import ua.com.foxminded.locationtrackera.model.gps.GpsStatusConstants;
-import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
-import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
-import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
-import ua.com.foxminded.locationtrackera.util.Result;
+import ua.com.foxminded.locationtrackera.models.bus.TrackerCache;
+import ua.com.foxminded.locationtrackera.models.gps.GpsSource;
+import ua.com.foxminded.locationtrackera.models.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.models.locations.UserLocation;
+import ua.com.foxminded.locationtrackera.models.usecase.SendLocationsUseCase;
+import ua.com.foxminded.locationtrackera.models.util.Result;
+import ua.com.foxminded.locationtrackera.models_impl.gps.GpsStatusConstants;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LocationServicePresenterTest {
@@ -69,7 +69,6 @@ public class LocationServicePresenterTest {
         verify(gpsServices, times(1)).onServiceStarted();
         verify(gpsServices, times(1)).getLocationObservable();
         verify(cache, times(1)).serviceStatusChanged(true);
-        verify(workModel, times(1)).setLocationsUploader();
     }
 
     @Test

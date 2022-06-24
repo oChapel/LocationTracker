@@ -24,10 +24,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import io.reactivex.rxjava3.core.Single;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.TrampolineSchedulerRule;
-import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.models.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.models.util.Result;
 import ua.com.foxminded.locationtrackera.ui.auth.reset.state.ResetPasswordScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.auth.reset.state.ResetPasswordScreenState;
-import ua.com.foxminded.locationtrackera.util.Result;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResetPasswordViewModelTest {
@@ -56,7 +56,7 @@ public class ResetPasswordViewModelTest {
 
         stateCaptor = ArgumentCaptor.forClass(ResetPasswordScreenState.class);
         actionCaptor = ArgumentCaptor.forClass(ResetPasswordScreenEffect.class);
-        model.onStateChanged(null, Lifecycle.Event.ON_CREATE);
+        model.onStateChanged(Lifecycle.Event.ON_CREATE);
     }
 
     @After
@@ -92,7 +92,7 @@ public class ResetPasswordViewModelTest {
         checkResetStateCount();
         assertEquals(
                 R.string.reset_failed,
-                ((ResetPasswordScreenEffect.ResetPasswordShowStatus) actionCaptor.getValue()).idStringResource
+                ((ResetPasswordScreenEffect.ResetPasswordShowStatus) actionCaptor.getValue()).getIdStringResource()
         );
     }
 
@@ -106,7 +106,7 @@ public class ResetPasswordViewModelTest {
             e.printStackTrace();
         }
 
-        verify(stateObserver, times(3)).onChanged(stateCaptor.capture());
+        verify(stateObserver, times(2)).onChanged(stateCaptor.capture());
         int loadingCounter = 0;
         int errorCounter = 0;
         for (ResetPasswordScreenState value : stateCaptor.getAllValues()) {
@@ -114,10 +114,10 @@ public class ResetPasswordViewModelTest {
                 loadingCounter += 1;
             } else if (value instanceof ResetPasswordScreenState.ResetPasswordError) {
                 errorCounter += 1;
-                assertEquals(R.string.invalid_email, value.emailError);
+                assertEquals(R.string.invalid_email, value.getEmailError());
             }
         }
-        assertEquals(2, loadingCounter);
+        assertEquals(1, loadingCounter);
         assertEquals(1, errorCounter);
         verifyNoMore();
     }
@@ -151,7 +151,7 @@ public class ResetPasswordViewModelTest {
         checkResetStateCount();
         assertEquals(
                 R.string.successful_reset,
-                ((ResetPasswordScreenEffect.ResetPasswordShowStatus) actionCaptor.getValue()).idStringResource
+                ((ResetPasswordScreenEffect.ResetPasswordShowStatus) actionCaptor.getValue()).getIdStringResource()
         );
     }
 }

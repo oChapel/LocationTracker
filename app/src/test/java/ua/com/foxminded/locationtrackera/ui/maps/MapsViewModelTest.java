@@ -28,12 +28,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import io.reactivex.rxjava3.core.Single;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.TrampolineSchedulerRule;
-import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
-import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
-import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
+import ua.com.foxminded.locationtrackera.models.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.models.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.models.locations.UserLocation;
+import ua.com.foxminded.locationtrackera.models.util.Result;
 import ua.com.foxminded.locationtrackera.ui.maps.state.MapsScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.maps.state.MapsScreenState;
-import ua.com.foxminded.locationtrackera.util.Result;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MapsViewModelTest {
@@ -62,7 +62,7 @@ public class MapsViewModelTest {
         model.getEffectObservable().observeForever(effectObserver);
 
         actionCaptor = ArgumentCaptor.forClass(MapsScreenEffect.class);
-        model.onStateChanged(null, Lifecycle.Event.ON_RESUME);
+        model.onStateChanged(Lifecycle.Event.ON_RESUME);
     }
 
     @After
@@ -88,7 +88,10 @@ public class MapsViewModelTest {
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
         verify(repository, times(1)).retrieveLocations(anyLong(), anyLong());
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.ShowToast);
-        assertEquals(R.string.retrieve_failed, ((MapsScreenEffect.ShowToast) actionCaptor.getValue()).resId);
+        assertEquals(
+                R.string.retrieve_failed,
+                ((MapsScreenEffect.ShowToast) actionCaptor.getValue()).getResId()
+        );
         verifyNoMore();
     }
 
@@ -104,7 +107,10 @@ public class MapsViewModelTest {
 
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.ShowToast);
-        assertEquals(R.string.invalid_time_period, ((MapsScreenEffect.ShowToast) actionCaptor.getValue()).resId);
+        assertEquals(
+                R.string.invalid_time_period,
+                ((MapsScreenEffect.ShowToast) actionCaptor.getValue()).getResId()
+        );
         verifyNoMore();
     }
 
@@ -130,7 +136,10 @@ public class MapsViewModelTest {
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
         verify(repository, times(1)).retrieveLocations(anyLong(), anyLong());
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.ShowToast);
-        assertEquals(R.string.no_locations_in_current_period, ((MapsScreenEffect.ShowToast) actionCaptor.getValue()).resId);
+        assertEquals(
+                R.string.no_locations_in_current_period,
+                ((MapsScreenEffect.ShowToast) actionCaptor.getValue()).getResId()
+        );
         verifyNoMore();
     }
 
@@ -151,7 +160,7 @@ public class MapsViewModelTest {
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
         verify(repository, times(1)).retrieveLocations(anyLong(), anyLong());
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.PlaceMarkers);
-        assertEquals(locationList, ((MapsScreenEffect.PlaceMarkers) actionCaptor.getValue()).locationList);
+        assertEquals(locationList, ((MapsScreenEffect.PlaceMarkers) actionCaptor.getValue()).getLocationList());
         verifyNoMore();
     }
 
@@ -173,7 +182,7 @@ public class MapsViewModelTest {
         verify(effectObserver, times(1)).onChanged(actionCaptor.capture());
         verify(repository, times(1)).retrieveLocations(anyLong(), anyLong());
         assertTrue(actionCaptor.getValue() instanceof MapsScreenEffect.PlaceMarkers);
-        assertEquals(locationList, ((MapsScreenEffect.PlaceMarkers) actionCaptor.getValue()).locationList);
+        assertEquals(locationList, ((MapsScreenEffect.PlaceMarkers) actionCaptor.getValue()).getLocationList());
         verifyNoMore();
     }
 

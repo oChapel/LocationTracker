@@ -12,7 +12,6 @@ import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.di.DaggerTestComponent;
 import ua.com.foxminded.locationtrackera.ui.TrackerActivity;
 
-
 @RunWith(AndroidJUnit4ClassRunner.class)
 public class ResetPasswordFragmentTest extends ResetPasswordInstrumentedTest {
 
@@ -20,7 +19,7 @@ public class ResetPasswordFragmentTest extends ResetPasswordInstrumentedTest {
     public void setUp() {
         final ActivityScenario<TrackerActivity> activityScenario = ActivityScenario.launch(TrackerActivity.class);
         activityScenario.onActivity(activity -> {
-            App.setAppComponent(DaggerTestComponent.create());
+            App.component = DaggerTestComponent.create();
             ((NavHostFragment) activity.getSupportFragmentManager().findFragmentById(R.id.trackerHostContainerView))
                     .getNavController()
                     .navigate(R.id.resetPasswordFragment);

@@ -4,13 +4,12 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-
-import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
-import ua.com.foxminded.locationtrackera.model.locations.LocationRepositoryImpl;
-import ua.com.foxminded.locationtrackera.model.locations.dao.TestLocationsDao;
-import ua.com.foxminded.locationtrackera.model.locations.network.TestLocationsNetwork;
-import ua.com.foxminded.locationtrackera.model.locations.dao.LocationsDao;
-import ua.com.foxminded.locationtrackera.model.locations.network.LocationsNetwork;
+import ua.com.foxminded.locationtrackera.models.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.models.locations.dao.LocationsDao;
+import ua.com.foxminded.locationtrackera.models.locations.network.LocationsNetwork;
+import ua.com.foxminded.locationtrackera.models_impl.locations.LocationRepositoryImpl;
+import ua.com.foxminded.locationtrackera.models_impl.locations.dao.TestLocationsDao;
+import ua.com.foxminded.locationtrackera.models_impl.locations.network.TestLocationsNetwork;
 
 @Module
 public class TestDataModule {

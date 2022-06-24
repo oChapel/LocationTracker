@@ -29,16 +29,16 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.TrampolineSchedulerRule;
-import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
-import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
-import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
-import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
-import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
-import ua.com.foxminded.locationtrackera.model.shared_preferences.SharedPreferencesModel;
-import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
+import ua.com.foxminded.locationtrackera.models.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.models.bus.TrackerCache;
+import ua.com.foxminded.locationtrackera.models.gps.GpsSource;
+import ua.com.foxminded.locationtrackera.models.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.models.locations.UserLocation;
+import ua.com.foxminded.locationtrackera.models.shared_preferences.SharedPreferencesModel;
+import ua.com.foxminded.locationtrackera.models.usecase.SendLocationsUseCase;
+import ua.com.foxminded.locationtrackera.models.util.Result;
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenState;
-import ua.com.foxminded.locationtrackera.util.Result;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TrackerViewModelTest {
@@ -81,8 +81,8 @@ public class TrackerViewModelTest {
 
         when(gpsServices.getGpsStatusObservable()).thenReturn(Observable.just(0));
         when(cache.setServiceStatusObservable()).thenReturn(Observable.just(true));
-        model.onStateChanged(null, Lifecycle.Event.ON_CREATE);
-        model.onStateChanged(null, Lifecycle.Event.ON_RESUME);
+        model.onStateChanged(Lifecycle.Event.ON_CREATE);
+        model.onStateChanged(Lifecycle.Event.ON_RESUME);
     }
 
     @After
@@ -104,7 +104,6 @@ public class TrackerViewModelTest {
     }
 
     private void verifyGpsSourceInteractions() {
-        verify(gpsServices, times(1)).setUpServices();
         verify(gpsServices, times(1)).startLocationUpdates();
         verify(gpsServices, times(1)).registerGpsOrGnssStatusChanges();
 
@@ -115,10 +114,10 @@ public class TrackerViewModelTest {
     private void assertDialogFragmentArgsEqual(
             int argType, int message, int negativeButton, int positiveButton
     ) {
-        assertEquals(argType, ((TrackerScreenEffect.ShowDialogFragment) actionCaptor.getValue()).argType);
-        assertEquals(message, ((TrackerScreenEffect.ShowDialogFragment) actionCaptor.getValue()).message);
-        assertEquals(negativeButton, ((TrackerScreenEffect.ShowDialogFragment) actionCaptor.getValue()).negativeButton);
-        assertEquals(positiveButton, ((TrackerScreenEffect.ShowDialogFragment) actionCaptor.getValue()).positiveButton);
+        assertEquals(argType, ((TrackerScreenEffect.ShowDialogFragment) actionCaptor.getValue()).getArgType());
+        assertEquals(message, ((TrackerScreenEffect.ShowDialogFragment) actionCaptor.getValue()).getMessage());
+        assertEquals(negativeButton, ((TrackerScreenEffect.ShowDialogFragment) actionCaptor.getValue()).getNegativeButton());
+        assertEquals(positiveButton, ((TrackerScreenEffect.ShowDialogFragment) actionCaptor.getValue()).getPositiveButton());
     }
 
     private void checkResponseFailed() {
@@ -145,7 +144,7 @@ public class TrackerViewModelTest {
         verify(stateObserver, times(2)).onChanged(stateCaptor.capture());
         verifyGpsSourceInteractions();
 
-        model.onStateChanged(null, Lifecycle.Event.ON_DESTROY);
+        model.onStateChanged(Lifecycle.Event.ON_DESTROY);
         verify(gpsServices, times(1)).onDestroy();
         verifyNoMore();
     }

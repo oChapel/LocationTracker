@@ -56,7 +56,7 @@ public class TrackerFragmentTest {
     public void setUp() {
         final ActivityScenario<TrackerActivity> activityScenario = ActivityScenario.launch(TrackerActivity.class);
         activityScenario.onActivity(activity -> {
-            App.setAppComponent(DaggerTestComponent.create());
+            App.component = DaggerTestComponent.create();
             navController = ((NavHostFragment) activity.getSupportFragmentManager().findFragmentById(R.id.trackerHostContainerView))
                     .getNavController();
             navController.navigate(R.id.trackerFragment);

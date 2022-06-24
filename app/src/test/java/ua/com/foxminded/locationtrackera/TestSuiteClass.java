@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import ua.com.foxminded.locationtrackera.background.LocationServicePresenterTest;
-import ua.com.foxminded.locationtrackera.model.ModelSuiteTestClass;
+import ua.com.foxminded.locationtrackera.models_impl.ModelSuiteTestClass;
 import ua.com.foxminded.locationtrackera.ui.auth.login.LoginTestSuiteClass;
 import ua.com.foxminded.locationtrackera.ui.auth.registration.RegistrationTestSuiteClass;
 import ua.com.foxminded.locationtrackera.ui.auth.reset.ResetPasswordTestSuiteClass;
