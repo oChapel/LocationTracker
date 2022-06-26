@@ -50,6 +50,9 @@ dependencies {
     //RxJava
     implementation "io.reactivex.rxjava3:rxjava:$rxjava_version"
 
+    //Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+
     //Room
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"

@@ -1,13 +1,12 @@
 package ua.com.foxminded.locationtrackera.models.auth
 
-import io.reactivex.rxjava3.core.Single
 import ua.com.foxminded.locationtrackera.models.util.Result
 
 interface AuthNetwork {
 
-    val isUserLoggedIn: Boolean
-    fun firebaseRegister(username: String, email: String, password: String): Single<Result<Void?>>
-    fun firebaseLogin(email: String, password: String): Single<Result<Void?>>
-    fun resetPassword(email: String): Single<Result<Void?>>
+    suspend fun firebaseRegister(username: String, email: String, password: String): Result<Void?>
+    suspend fun firebaseLogin(email: String, password: String): Result<Void?>
+    suspend fun resetPassword(email: String): Result<Void?>
     fun logout()
+    fun isUserLoggedIn(): Boolean
 }
