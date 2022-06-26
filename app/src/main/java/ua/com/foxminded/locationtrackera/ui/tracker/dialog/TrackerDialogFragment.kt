@@ -4,10 +4,10 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import ua.com.foxminded.locationtrackera.mvi.fragments.HostedDialogFragment
 import ua.com.foxminded.locationtrackera.ui.tracker.TrackerFragment
 import ua.com.foxminded.locationtrackera.ui.tracker.dialog.state.TrackerDialogScreenEffect
 import ua.com.foxminded.locationtrackera.ui.tracker.dialog.state.TrackerDialogScreenState
-import ua.com.foxminded.locationtrackera.mvi.fragments.HostedDialogFragment
 
 class TrackerDialogFragment : HostedDialogFragment<
         TrackerDialogContract.View,

@@ -4,7 +4,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ua.com.foxminded.locationtrackera.R
 import ua.com.foxminded.locationtrackera.models.auth.AuthNetwork

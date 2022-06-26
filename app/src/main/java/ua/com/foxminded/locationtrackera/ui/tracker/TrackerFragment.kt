@@ -98,9 +98,7 @@ class TrackerFragment : HostedFragment<
             GpsStatusConstants.FIX_ACQUIRED -> {
                 binding.gpsStatus.setText(R.string.enabled)
                 binding.gpsStatus.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(), R.color.green_500
-                    )
+                    ContextCompat.getColor(requireContext(), R.color.green_500)
                 )
             }
             GpsStatusConstants.FIX_NOT_ACQUIRED -> {

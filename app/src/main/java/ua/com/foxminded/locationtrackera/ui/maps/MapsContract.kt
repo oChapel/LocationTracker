@@ -1,9 +1,9 @@
 package ua.com.foxminded.locationtrackera.ui.maps
 
 import ua.com.foxminded.locationtrackera.models.locations.UserLocation
+import ua.com.foxminded.locationtrackera.mvi.fragments.FragmentContract
 import ua.com.foxminded.locationtrackera.ui.maps.state.MapsScreenEffect
 import ua.com.foxminded.locationtrackera.ui.maps.state.MapsScreenState
-import ua.com.foxminded.locationtrackera.mvi.fragments.FragmentContract
 
 class MapsContract {
     interface ViewModel : FragmentContract.ViewModel<MapsScreenState, MapsScreenEffect> {

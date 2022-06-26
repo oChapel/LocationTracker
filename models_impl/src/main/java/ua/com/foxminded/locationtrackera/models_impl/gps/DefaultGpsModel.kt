@@ -31,23 +31,17 @@ class DefaultGpsModel(private val context: Context) : GpsSource {
             val loc = locationResult.lastLocation
             if (loc != null) {
                 locationSupplier.onNext(
-                    UserLocation(
-                        loc.latitude, loc.longitude,
-                        Calendar.getInstance().timeInMillis
-                    )
+                    UserLocation(loc.latitude, loc.longitude, Calendar.getInstance().timeInMillis)
                 )
             }
         }
     }
-    private val fusedLocationClient: FusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(context)
-    private val locationRequest: LocationRequest =
-        LocationRequest.create()
+    private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    private val locationRequest = LocationRequest.create()
             .setInterval((1000 * BuildConfig.UPDATE_INTERVAL).toLong())
             .setSmallestDisplacement(BuildConfig.TRACKING_SENSIVITY.toFloat())
             .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-    private val locationManager: LocationManager =
-        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     private lateinit var gnssStatusCallback: GnssStatus.Callback
     private lateinit var gpsStatusListener: GpsStatus.Listener
@@ -115,6 +109,7 @@ class DefaultGpsModel(private val context: Context) : GpsSource {
 
     override val gpsStatusObservable: Observable<Int>
         get() = gpsStatusSupplier
+
     override val locationObservable: Observable<UserLocation>
         get() = locationSupplier
 

@@ -16,14 +16,13 @@ abstract class LocationDatabase : RoomDatabase() {
 
         @Synchronized
         fun getInstance(context: Context): LocationDatabase {
-            return instance
-                ?: Room.databaseBuilder(
+            return instance ?: Room.databaseBuilder(
                     context.applicationContext,
                     LocationDatabase::class.java,
                     "location_database"
                 )
-                    .fallbackToDestructiveMigration()
-                    .build()
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
 }

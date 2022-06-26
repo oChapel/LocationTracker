@@ -19,8 +19,8 @@ class TrackerActivity : AppCompatActivity(), LoginContract.Host {
         val viewModel = ViewModelProvider(this, AuthViewModelFactory()).get(
             TrackerHostViewModel::class.java
         )
-        viewModel.isUserLoggedInStatus.observe(this) { aBoolean: Boolean ->
-            if (aBoolean) {
+        viewModel.isUserLoggedInStatus.observe(this) {
+            if (it) {
                 navigateToMainScreen()
             }
         }

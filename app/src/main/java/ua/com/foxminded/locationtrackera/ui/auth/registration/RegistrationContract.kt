@@ -1,8 +1,8 @@
 package ua.com.foxminded.locationtrackera.ui.auth.registration
 
+import ua.com.foxminded.locationtrackera.mvi.fragments.FragmentContract
 import ua.com.foxminded.locationtrackera.ui.auth.registration.state.RegistrationScreenEffect
 import ua.com.foxminded.locationtrackera.ui.auth.registration.state.RegistrationScreenState
-import ua.com.foxminded.locationtrackera.mvi.fragments.FragmentContract
 
 class RegistrationContract {
     interface ViewModel :

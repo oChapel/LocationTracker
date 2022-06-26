@@ -18,6 +18,7 @@ class AppModule {
     fun provideFirebaseAuthNetwork(): AuthNetwork = FirebaseAuthNetwork(FirebaseAuth.getInstance())
 
     @Provides
-    fun provideSendLocationsUseCase(repository: LocationRepository): SendLocationsUseCase =
-        SendLocationsUseCaseImpl(repository)
+    fun provideSendLocationsUseCase(
+        repository: LocationRepository
+    ): SendLocationsUseCase = SendLocationsUseCaseImpl(repository)
 }

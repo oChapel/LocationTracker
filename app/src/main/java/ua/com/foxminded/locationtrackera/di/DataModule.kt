@@ -28,6 +28,5 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseDataSource(): LocationsNetwork =
-        FirebaseLocationsNetwork(FirebaseAuth.getInstance())
+    fun provideFirebaseDataSource(): LocationsNetwork = FirebaseLocationsNetwork(FirebaseAuth.getInstance())
 }

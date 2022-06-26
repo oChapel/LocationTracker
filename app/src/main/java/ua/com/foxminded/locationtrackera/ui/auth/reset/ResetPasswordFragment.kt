@@ -8,11 +8,11 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import ua.com.foxminded.locationtrackera.databinding.FragmentResetPasswordBinding
+import ua.com.foxminded.locationtrackera.mvi.fragments.HostedFragment
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory
 import ua.com.foxminded.locationtrackera.ui.auth.reset.state.ResetPasswordScreenEffect
 import ua.com.foxminded.locationtrackera.ui.auth.reset.state.ResetPasswordScreenState
 import ua.com.foxminded.locationtrackera.util.Utils
-import ua.com.foxminded.locationtrackera.mvi.fragments.HostedFragment
 
 class ResetPasswordFragment : HostedFragment<
         ResetPasswordContract.View,

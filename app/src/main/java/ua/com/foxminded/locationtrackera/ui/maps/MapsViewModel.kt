@@ -8,6 +8,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.PublishSubject
 import ua.com.foxminded.locationtrackera.R
 import ua.com.foxminded.locationtrackera.models.auth.AuthNetwork
+import ua.com.foxminded.locationtrackera.models.locations.LocationRepository
 import ua.com.foxminded.locationtrackera.models.locations.UserLocation
 import ua.com.foxminded.locationtrackera.models.util.Result
 import ua.com.foxminded.locationtrackera.mvi.MviViewModel
@@ -16,7 +17,7 @@ import ua.com.foxminded.locationtrackera.ui.maps.state.MapsScreenState
 
 class MapsViewModel(
     private val authNetwork: AuthNetwork,
-    private val repository: ua.com.foxminded.locationtrackera.models.locations.LocationRepository
+    private val repository: LocationRepository
 ) : MviViewModel<MapsScreenState, MapsScreenEffect>(), MapsContract.ViewModel {
 
     private val locationsSupplier: PublishSubject<Pair<Long, Long>> = PublishSubject.create()

@@ -1,8 +1,8 @@
 package ua.com.foxminded.locationtrackera.ui.tracker
 
+import ua.com.foxminded.locationtrackera.mvi.fragments.FragmentContract
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenEffect
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenState
-import ua.com.foxminded.locationtrackera.mvi.fragments.FragmentContract
 
 class TrackerContract {
     interface ViewModel : FragmentContract.ViewModel<

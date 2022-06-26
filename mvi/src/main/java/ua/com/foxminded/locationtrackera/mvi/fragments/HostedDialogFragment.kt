@@ -3,7 +3,10 @@ package ua.com.foxminded.locationtrackera.mvi.fragments
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import ua.com.foxminded.locationtrackera.mvi.states.ScreenEffect
 import ua.com.foxminded.locationtrackera.mvi.states.ScreenState
 import java.lang.reflect.ParameterizedType

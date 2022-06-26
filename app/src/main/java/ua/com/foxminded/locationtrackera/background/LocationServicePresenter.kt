@@ -32,8 +32,9 @@ class LocationServicePresenter(
         cache.serviceStatusChanged(true)
     }
 
-    override fun saveUserLocation(location: UserLocation): Completable =
-        Completable.fromRunnable { repository.saveLocation(location) }
+    override fun saveUserLocation(
+        location: UserLocation
+    ): Completable = Completable.fromRunnable { repository.saveLocation(location) }
 
     private fun setObservers() {
         compositeDisposable.addAll(

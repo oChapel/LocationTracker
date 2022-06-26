@@ -1,8 +1,8 @@
 package ua.com.foxminded.locationtrackera.ui.maps.state
 
 import ua.com.foxminded.locationtrackera.models.locations.UserLocation
-import ua.com.foxminded.locationtrackera.ui.maps.MapsContract
 import ua.com.foxminded.locationtrackera.mvi.states.AbstractEffect
+import ua.com.foxminded.locationtrackera.ui.maps.MapsContract
 
 abstract class MapsScreenEffect : AbstractEffect<MapsContract.View>() {
 

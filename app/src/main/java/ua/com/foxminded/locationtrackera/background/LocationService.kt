@@ -35,8 +35,7 @@ class LocationService : LifecycleService() {
         presenter.onStart()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
-                NOTIFICATION_ID,
-                notificationBuilder.build(),
+                NOTIFICATION_ID, notificationBuilder.build(),
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
             )
         } else {
@@ -52,10 +51,7 @@ class LocationService : LifecycleService() {
             presenter.gpsStatusObservable.subscribe { status: Int ->
                 if (status != 0) {
                     notification.setContentText(
-                        getString(
-                            R.string.gps_status_notification,
-                            getString(status)
-                        )
+                        getString(R.string.gps_status_notification, getString(status))
                     )
                     notificationManager.notify(NOTIFICATION_ID, notification.build())
                 }
@@ -69,9 +65,7 @@ class LocationService : LifecycleService() {
                 val channel = NotificationChannel(
                     CHANNEL_ID, "Channel_1", NotificationManager.IMPORTANCE_DEFAULT
                 )
-                val notificationManager = getSystemService(
-                    NotificationManager::class.java
-                )
+                val notificationManager = getSystemService(NotificationManager::class.java)
                 notificationManager.createNotificationChannel(channel)
             }
 

@@ -1,7 +1,7 @@
 package ua.com.foxminded.locationtrackera.ui.auth.login.state
 
-import ua.com.foxminded.locationtrackera.ui.auth.login.LoginContract
 import ua.com.foxminded.locationtrackera.mvi.states.ScreenState
+import ua.com.foxminded.locationtrackera.ui.auth.login.LoginContract
 
 abstract class LoginScreenState(
     val isProgressVisible: Boolean = false,
@@ -16,6 +16,7 @@ abstract class LoginScreenState(
 
     class LoginProgress(isProgressVisible: Boolean) : LoginScreenState(isProgressVisible)
 
-    class LoginError(emailError: Int, passwordError: Int) :
-        LoginScreenState(false, emailError, passwordError)
+    class LoginError(
+        emailError: Int, passwordError: Int
+    ) : LoginScreenState(false, emailError, passwordError)
 }

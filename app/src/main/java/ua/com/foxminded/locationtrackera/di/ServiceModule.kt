@@ -33,8 +33,7 @@ class ServiceModule {
 
     @Provides
     @Singleton
-    fun provideSharedPreferenceModel(): SharedPreferencesModel =
-        DefaultSharedPreferencesModel(App.instance)
+    fun provideSharedPreferenceModel(): SharedPreferencesModel = DefaultSharedPreferencesModel(App.instance)
 
     @Provides
     @Singleton
@@ -45,10 +44,6 @@ class ServiceModule {
         sendLocationsUseCase: SendLocationsUseCase,
         workModel: UploadWorkModel
     ): Presenter = LocationServicePresenter(
-        gpsSource,
-        repository,
-        cache,
-        sendLocationsUseCase,
-        workModel
+        gpsSource, repository, cache, sendLocationsUseCase, workModel
     )
 }

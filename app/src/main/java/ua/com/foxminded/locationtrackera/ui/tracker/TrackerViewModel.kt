@@ -41,10 +41,10 @@ class TrackerViewModel(
             gpsServices.startLocationUpdates()
             gpsServices.registerGpsOrGnssStatusChanges()
         }
-        if (event == Lifecycle.Event.ON_RESUME) {
+        else if (event == Lifecycle.Event.ON_RESUME) {
             setUpTrackerChain()
         }
-        if (event == Lifecycle.Event.ON_DESTROY) {
+        else if (event == Lifecycle.Event.ON_DESTROY) {
             gpsServices.onDestroy()
         }
     }
@@ -54,6 +54,7 @@ class TrackerViewModel(
             gpsServices.gpsStatusObservable
                 .doOnNext { status -> gpsStatus = status }
                 .subscribe { setState(TrackerScreenState(gpsStatus, serviceStatus)) },
+
             cache.setServiceStatusObservable()
                 .doOnNext { status -> serviceStatus = status }
                 .subscribe { setState(TrackerScreenState(gpsStatus, serviceStatus)) },
@@ -70,8 +71,7 @@ class TrackerViewModel(
                             ShowDialogFragment(
                                 0,
                                 R.string.db_not_empty_alert_message,
-                                R.string.delete_uppercase,
-                                R.string.send_uppercase
+                                R.string.delete_uppercase, R.string.send_uppercase
                             )
                         )
                     }
@@ -104,8 +104,7 @@ class TrackerViewModel(
             ShowDialogFragment(
                 1,
                 R.string.failed_to_send_alert_message,
-                R.string.cancel,
-                R.string.logout_uppercase
+                R.string.cancel, R.string.logout_uppercase
             )
         )
     }

@@ -20,11 +20,11 @@ import com.google.android.material.timepicker.TimeFormat
 import ua.com.foxminded.locationtrackera.R
 import ua.com.foxminded.locationtrackera.databinding.FragmentMapsBinding
 import ua.com.foxminded.locationtrackera.models.locations.UserLocation
+import ua.com.foxminded.locationtrackera.mvi.fragments.HostedFragment
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory
 import ua.com.foxminded.locationtrackera.ui.maps.state.MapsScreenEffect
 import ua.com.foxminded.locationtrackera.ui.maps.state.MapsScreenState
 import ua.com.foxminded.locationtrackera.util.SafeNavigation
-import ua.com.foxminded.locationtrackera.mvi.fragments.HostedFragment
 import java.util.*
 
 class MapsFragment : HostedFragment<

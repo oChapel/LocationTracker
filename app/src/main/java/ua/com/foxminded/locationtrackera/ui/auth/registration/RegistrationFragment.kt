@@ -11,12 +11,12 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import ua.com.foxminded.locationtrackera.R
 import ua.com.foxminded.locationtrackera.databinding.FragmentRegistrationBinding
+import ua.com.foxminded.locationtrackera.mvi.fragments.HostedFragment
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory
 import ua.com.foxminded.locationtrackera.ui.auth.registration.state.RegistrationScreenEffect
 import ua.com.foxminded.locationtrackera.ui.auth.registration.state.RegistrationScreenState
 import ua.com.foxminded.locationtrackera.util.SafeNavigation
 import ua.com.foxminded.locationtrackera.util.Utils
-import ua.com.foxminded.locationtrackera.mvi.fragments.HostedFragment
 
 open class RegistrationFragment : HostedFragment<
         RegistrationContract.View,

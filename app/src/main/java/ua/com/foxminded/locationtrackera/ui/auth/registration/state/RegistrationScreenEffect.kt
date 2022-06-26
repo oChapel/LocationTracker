@@ -1,7 +1,7 @@
 package ua.com.foxminded.locationtrackera.ui.auth.registration.state
 
-import ua.com.foxminded.locationtrackera.ui.auth.registration.RegistrationContract
 import ua.com.foxminded.locationtrackera.mvi.states.AbstractEffect
+import ua.com.foxminded.locationtrackera.ui.auth.registration.RegistrationContract
 
 abstract class RegistrationScreenEffect : AbstractEffect<RegistrationContract.View>() {
 

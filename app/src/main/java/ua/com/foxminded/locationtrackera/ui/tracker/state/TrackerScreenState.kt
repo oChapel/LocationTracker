@@ -1,7 +1,7 @@
 package ua.com.foxminded.locationtrackera.ui.tracker.state
 
-import ua.com.foxminded.locationtrackera.ui.tracker.TrackerContract
 import ua.com.foxminded.locationtrackera.mvi.states.ScreenState
+import ua.com.foxminded.locationtrackera.ui.tracker.TrackerContract
 
 class TrackerScreenState(
     private val gpsStatus: Int,

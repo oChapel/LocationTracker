@@ -4,9 +4,11 @@ import android.widget.EditText
 
 object Utils {
 
-    fun getTextFromEditText(editText: EditText): String =
-        editText.text.toString().trim { it <= ' ' }
+    fun getTextFromEditText(
+        editText: EditText
+    ): String = editText.text.toString().trim { it <= ' ' }
 
-    fun hasMoreThanFiveChars(string: String?): Boolean =
-        if (string == null) false else string.trim { it <= ' ' }.length > 5
+    fun hasMoreThanFiveChars(
+        string: String?
+    ): Boolean = if (string == null) false else string.trim { it <= ' ' }.length > 5
 }

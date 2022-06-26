@@ -29,12 +29,16 @@ class Credentials {
 
     val isEmailValid: Boolean
         get() = !TextUtils.isEmpty(email) && PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()
+
     val isPasswordValid: Boolean
         get() = !TextUtils.isEmpty(password)
+
     val isRegistrationPasswordValid: Boolean
         get() = isPasswordValid && Utils.hasMoreThanFiveChars(password)
+
     val isUsernameValid: Boolean
         get() = !TextUtils.isEmpty(username)
+
     val loginErrorCode: Int
         get() = if (!isEmailValid && !isPasswordValid) {
             1

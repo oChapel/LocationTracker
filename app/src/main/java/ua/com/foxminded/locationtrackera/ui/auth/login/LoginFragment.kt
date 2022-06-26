@@ -9,12 +9,12 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import ua.com.foxminded.locationtrackera.R
 import ua.com.foxminded.locationtrackera.databinding.FragmentLoginBinding
+import ua.com.foxminded.locationtrackera.mvi.fragments.HostedFragment
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory
 import ua.com.foxminded.locationtrackera.ui.auth.login.state.LoginScreenEffect
 import ua.com.foxminded.locationtrackera.ui.auth.login.state.LoginScreenState
 import ua.com.foxminded.locationtrackera.util.SafeNavigation
 import ua.com.foxminded.locationtrackera.util.Utils
-import ua.com.foxminded.locationtrackera.mvi.fragments.HostedFragment
 
 open class LoginFragment : HostedFragment<
         LoginContract.View,

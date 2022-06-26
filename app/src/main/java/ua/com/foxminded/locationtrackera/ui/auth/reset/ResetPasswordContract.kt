@@ -1,8 +1,8 @@
 package ua.com.foxminded.locationtrackera.ui.auth.reset
 
+import ua.com.foxminded.locationtrackera.mvi.fragments.FragmentContract
 import ua.com.foxminded.locationtrackera.ui.auth.reset.state.ResetPasswordScreenEffect
 import ua.com.foxminded.locationtrackera.ui.auth.reset.state.ResetPasswordScreenState
-import ua.com.foxminded.locationtrackera.mvi.fragments.FragmentContract
 
 class ResetPasswordContract {
     interface ViewModel : FragmentContract.ViewModel<

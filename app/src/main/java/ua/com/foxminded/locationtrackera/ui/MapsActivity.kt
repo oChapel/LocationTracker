@@ -19,8 +19,10 @@ class MapsActivity : AppCompatActivity(), LoginContract.Host {
         val viewModel = ViewModelProvider(this, AuthViewModelFactory()).get(
             MapsHostViewModel::class.java
         )
-        viewModel.isUserLoggedInStatus.observe(this) { aBoolean: Boolean ->
-            if (aBoolean) navigateToMainScreen()
+        viewModel.isUserLoggedInStatus.observe(this) {
+            if (it) {
+                navigateToMainScreen()
+            }
         }
         viewModel.checkUserLoggedIn()
     }

@@ -43,7 +43,7 @@ abstract class HostedFragment<
         setModel(createModel())
         lifecycle.addObserver(this)
         model?.getStateObservable()?.observe(this, this)
-        model?.getEffectObservable()?.observe(this, { it.visit(this as VIEW) })
+        model?.getEffectObservable()?.observe(this) { it.visit(this as VIEW) }
     }
 
     override fun onDetach() {
