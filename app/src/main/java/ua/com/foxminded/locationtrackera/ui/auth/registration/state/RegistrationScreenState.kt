@@ -3,7 +3,7 @@ package ua.com.foxminded.locationtrackera.ui.auth.registration.state
 import ua.com.foxminded.locationtrackera.mvi.states.ScreenState
 import ua.com.foxminded.locationtrackera.ui.auth.registration.RegistrationContract
 
-abstract class RegistrationScreenState(
+sealed class RegistrationScreenState(
     val isProgressVisible: Boolean = false,
     val usernameError: Int = 0,
     val emailError: Int = 0,

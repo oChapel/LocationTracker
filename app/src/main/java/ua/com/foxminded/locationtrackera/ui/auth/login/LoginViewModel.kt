@@ -4,10 +4,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ua.com.foxminded.locationtrackera.R
 import ua.com.foxminded.locationtrackera.models.auth.AuthNetwork
@@ -31,13 +28,14 @@ class LoginViewModel(private val authNetwork: AuthNetwork) : MviViewModel<
         if (event == Lifecycle.Event.ON_CREATE) {
             launch = viewModelScope.launch {
                 loginFlow
+                    .onEach { setState(LoginScreenState.LoginProgress(true)) }
+                    .flowOn(Dispatchers.Main)
                     .map { creds ->
-                        if (creds.isEmailValid && creds.isPasswordValid) {
-                            postState(LoginScreenState.LoginProgress(true))
+                        if (creds.isEmailValid() && creds.isPasswordValid()) {
                             return@map authNetwork.firebaseLogin(creds.email!!, creds.password!!)
                         } else {
                             return@map Result.Error(
-                                Throwable(AuthErrorConstants.INVALID_EMAIL_PASSWORD + creds.loginErrorCode)
+                                Throwable(AuthErrorConstants.INVALID_EMAIL_PASSWORD + creds.loginErrorCode())
                             )
                         }
                     }
@@ -62,9 +60,7 @@ class LoginViewModel(private val authNetwork: AuthNetwork) : MviViewModel<
                                     setState(LoginScreenState.LoginError(R.string.invalid_email, 0))
                                 result.toString().contains(AuthErrorConstants.ERROR_CODE_3) ->
                                     setState(LoginScreenState.LoginError(0, R.string.enter_password))
-                                else -> {
-                                    setAction(LoginScreenEffect.LoginFailed())
-                                }
+                                else -> setAction(LoginScreenEffect.LoginFailed())
                             }
                         }
                     }

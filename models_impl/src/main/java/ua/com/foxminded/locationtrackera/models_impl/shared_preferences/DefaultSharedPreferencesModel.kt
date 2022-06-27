@@ -3,14 +3,20 @@ package ua.com.foxminded.locationtrackera.models_impl.shared_preferences
 import android.content.Context
 import ua.com.foxminded.locationtrackera.models.shared_preferences.SharedPreferencesModel
 
-class DefaultSharedPreferencesModel(private val context: Context) : SharedPreferencesModel {
+class DefaultSharedPreferencesModel(context: Context) : SharedPreferencesModel {
+
+    private val sharedPreferences =
+        context.getSharedPreferences(SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
 
     override fun setSharedPreferencesServiceFlag(flag: Boolean) {
-        context.getSharedPreferences(SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
+        sharedPreferences
             .edit()
             .putBoolean(SERVICE_FLAG_KEY, flag)
             .apply()
     }
+
+    override fun getSharedPreferencesServiceFlag(): Boolean =
+        sharedPreferences.getBoolean(SERVICE_FLAG_KEY, false)
 
     companion object {
         private const val SHARED_PREFERENCES_FILE_NAME =

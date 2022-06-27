@@ -4,7 +4,7 @@ import ua.com.foxminded.locationtrackera.models.locations.UserLocation
 import ua.com.foxminded.locationtrackera.mvi.states.AbstractEffect
 import ua.com.foxminded.locationtrackera.ui.maps.MapsContract
 
-abstract class MapsScreenEffect : AbstractEffect<MapsContract.View>() {
+sealed class MapsScreenEffect : AbstractEffect<MapsContract.View>() {
 
     class Logout : MapsScreenEffect() {
         override fun handle(screen: MapsContract.View) {

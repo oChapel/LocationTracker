@@ -19,7 +19,7 @@ class TrackerActivity : AppCompatActivity(), LoginContract.Host {
         val viewModel = ViewModelProvider(this, AuthViewModelFactory()).get(
             TrackerHostViewModel::class.java
         )
-        viewModel.isUserLoggedInStatus.observe(this) {
+        viewModel.getUserLoggedInStatus().observe(this) {
             if (it) {
                 navigateToMainScreen()
             }

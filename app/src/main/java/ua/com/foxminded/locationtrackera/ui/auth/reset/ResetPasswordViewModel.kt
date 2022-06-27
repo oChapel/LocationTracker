@@ -4,10 +4,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ua.com.foxminded.locationtrackera.R
 import ua.com.foxminded.locationtrackera.models.auth.AuthNetwork
@@ -31,9 +28,10 @@ class ResetPasswordViewModel(private val authNetwork: AuthNetwork) : MviViewMode
         if (event == Lifecycle.Event.ON_CREATE) {
             launch = viewModelScope.launch {
                 resetFlow
+                    .onEach { setState(ResetPasswordScreenState.ResetPasswordProgress(true)) }
+                    .flowOn(Dispatchers.Main)
                     .map { creds ->
-                        if (creds.isEmailValid) {
-                            postState(ResetPasswordScreenState.ResetPasswordProgress(true))
+                        if (creds.isEmailValid()) {
                             return@map authNetwork.resetPassword(creds.email!!)
                         } else {
                             return@map Result.Error(Throwable(AuthErrorConstants.INVALID_EMAIL))

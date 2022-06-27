@@ -8,12 +8,12 @@ class MapsWelcomeFragment : WelcomeFragment() {
 
     override fun onClick(view: View) {
         when {
-            view === binding.welcomeRegisterBtn -> SafeNavigation.navigate(
-                binding.root, R.id.mapsWelcomeFragment,
+            view === binding?.welcomeRegisterBtn -> SafeNavigation.navigate(
+                binding?.root, R.id.mapsWelcomeFragment,
                 R.id.nav_from_mapsWelcomeFragment_to_mapsRegistrationFragment
             )
-            view === binding.welcomeLoginTxt -> SafeNavigation.navigate(
-                binding.root, R.id.mapsWelcomeFragment,
+            view === binding?.welcomeLoginTxt -> SafeNavigation.navigate(
+                binding?.root, R.id.mapsWelcomeFragment,
                 R.id.nav_from_mapsWelcomeFragment_to_mapsLoginFragment
             )
         }

@@ -3,7 +3,7 @@ package ua.com.foxminded.locationtrackera.ui.auth.reset.state
 import ua.com.foxminded.locationtrackera.mvi.states.ScreenState
 import ua.com.foxminded.locationtrackera.ui.auth.reset.ResetPasswordContract
 
-abstract class ResetPasswordScreenState(
+sealed class ResetPasswordScreenState(
     val isProgressVisible: Boolean = false,
     val emailError: Int = 0
 ) : ScreenState<ResetPasswordContract.View>() {

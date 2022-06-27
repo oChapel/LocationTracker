@@ -35,8 +35,7 @@ class MapsFragment : HostedFragment<
         MapsContract.Host>(),
     MapsContract.View, OnMapReadyCallback {
 
-    private var _binding: FragmentMapsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentMapsBinding? = null
 
     private val markerList: MutableList<Marker> = ArrayList()
     private var googleMap: GoogleMap? = null
@@ -49,7 +48,8 @@ class MapsFragment : HostedFragment<
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMapsBinding.inflate(inflater, container, false)
+        val binding = FragmentMapsBinding.inflate(inflater, container, false)
+        this.binding = binding
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.mapsToolbar)
         (requireActivity() as AppCompatActivity).supportActionBar?.setTitle(R.string.timeline)
         setHasOptionsMenu(true)
@@ -93,7 +93,7 @@ class MapsFragment : HostedFragment<
     override fun proceedToSplashScreen() {
         Toast.makeText(context, R.string.logged_out, Toast.LENGTH_SHORT).show()
         SafeNavigation.navigate(
-            binding.root, R.id.mapsFragment,
+            binding?.root, R.id.mapsFragment,
             R.id.nav_from_mapsFragment_to_mapsWelcomeFragment
         )
     }
@@ -167,6 +167,6 @@ class MapsFragment : HostedFragment<
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 }

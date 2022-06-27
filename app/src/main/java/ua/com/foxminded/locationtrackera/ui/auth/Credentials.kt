@@ -27,26 +27,18 @@ class Credentials {
         this.password = password
     }
 
-    val isEmailValid: Boolean
-        get() = !TextUtils.isEmpty(email) && PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()
+    fun isEmailValid() = !TextUtils.isEmpty(email) && PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()
 
-    val isPasswordValid: Boolean
-        get() = !TextUtils.isEmpty(password)
+    fun isPasswordValid() = !TextUtils.isEmpty(password)
 
-    val isRegistrationPasswordValid: Boolean
-        get() = isPasswordValid && Utils.hasMoreThanFiveChars(password)
+    fun isRegistrationPasswordValid() = isPasswordValid() && Utils.hasMoreThanFiveChars(password)
 
-    val isUsernameValid: Boolean
-        get() = !TextUtils.isEmpty(username)
+    fun isUsernameValid() = !TextUtils.isEmpty(username)
 
-    val loginErrorCode: Int
-        get() = if (!isEmailValid && !isPasswordValid) {
-            1
-        } else if (!isEmailValid && isPasswordValid) {
-            2
-        } else if (isEmailValid && !isPasswordValid) {
-            3
-        } else {
-            0
-        }
+    fun loginErrorCode() = when {
+        !isEmailValid() && !isPasswordValid() -> AuthErrorConstants.ERROR_CODE_1
+        !isEmailValid() && isPasswordValid() -> AuthErrorConstants.ERROR_CODE_2
+        isEmailValid() && !isPasswordValid() -> AuthErrorConstants.ERROR_CODE_3
+        else -> AuthErrorConstants.ERROR_CODE_UNKNOWN
+    }
 }

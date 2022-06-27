@@ -38,6 +38,7 @@ class TrackerDialogFragment : HostedDialogFragment<
     }
 
     companion object {
+        const val TAG = "logout_dialog"
         private const val ARG_TYPE = "arg_type"
         private const val DIALOG_TEXT_STRING_ID = "dialog_text"
         private const val NEGATIVE_BUTTON_TEXT_STRING_ID = "negative_button"

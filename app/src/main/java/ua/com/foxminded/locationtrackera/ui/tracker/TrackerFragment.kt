@@ -23,6 +23,7 @@ import ua.com.foxminded.locationtrackera.databinding.FragmentTrackerBinding
 import ua.com.foxminded.locationtrackera.models_impl.gps.GpsStatusConstants
 import ua.com.foxminded.locationtrackera.mvi.fragments.HostedFragment
 import ua.com.foxminded.locationtrackera.ui.auth.AuthViewModelFactory
+import ua.com.foxminded.locationtrackera.ui.tracker.dialog.TrackerDialogArgTypes
 import ua.com.foxminded.locationtrackera.ui.tracker.dialog.TrackerDialogFragment
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenEffect
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenState
@@ -36,8 +37,7 @@ class TrackerFragment : HostedFragment<
         TrackerContract.Host>(),
     TrackerContract.View, View.OnClickListener {
 
-    private var _binding: FragmentTrackerBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentTrackerBinding? = null
 
     private val requestPermissionLauncher: ActivityResultLauncher<String> =
         registerForActivityResult(RequestPermission()) { isGranted ->
@@ -54,7 +54,8 @@ class TrackerFragment : HostedFragment<
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTrackerBinding.inflate(inflater, container, false)
+        val binding = FragmentTrackerBinding.inflate(inflater, container, false)
+        this.binding = binding
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
         setHasOptionsMenu(true)
         return binding.root
@@ -76,7 +77,7 @@ class TrackerFragment : HostedFragment<
             viewLifecycleOwner,
             backPressedCallback
         )
-        binding.trackerStartStopBtn.setOnClickListener(this)
+        binding?.trackerStartStopBtn?.setOnClickListener(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -88,7 +89,7 @@ class TrackerFragment : HostedFragment<
         stopService()
         Toast.makeText(context, R.string.logged_out, Toast.LENGTH_SHORT).show()
         SafeNavigation.navigate(
-            binding.root, R.id.trackerFragment,
+            binding?.root, R.id.trackerFragment,
             R.id.nav_from_trackerFragment_to_welcomeFragment
         )
     }
@@ -96,42 +97,42 @@ class TrackerFragment : HostedFragment<
     override fun changeGpsStatus(gpsStatus: Int) {
         when (gpsStatus) {
             GpsStatusConstants.FIX_ACQUIRED -> {
-                binding.gpsStatus.setText(R.string.enabled)
-                binding.gpsStatus.setTextColor(
+                binding?.gpsStatus?.setText(R.string.enabled)
+                binding?.gpsStatus?.setTextColor(
                     ContextCompat.getColor(requireContext(), R.color.green_500)
                 )
             }
             GpsStatusConstants.FIX_NOT_ACQUIRED -> {
-                binding.gpsStatus.setText(R.string.disabled)
-                binding.gpsStatus.setTextColor(
+                binding?.gpsStatus?.setText(R.string.disabled)
+                binding?.gpsStatus?.setTextColor(
                     ContextCompat.getColor(requireContext(), R.color.red_500)
                 )
             }
             GpsStatusConstants.ACTIVE -> {
-                binding.gpsStatus.setText(R.string.connecting)
-                binding.gpsStatus.setTextColor(
+                binding?.gpsStatus?.setText(R.string.connecting)
+                binding?.gpsStatus?.setTextColor(
                     ContextCompat.getColor(requireContext(), R.color.yellow_700)
                 )
             }
             GpsStatusConstants.NO_PERMISSION -> {
-                binding.gpsStatus.setText(R.string.no_permission)
+                binding?.gpsStatus?.setText(R.string.no_permission)
             }
         }
     }
 
     override fun changeServiceStatus(isEnabled: Boolean) {
         if (isEnabled) {
-            binding.serviceStatus.setText(R.string.enabled)
-            binding.serviceStatus.setTextColor(
+            binding?.serviceStatus?.setText(R.string.enabled)
+            binding?.serviceStatus?.setTextColor(
                 ContextCompat.getColor(requireContext(), R.color.green_500)
             )
-            binding.trackerStartStopBtn.setText(R.string.stop_service)
+            binding?.trackerStartStopBtn?.setText(R.string.stop_service)
         } else {
-            binding.serviceStatus.setText(R.string.disabled)
-            binding.serviceStatus.setTextColor(
+            binding?.serviceStatus?.setText(R.string.disabled)
+            binding?.serviceStatus?.setTextColor(
                 ContextCompat.getColor(requireContext(), R.color.red_500)
             )
-            binding.trackerStartStopBtn.setText(R.string.start_service)
+            binding?.trackerStartStopBtn?.setText(R.string.start_service)
         }
     }
 
@@ -139,11 +140,11 @@ class TrackerFragment : HostedFragment<
         argType: Int, message: Int, negativeButton: Int, positiveButton: Int
     ) {
         TrackerDialogFragment.newInstance(argType, message, negativeButton, positiveButton)
-            .show(childFragmentManager, "logout_dialog")
+            .show(childFragmentManager, TrackerDialogFragment.TAG)
     }
 
     override fun onClick(view: View) {
-        if (view === binding.trackerStartStopBtn) {
+        if (view === binding?.trackerStartStopBtn) {
             if (isLocationServiceRunning) {
                 stopService()
             } else {
@@ -155,7 +156,9 @@ class TrackerFragment : HostedFragment<
     fun doPositiveButton(code: Int) = model?.setDialogResponse(code)
 
     fun doNegativeButton(code: Int) {
-        if (code == 0) model?.setDialogResponse(1)
+        if (code == TrackerDialogArgTypes.CODE_0) {
+            model?.setDialogResponse(TrackerDialogArgTypes.CODE_1)
+        }
     }
 
     private fun checkGoogleServicesAvailability() {
@@ -233,7 +236,7 @@ class TrackerFragment : HostedFragment<
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 
     companion object {

@@ -22,8 +22,7 @@ class ResetPasswordFragment : HostedFragment<
         ResetPasswordContract.Host>(),
     ResetPasswordContract.View, View.OnClickListener {
 
-    private var _binding: FragmentResetPasswordBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentResetPasswordBinding? = null
 
     override fun createModel(): ResetPasswordContract.ViewModel = ViewModelProvider(
         this, AuthViewModelFactory()
@@ -33,17 +32,18 @@ class ResetPasswordFragment : HostedFragment<
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentResetPasswordBinding.inflate(inflater, container, false)
+        val binding = FragmentResetPasswordBinding.inflate(inflater, container, false)
+        this.binding
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.resetPasswordBtn.setOnClickListener(this)
+        binding?.resetPasswordBtn?.setOnClickListener(this)
     }
 
     override fun onClick(view: View) {
-        model?.resetPassword(Utils.getTextFromEditText(binding.resetPasswordEditTextEmail))
+        model?.resetPassword(Utils.getTextFromEditText(binding?.resetPasswordEditTextEmail))
     }
 
     override fun setProgressVisibility(isProgressVisible: Boolean) {
@@ -55,25 +55,25 @@ class ResetPasswordFragment : HostedFragment<
     }
 
     override fun showEmailError(emailError: Int) {
-        binding.resetPasswordLayoutEmail.error =
+        binding?.resetPasswordLayoutEmail?.error =
             if (emailError == 0) null else getString(emailError)
     }
 
     private fun setUpProgressBarVisibility(isVisible: Boolean) {
-        val progressBar: ProgressBar = binding.resetPasswordProgressBar
+        val progressBar: ProgressBar? = binding?.resetPasswordProgressBar
         val progressTargetAlpha = if (isVisible) 1f else 0f
         val shortAnimationDuration: Int = resources.getInteger(android.R.integer.config_shortAnimTime)
-        if (progressTargetAlpha != progressBar.alpha) {
-            progressBar.animate().alpha(progressTargetAlpha)
-                .withStartAction(if (isVisible) Runnable { progressBar.visibility = View.VISIBLE } else null)
-                .setDuration(shortAnimationDuration.toLong())
-                .withEndAction(if (isVisible) null else Runnable { progressBar.visibility = View.INVISIBLE })
-                .start()
+        if (progressTargetAlpha != progressBar?.alpha) {
+            progressBar?.animate()?.alpha(progressTargetAlpha)
+                ?.withStartAction(if (isVisible) Runnable { progressBar.visibility = View.VISIBLE } else null)
+                ?.setDuration(shortAnimationDuration.toLong())
+                ?.withEndAction(if (isVisible) null else Runnable { progressBar.visibility = View.INVISIBLE })
+                ?.start()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 }

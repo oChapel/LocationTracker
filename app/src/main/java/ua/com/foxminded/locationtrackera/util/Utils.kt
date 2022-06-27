@@ -5,8 +5,8 @@ import android.widget.EditText
 object Utils {
 
     fun getTextFromEditText(
-        editText: EditText
-    ): String = editText.text.toString().trim { it <= ' ' }
+        editText: EditText?
+    ): String = editText?.text.toString().trim { it <= ' ' }
 
     fun hasMoreThanFiveChars(
         string: String?

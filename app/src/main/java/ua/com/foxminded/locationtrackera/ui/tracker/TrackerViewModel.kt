@@ -9,10 +9,12 @@ import ua.com.foxminded.locationtrackera.R
 import ua.com.foxminded.locationtrackera.models.auth.AuthNetwork
 import ua.com.foxminded.locationtrackera.models.bus.TrackerCache
 import ua.com.foxminded.locationtrackera.models.gps.GpsSource
+import ua.com.foxminded.locationtrackera.models.locations.LocationRepository
 import ua.com.foxminded.locationtrackera.models.shared_preferences.SharedPreferencesModel
 import ua.com.foxminded.locationtrackera.models.usecase.SendLocationsUseCase
 import ua.com.foxminded.locationtrackera.models.util.Result
 import ua.com.foxminded.locationtrackera.mvi.MviViewModel
+import ua.com.foxminded.locationtrackera.ui.tracker.dialog.TrackerDialogArgTypes
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenEffect
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenEffect.ShowDialogFragment
 import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenState
@@ -20,7 +22,7 @@ import ua.com.foxminded.locationtrackera.ui.tracker.state.TrackerScreenState
 class TrackerViewModel(
     private val authNetwork: AuthNetwork,
     private val cache: TrackerCache,
-    private val repository: ua.com.foxminded.locationtrackera.models.locations.LocationRepository,
+    private val repository: LocationRepository,
     private val sendLocationsUseCase: SendLocationsUseCase,
     private val sharedPreferencesModel: SharedPreferencesModel,
     private val gpsServices: GpsSource
@@ -53,11 +55,11 @@ class TrackerViewModel(
         addTillDestroy(
             gpsServices.gpsStatusObservable
                 .doOnNext { status -> gpsStatus = status }
-                .subscribe { setState(TrackerScreenState(gpsStatus, serviceStatus)) },
+                .subscribe { setState(TrackerScreenState.ProvideStatus(gpsStatus, serviceStatus)) },
 
             cache.setServiceStatusObservable()
                 .doOnNext { status -> serviceStatus = status }
-                .subscribe { setState(TrackerScreenState(gpsStatus, serviceStatus)) },
+                .subscribe { setState(TrackerScreenState.ProvideStatus(gpsStatus, serviceStatus)) },
 
             logoutSupplier.observeOn(Schedulers.io())
                 .flatMapSingle { Single.just(repository.getAllLocations().isEmpty()) }
@@ -69,7 +71,7 @@ class TrackerViewModel(
                     } else {
                         setAction(
                             ShowDialogFragment(
-                                0,
+                                TrackerDialogArgTypes.CODE_0,
                                 R.string.db_not_empty_alert_message,
                                 R.string.delete_uppercase, R.string.send_uppercase
                             )
@@ -79,16 +81,18 @@ class TrackerViewModel(
 
             responseSupplier.observeOn(Schedulers.io())
                 .flatMapSingle { code: Int ->
-                    if (code == 0) {
+                    if (code == TrackerDialogArgTypes.CODE_0) {
                         return@flatMapSingle sendLocationsUseCase.execute()
                     } else {
                         return@flatMapSingle Single.just(Result.Success<Void?>(null))
                     }
-                }.subscribe({ result: Result<Void?> ->
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ result: Result<Void?> ->
                     if (result.isSuccessful) {
-                        repository.deleteLocationsFromDb()
+                        Thread { repository.deleteLocationsFromDb() }.start()
                         authNetwork.logout()
-                        postAction(TrackerScreenEffect.Logout())
+                        setAction(TrackerScreenEffect.Logout())
                     } else {
                         showFailedToSendDialogFragment()
                     }
@@ -100,9 +104,9 @@ class TrackerViewModel(
     }
 
     private fun showFailedToSendDialogFragment() {
-        postAction(
+        setAction(
             ShowDialogFragment(
-                1,
+                TrackerDialogArgTypes.CODE_1,
                 R.string.failed_to_send_alert_message,
                 R.string.cancel, R.string.logout_uppercase
             )
@@ -112,7 +116,7 @@ class TrackerViewModel(
     override fun setSharedPreferencesServiceFlag(flag: Boolean) =
         sharedPreferencesModel.setSharedPreferencesServiceFlag(flag)
 
-    override fun logout() = logoutSupplier.onNext(0)
+    override fun logout() = logoutSupplier.onNext(TrackerDialogArgTypes.CODE_0)
 
     override fun setDialogResponse(code: Int) = responseSupplier.onNext(code)
 }

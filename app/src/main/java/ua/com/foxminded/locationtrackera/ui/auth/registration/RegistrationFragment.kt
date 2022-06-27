@@ -26,8 +26,7 @@ open class RegistrationFragment : HostedFragment<
         RegistrationContract.Host>(),
     RegistrationContract.View, View.OnClickListener {
 
-    private var _binding: FragmentRegistrationBinding? = null
-    protected val binding get() = _binding!!
+    protected var binding: FragmentRegistrationBinding? = null
 
     override fun createModel(): RegistrationContract.ViewModel =
         ViewModelProvider(this, AuthViewModelFactory()).get(RegistrationViewModel::class.java)
@@ -35,14 +34,15 @@ open class RegistrationFragment : HostedFragment<
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
+        val binding = FragmentRegistrationBinding.inflate(inflater, container, false)
+        this.binding = binding
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.registerBtn.setOnClickListener(this)
-        binding.registerLogInTxt.setOnClickListener(this)
+        binding?.registerBtn?.setOnClickListener(this)
+        binding?.registerLogInTxt?.setOnClickListener(this)
         val watcher: TextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // ignore
@@ -54,27 +54,27 @@ open class RegistrationFragment : HostedFragment<
 
             override fun afterTextChanged(s: Editable) {
                 model?.registrationDataChanged(
-                    Utils.getTextFromEditText(binding.registerEditTextUserName),
-                    Utils.getTextFromEditText(binding.registerEditTextUserEmail),
-                    Utils.getTextFromEditText(binding.registerEditTextPassword)
+                    Utils.getTextFromEditText(binding?.registerEditTextUserName),
+                    Utils.getTextFromEditText(binding?.registerEditTextUserEmail),
+                    Utils.getTextFromEditText(binding?.registerEditTextPassword)
                 )
             }
         }
-        binding.registerEditTextUserName.addTextChangedListener(watcher)
-        binding.registerEditTextUserEmail.addTextChangedListener(watcher)
-        binding.registerEditTextPassword.addTextChangedListener(watcher)
+        binding?.registerEditTextUserName?.addTextChangedListener(watcher)
+        binding?.registerEditTextUserEmail?.addTextChangedListener(watcher)
+        binding?.registerEditTextPassword?.addTextChangedListener(watcher)
     }
 
     override fun onClick(view: View) {
-        if (view === binding.registerBtn) {
+        if (view === binding?.registerBtn) {
             model?.registerUser(
-                Utils.getTextFromEditText(binding.registerEditTextUserName),
-                Utils.getTextFromEditText(binding.registerEditTextUserEmail),
-                Utils.getTextFromEditText(binding.registerEditTextPassword)
+                Utils.getTextFromEditText(binding?.registerEditTextUserName),
+                Utils.getTextFromEditText(binding?.registerEditTextUserEmail),
+                Utils.getTextFromEditText(binding?.registerEditTextPassword)
             )
-        } else if (view === binding.registerLogInTxt) {
+        } else if (view === binding?.registerLogInTxt) {
             SafeNavigation.navigate(
-                binding.root, R.id.registrationFragment,
+                binding?.root, R.id.registrationFragment,
                 R.id.nav_from_registrationFragment_to_loginFragment
             )
         }
@@ -85,15 +85,15 @@ open class RegistrationFragment : HostedFragment<
     }
 
     override fun showErrors(usernameError: Int, emailError: Int, passwordError: Int) {
-        binding.registerLayoutUserName.error = if (usernameError == 0) null else getString(usernameError)
-        binding.registerLayoutEmail.error = if (emailError == 0) null else getString(emailError)
-        binding.registerLayoutPassword.error = if (passwordError == 0) null else getString(passwordError)
+        binding?.registerLayoutUserName?.error = if (usernameError == 0) null else getString(usernameError)
+        binding?.registerLayoutEmail?.error = if (emailError == 0) null else getString(emailError)
+        binding?.registerLayoutPassword?.error = if (passwordError == 0) null else getString(passwordError)
     }
 
     override fun proceedToNextScreen() {
         Toast.makeText(context, R.string.successful_registration, Toast.LENGTH_SHORT).show()
         SafeNavigation.navigate(
-            binding.root, R.id.registrationFragment,
+            binding?.root, R.id.registrationFragment,
             R.id.nav_from_registrationFragment_to_trackerFragment
         )
     }
@@ -103,20 +103,20 @@ open class RegistrationFragment : HostedFragment<
     }
 
     private fun setUpProgressBarVisibility(isVisible: Boolean) {
-        val progressBar: ProgressBar = binding.registerProgressBar
+        val progressBar: ProgressBar? = binding?.registerProgressBar
         val progressTargetAlpha = if (isVisible) 1f else 0f
         val shortAnimationDuration: Int = resources.getInteger(android.R.integer.config_shortAnimTime)
-        if (progressTargetAlpha != progressBar.alpha) {
-            progressBar.animate().alpha(progressTargetAlpha)
-                .withStartAction(if (isVisible) Runnable { progressBar.visibility = View.VISIBLE } else null)
-                .setDuration(shortAnimationDuration.toLong())
-                .withEndAction(if (isVisible) null else Runnable { progressBar.visibility = View.INVISIBLE })
-                .start()
+        if (progressTargetAlpha != progressBar?.alpha) {
+            progressBar?.animate()?.alpha(progressTargetAlpha)
+                ?.withStartAction(if (isVisible) Runnable { progressBar.visibility = View.VISIBLE } else null)
+                ?.setDuration(shortAnimationDuration.toLong())
+                ?.withEndAction(if (isVisible) null else Runnable { progressBar.visibility = View.INVISIBLE })
+                ?.start()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 }

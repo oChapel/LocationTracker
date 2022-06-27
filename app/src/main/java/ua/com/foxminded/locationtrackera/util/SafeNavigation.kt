@@ -6,9 +6,9 @@ import androidx.navigation.Navigation.findNavController
 
 object SafeNavigation {
 
-    fun navigate(view: View, @IdRes destination: Int, @IdRes action: Int) {
-        val controller = findNavController(view)
-        if (controller.currentDestination!!.id == destination) {
+    fun navigate(view: View?, @IdRes destination: Int, @IdRes action: Int) {
+        val controller = view?.let { findNavController(it) }
+        if (controller?.currentDestination?.id == destination) {
             controller.navigate(action)
         }
     }

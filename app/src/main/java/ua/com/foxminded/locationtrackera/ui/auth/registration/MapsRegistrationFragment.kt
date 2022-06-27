@@ -8,9 +8,9 @@ class MapsRegistrationFragment : RegistrationFragment() {
 
     override fun onClick(view: View) {
         when {
-            view === binding.registerBtn -> super.onClick(view)
-            view === binding.registerLogInTxt -> SafeNavigation.navigate(
-                binding.root, R.id.mapsRegistrationFragment,
+            view === binding?.registerBtn -> super.onClick(view)
+            view === binding?.registerLogInTxt -> SafeNavigation.navigate(
+                binding?.root, R.id.mapsRegistrationFragment,
                 R.id.nav_from_mapsRegistrationFragment_to_mapsLoginFragment
             )
         }
@@ -18,7 +18,7 @@ class MapsRegistrationFragment : RegistrationFragment() {
 
     override fun proceedToNextScreen() {
         SafeNavigation.navigate(
-            binding.root, R.id.mapsRegistrationFragment,
+            binding?.root, R.id.mapsRegistrationFragment,
             R.id.nav_from_mapsRegistrationFragment_to_mapsFragment
         )
     }

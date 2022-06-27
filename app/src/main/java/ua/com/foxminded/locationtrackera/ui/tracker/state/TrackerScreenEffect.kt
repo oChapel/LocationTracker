@@ -3,7 +3,7 @@ package ua.com.foxminded.locationtrackera.ui.tracker.state
 import ua.com.foxminded.locationtrackera.mvi.states.AbstractEffect
 import ua.com.foxminded.locationtrackera.ui.tracker.TrackerContract
 
-abstract class TrackerScreenEffect : AbstractEffect<TrackerContract.View>() {
+sealed class TrackerScreenEffect : AbstractEffect<TrackerContract.View>() {
 
     class Logout : TrackerScreenEffect() {
         override fun handle(screen: TrackerContract.View) {

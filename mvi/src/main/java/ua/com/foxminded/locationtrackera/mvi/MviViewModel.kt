@@ -35,16 +35,8 @@ abstract class MviViewModel<S, A> : ViewModel(), FragmentContract.ViewModel<S, A
         stateHolder.value = state
     }
 
-    protected fun postState(state: S) {
-        stateHolder.postValue(state)
-    }
-
     protected fun setAction(action: A) {
         actionHolder.value = action
-    }
-
-    protected fun postAction(action: A) {
-        actionHolder.postValue(action)
     }
 
     protected fun addTillDestroy(vararg disposables: Disposable) {

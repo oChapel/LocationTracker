@@ -5,10 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ua.com.foxminded.locationtrackera.R
 import ua.com.foxminded.locationtrackera.models.auth.AuthNetwork
@@ -26,20 +23,22 @@ class RegistrationViewModel(private val authNetwork: AuthNetwork) : MviViewModel
 
     private val registerFlow = MutableSharedFlow<Credentials>(extraBufferCapacity = 1)
     private var launch: Job? = null
+    private var errorCreds: Credentials? = null
 
     override fun onStateChanged(event: Lifecycle.Event) {
         super.onStateChanged(event)
         if (event == Lifecycle.Event.ON_CREATE) {
             launch = viewModelScope.launch {
                 registerFlow
+                    .onEach { setState(RegistrationScreenState.RegistrationProgress(true)) }
+                    .flowOn(Dispatchers.Main)
                     .map { creds ->
-                        if (creds.isUsernameValid && creds.isEmailValid && creds.isRegistrationPasswordValid) {
-                            postState(RegistrationScreenState.RegistrationProgress(true))
+                        if (creds.isUsernameValid() && creds.isEmailValid() && creds.isRegistrationPasswordValid()) {
                             return@map authNetwork.firebaseRegister(
                                 creds.username!!, creds.email!!, creds.password!!
                             )
                         } else {
-                            postState(getErrorState(creds))
+                            errorCreds = creds
                             return@map Result.Error(
                                 Throwable(AuthErrorConstants.INVALID_USERNAME_EMAIL_PASSWORD)
                             )
@@ -52,14 +51,15 @@ class RegistrationViewModel(private val authNetwork: AuthNetwork) : MviViewModel
                         setAction(RegistrationScreenEffect.RegistrationFailed(R.string.registration_failed))
                     }
                     .collect { result ->
+                        setState(RegistrationScreenState.RegistrationProgress(false))
                         if (result.isSuccessful) {
-                            setState(RegistrationScreenState.RegistrationProgress(false))
                             setAction(RegistrationScreenEffect.RegistrationSuccessful())
                         } else {
-                            if (!result.toString()
+                            if (result.toString()
                                     .contains(AuthErrorConstants.INVALID_USERNAME_EMAIL_PASSWORD)
                             ) {
-                                setState(RegistrationScreenState.RegistrationProgress(false))
+                                setState(getErrorState(errorCreds))
+                            } else {
                                 if ((result as Result.Error<Void?>).error is FirebaseAuthUserCollisionException) {
                                     setAction(RegistrationScreenEffect.RegistrationFailed(R.string.user_already_exists))
                                 } else {
@@ -72,11 +72,15 @@ class RegistrationViewModel(private val authNetwork: AuthNetwork) : MviViewModel
         }
     }
 
-    private fun getErrorState(creds: Credentials): RegistrationScreenState {
-        val usernameError: Int = if (creds.isUsernameValid) 0 else R.string.empty_field
-        val emailError: Int = if (creds.isEmailValid) 0 else R.string.invalid_email
-        val passwordError: Int =
-            if (creds.isRegistrationPasswordValid) 0 else R.string.invalid_password
+    private fun getErrorState(creds: Credentials?): RegistrationScreenState {
+        var usernameError = 0
+        var emailError = 0
+        var passwordError = 0
+        creds?.let {
+            usernameError = if (creds.isUsernameValid()) 0 else R.string.empty_field
+            emailError = if (creds.isEmailValid()) 0 else R.string.invalid_email
+            passwordError = if (creds.isRegistrationPasswordValid()) 0 else R.string.invalid_password
+        }
         return RegistrationScreenState.RegistrationError(usernameError, emailError, passwordError)
     }
 
