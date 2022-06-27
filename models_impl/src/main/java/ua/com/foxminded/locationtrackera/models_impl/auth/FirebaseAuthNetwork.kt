@@ -15,11 +15,13 @@ class FirebaseAuthNetwork(private val firebaseAuth: FirebaseAuth) : AuthNetwork 
         return try {
             firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             try {
-                FirebaseFirestore.getInstance()
-                    .collection(COLLECTION_PATH_USERS)
-                    .document(firebaseAuth.currentUser!!.uid)
-                    .set(User(username, email))
-                    .await()
+                firebaseAuth.currentUser?.uid?.let {
+                    FirebaseFirestore.getInstance()
+                        .collection(COLLECTION_PATH_USERS)
+                        .document(it)
+                        .set(User(username, email))
+                        .await()
+                }
                 Result.Success(null)
             } catch (e: Exception) {
                 Result.Error(e)

@@ -20,7 +20,9 @@ class FirebaseLocationsNetwork(private val firebaseAuth: FirebaseAuth) :
     ): Single<Result<Void?>> = Single.fromCallable {
         if (locationList.isNotEmpty()) {
             for (i in locationList.indices) {
-                val task = sendToFirebase(locationList[i], firebaseAuth.currentUser!!.uid)
+                val task = firebaseAuth.currentUser?.uid?.let {
+                    sendToFirebase(locationList[i], it)
+                } ?: return@fromCallable Result.Error(Throwable(ERROR_USER_IS_NULL))
 
                 try {
                     Tasks.await(task)
@@ -43,7 +45,8 @@ class FirebaseLocationsNetwork(private val firebaseAuth: FirebaseAuth) :
         toTime: Long
     ): Single<Result<List<UserLocation>>> = Single.fromCallable {
         val locationsList: MutableList<UserLocation> = ArrayList()
-        val task = retrieveFromFirebase(firebaseAuth.currentUser!!.uid, fromTime, toTime)
+        val task = firebaseAuth.currentUser?.uid?.let { retrieveFromFirebase(it, fromTime, toTime) }
+            ?: return@fromCallable Result.Error(Throwable(ERROR_USER_IS_NULL))
 
         try {
             Tasks.await(task)
@@ -64,12 +67,12 @@ class FirebaseLocationsNetwork(private val firebaseAuth: FirebaseAuth) :
     }
 
     private fun sendToFirebase(
-        userLocation: UserLocation?, uid: String
+        userLocation: UserLocation, uid: String
     ): Task<Void> = firestore.collection(COLLECTION_PATH_USERS)
         .document(uid)
         .collection(COLLECTION_PATH_USER_LOCATIONS)
         .document()
-        .set(userLocation!!)
+        .set(userLocation)
 
     private fun retrieveFromFirebase(
         uid: String, startDate: Long, endDate: Long
@@ -85,5 +88,6 @@ class FirebaseLocationsNetwork(private val firebaseAuth: FirebaseAuth) :
         private const val COLLECTION_PATH_USERS = "Users"
         private const val COLLECTION_PATH_USER_LOCATIONS = "User Locations"
         private const val FIELD_DATE = "date"
+        private const val ERROR_USER_IS_NULL = "Current user is null"
     }
 }
