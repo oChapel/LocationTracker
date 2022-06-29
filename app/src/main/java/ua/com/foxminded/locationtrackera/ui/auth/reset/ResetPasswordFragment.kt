@@ -31,9 +31,9 @@ class ResetPasswordFragment : HostedFragment<
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = FragmentResetPasswordBinding.inflate(inflater, container, false)
-        return FragmentResetPasswordBinding.inflate(inflater, container, false).root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

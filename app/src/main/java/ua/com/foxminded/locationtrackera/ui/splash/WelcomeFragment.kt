@@ -14,11 +14,15 @@ open class WelcomeFragment : Fragment(), View.OnClickListener {
     protected var binding: FragmentWelcomeBinding? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = FragmentWelcomeBinding.inflate(inflater, container, false)
-        return FragmentWelcomeBinding.inflate(inflater, container, false).root
+        return binding?.root
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

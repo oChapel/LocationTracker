@@ -47,12 +47,12 @@ class MapsFragment : HostedFragment<
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = FragmentMapsBinding.inflate(inflater, container, false)
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding?.mapsToolbar)
         (requireActivity() as AppCompatActivity).supportActionBar?.setTitle(R.string.timeline)
         setHasOptionsMenu(true)
-        return FragmentMapsBinding.inflate(inflater, container, false).root
+        return binding?.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
