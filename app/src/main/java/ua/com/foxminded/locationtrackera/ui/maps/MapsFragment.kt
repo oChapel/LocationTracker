@@ -48,12 +48,11 @@ class MapsFragment : HostedFragment<
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentMapsBinding.inflate(inflater, container, false)
-        this.binding = binding
-        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.mapsToolbar)
+        binding = FragmentMapsBinding.inflate(inflater, container, false)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding?.mapsToolbar)
         (requireActivity() as AppCompatActivity).supportActionBar?.setTitle(R.string.timeline)
         setHasOptionsMenu(true)
-        return binding.root
+        return FragmentMapsBinding.inflate(inflater, container, false).root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

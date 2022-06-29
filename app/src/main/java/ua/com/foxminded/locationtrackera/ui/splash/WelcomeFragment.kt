@@ -16,9 +16,8 @@ open class WelcomeFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentWelcomeBinding.inflate(inflater, container, false)
-        this.binding = binding
-        return binding.root
+        binding = FragmentWelcomeBinding.inflate(inflater, container, false)
+        return FragmentWelcomeBinding.inflate(inflater, container, false).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

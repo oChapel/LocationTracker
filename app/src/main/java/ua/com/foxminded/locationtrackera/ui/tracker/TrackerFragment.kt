@@ -54,11 +54,10 @@ class TrackerFragment : HostedFragment<
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentTrackerBinding.inflate(inflater, container, false)
-        this.binding = binding
-        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        binding = FragmentTrackerBinding.inflate(inflater, container, false)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding?.toolbar)
         setHasOptionsMenu(true)
-        return binding.root
+        return FragmentTrackerBinding.inflate(inflater, container, false).root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -34,9 +34,8 @@ open class RegistrationFragment : HostedFragment<
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentRegistrationBinding.inflate(inflater, container, false)
-        this.binding = binding
-        return binding.root
+        binding = FragmentRegistrationBinding.inflate(inflater, container, false)
+        return FragmentRegistrationBinding.inflate(inflater, container, false).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

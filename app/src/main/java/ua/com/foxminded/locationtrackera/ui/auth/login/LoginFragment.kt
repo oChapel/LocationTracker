@@ -32,9 +32,8 @@ open class LoginFragment : HostedFragment<
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentLoginBinding.inflate(inflater, container, false)
-        this.binding = binding
-        return binding.root
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return FragmentLoginBinding.inflate(inflater, container, false).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
