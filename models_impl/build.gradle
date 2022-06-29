@@ -1,0 +1,89 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdkVersion project.compile
+    buildToolsVersion project.tools
+
+    defaultConfig {
+        minSdkVersion project.min
+        targetSdkVersion project.target
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+
+        buildConfigField "int", "UPDATE_INTERVAL", "600"
+        buildConfigField "int", "TRACKING_SENSIVITY", "60"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            buildConfigField "int", "UPDATE_INTERVAL", "5"
+            buildConfigField "int", "TRACKING_SENSIVITY", "10"
+        }
+    }
+
+    flavorDimensions "provider"
+    productFlavors {
+        gps {
+            dimension "provider"
+            buildConfigField "String", "LOCATION_PROVIDER", "\"gps\""
+        }
+        network {
+            dimension "provider"
+            buildConfigField "String", "LOCATION_PROVIDER", "\"network\""
+        }
+        passive {
+            dimension "provider"
+            buildConfigField "String", "LOCATION_PROVIDER", "\"passive\""
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation project(path: ':models')
+
+    //AndroidX
+    implementation "androidx.core:core-ktx:$ktx_core_version"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+
+    //RxJava
+    implementation "io.reactivex.rxjava3:rxjava:$rxjava_version"
+
+    //Room
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-rxjava3:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    //Google Play Services
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
+
+    //Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines_version"
+
+    //Firebase
+    implementation 'com.google.firebase:firebase-firestore:24.1.2'
+    implementation "com.google.firebase:firebase-auth:$firebase_auth_version"
+
+    //JUnit, Mockito
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "org.mockito:mockito-core:$mockito_core_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_inline_version"
+    androidTestImplementation "androidx.test.ext:junit:$androidx_test_junit_version"
+}

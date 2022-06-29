@@ -1,2 +1,5 @@
 rootProject.name = "Location Tracker A"
 include ':app'
+include ':mvi'
+include ':models'
+include ':models_impl'

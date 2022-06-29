@@ -25,10 +25,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import io.reactivex.rxjava3.core.Single;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.TrampolineSchedulerRule;
-import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.models.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.models.util.Result;
 import ua.com.foxminded.locationtrackera.ui.auth.login.state.LoginScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.auth.login.state.LoginScreenState;
-import ua.com.foxminded.locationtrackera.util.Result;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LoginViewModelTest {
@@ -57,7 +57,7 @@ public class LoginViewModelTest {
 
         stateCaptor = ArgumentCaptor.forClass(LoginScreenState.class);
         actionCaptor = ArgumentCaptor.forClass(LoginScreenEffect.class);
-        model.onStateChanged(null, Lifecycle.Event.ON_CREATE);
+        model.onStateChanged(Lifecycle.Event.ON_CREATE);
     }
 
     @After
@@ -72,7 +72,7 @@ public class LoginViewModelTest {
     }
 
     private void checkErrorsAndStateCount(int emailError, int passwordError) {
-        verify(stateObserver, times(3)).onChanged(stateCaptor.capture());
+        verify(stateObserver, times(2)).onChanged(stateCaptor.capture());
         int loadingCounter = 0;
         int errorCounter = 0;
         for (LoginScreenState value : stateCaptor.getAllValues()) {
@@ -80,12 +80,12 @@ public class LoginViewModelTest {
                 loadingCounter += 1;
             } else if (value instanceof LoginScreenState.LoginError) {
                 errorCounter += 1;
-                assertEquals(emailError, value.emailError);
-                assertEquals(passwordError, value.passwordError);
-                assertFalse(value.isProgressVisible);
+                assertEquals(emailError, value.getEmailError());
+                assertEquals(passwordError, value.getPasswordError());
+                assertFalse(value.isProgressVisible());
             }
         }
-        assertEquals(2, loadingCounter);
+        assertEquals(1, loadingCounter);
         assertEquals(1, errorCounter);
         verifyNoMore();
     }

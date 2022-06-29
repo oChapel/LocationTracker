@@ -16,7 +16,7 @@ public class MapsResetPasswordFragmentTest extends ResetPasswordInstrumentedTest
     public void setUp() {
         final ActivityScenario<MapsActivity> activityScenario = ActivityScenario.launch(MapsActivity.class);
         activityScenario.onActivity(activity -> {
-            App.setAppComponent(DaggerTestComponent.create());
+            App.component = DaggerTestComponent.create();
             ((NavHostFragment) activity.getSupportFragmentManager().findFragmentById(R.id.mapsHostContainerView))
                     .getNavController()
                     .navigate(R.id.mapsResetPasswordFragment);

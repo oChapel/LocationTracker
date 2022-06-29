@@ -41,7 +41,7 @@ public class MapsFragmentTest {
     public void setUp() {
         final ActivityScenario<MapsActivity> activityScenario = ActivityScenario.launch(MapsActivity.class);
         activityScenario.onActivity(activity -> {
-            App.setAppComponent(DaggerTestComponent.create());
+            App.component = DaggerTestComponent.create();
             navController = ((NavHostFragment) activity.getSupportFragmentManager().findFragmentById(R.id.mapsHostContainerView))
                     .getNavController();
             navController.navigate(R.id.mapsFragment);

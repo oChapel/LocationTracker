@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import ua.com.foxminded.locationtrackera.model.locations.UserLocation;
+import ua.com.foxminded.locationtrackera.models.locations.UserLocation;
 import ua.com.foxminded.locationtrackera.ui.maps.state.MapsScreenEffect;
 
 @RunWith(MockitoJUnitRunner.class)

@@ -27,10 +27,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import io.reactivex.rxjava3.core.Single;
 import ua.com.foxminded.locationtrackera.R;
 import ua.com.foxminded.locationtrackera.TrampolineSchedulerRule;
-import ua.com.foxminded.locationtrackera.model.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.models.auth.AuthNetwork;
+import ua.com.foxminded.locationtrackera.models.util.Result;
 import ua.com.foxminded.locationtrackera.ui.auth.registration.state.RegistrationScreenEffect;
 import ua.com.foxminded.locationtrackera.ui.auth.registration.state.RegistrationScreenState;
-import ua.com.foxminded.locationtrackera.util.Result;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RegistrationViewModelTest {
@@ -59,7 +59,7 @@ public class RegistrationViewModelTest {
 
         stateCaptor = ArgumentCaptor.forClass(RegistrationScreenState.class);
         actionCaptor = ArgumentCaptor.forClass(RegistrationScreenEffect.class);
-        model.onStateChanged(null, Lifecycle.Event.ON_CREATE);
+        model.onStateChanged(Lifecycle.Event.ON_CREATE);
     }
 
     @After
@@ -74,18 +74,14 @@ public class RegistrationViewModelTest {
     }
 
     private void checkErrorsAndStateCount(int usernameError, int emailError, int passwordError) {
-        verify(stateObserver, times(3)).onChanged(stateCaptor.capture());
-        int loadingCounter = 0;
+        verify(stateObserver, times(1)).onChanged(stateCaptor.capture());
         int errorCounter = 0;
         for (RegistrationScreenState value : stateCaptor.getAllValues()) {
-            if (value instanceof RegistrationScreenState.RegistrationProgress) {
-                loadingCounter += 1;
-            } else if (value instanceof RegistrationScreenState.RegistrationError) {
+             if (value instanceof RegistrationScreenState.RegistrationError) {
                 errorCounter += 1;
                 checkErrors(value, usernameError, emailError, passwordError);
             }
         }
-        assertEquals(2, loadingCounter);
         assertEquals(1, errorCounter);
         verifyNoMore();
     }
@@ -93,10 +89,10 @@ public class RegistrationViewModelTest {
     private void checkErrors(
             RegistrationScreenState value, int usernameError, int emailError, int passwordError
     ) {
-        assertEquals(usernameError, value.usernameError);
-        assertEquals(emailError, value.emailError);
-        assertEquals(passwordError, value.passwordError);
-        assertFalse(value.isProgressVisible);
+        assertEquals(usernameError, value.getUsernameError());
+        assertEquals(emailError, value.getEmailError());
+        assertEquals(passwordError, value.getPasswordError());
+        assertFalse(value.isProgressVisible());
     }
 
     private void checkRegistrationStateCount() {
@@ -120,7 +116,10 @@ public class RegistrationViewModelTest {
 
         checkRegistrationStateCount();
         assertTrue(actionCaptor.getValue() instanceof RegistrationScreenEffect.RegistrationFailed);
-        assertEquals(R.string.registration_failed, ((RegistrationScreenEffect.RegistrationFailed) actionCaptor.getValue()).stringResId);
+        assertEquals(
+                R.string.registration_failed,
+                ((RegistrationScreenEffect.RegistrationFailed) actionCaptor.getValue()).getStringResId()
+        );
     }
 
     @Test
@@ -203,7 +202,10 @@ public class RegistrationViewModelTest {
 
         checkRegistrationStateCount();
         assertTrue(actionCaptor.getValue() instanceof RegistrationScreenEffect.RegistrationFailed);
-        assertEquals(R.string.user_already_exists, ((RegistrationScreenEffect.RegistrationFailed) actionCaptor.getValue()).stringResId);
+        assertEquals(
+                R.string.user_already_exists,
+                ((RegistrationScreenEffect.RegistrationFailed) actionCaptor.getValue()).getStringResId()
+        );
     }
 
     @Test

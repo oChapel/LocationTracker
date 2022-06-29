@@ -9,14 +9,14 @@ import ua.com.foxminded.locationtrackera.background.LocationServiceContract;
 import ua.com.foxminded.locationtrackera.background.LocationServicePresenter;
 import ua.com.foxminded.locationtrackera.background.jobs.DefaultUploadWorkModel;
 import ua.com.foxminded.locationtrackera.background.jobs.UploadWorkModel;
-import ua.com.foxminded.locationtrackera.model.bus.DefaultTrackerCache;
-import ua.com.foxminded.locationtrackera.model.bus.TrackerCache;
-import ua.com.foxminded.locationtrackera.model.gps.GpsSource;
-import ua.com.foxminded.locationtrackera.model.gps.TestGpsModel;
-import ua.com.foxminded.locationtrackera.model.locations.LocationRepository;
-import ua.com.foxminded.locationtrackera.model.shared_preferences.DefaultSharedPreferencesModel;
-import ua.com.foxminded.locationtrackera.model.shared_preferences.SharedPreferencesModel;
-import ua.com.foxminded.locationtrackera.model.usecase.SendLocationsUseCase;
+import ua.com.foxminded.locationtrackera.models.bus.TrackerCache;
+import ua.com.foxminded.locationtrackera.models.gps.GpsSource;
+import ua.com.foxminded.locationtrackera.models.locations.LocationRepository;
+import ua.com.foxminded.locationtrackera.models.shared_preferences.SharedPreferencesModel;
+import ua.com.foxminded.locationtrackera.models.usecase.SendLocationsUseCase;
+import ua.com.foxminded.locationtrackera.models_impl.bus.DefaultTrackerCache;
+import ua.com.foxminded.locationtrackera.models_impl.gps.TestGpsModel;
+import ua.com.foxminded.locationtrackera.models_impl.shared_preferences.DefaultSharedPreferencesModel;
 
 @Module
 public class TestServiceModule {
@@ -24,7 +24,7 @@ public class TestServiceModule {
     @Provides
     @Singleton
     public GpsSource provideTestGpsServicesModel() {
-        return new TestGpsModel(App.getInstance());
+        return new TestGpsModel(App.instance);
     }
 
     @Provides
@@ -36,13 +36,13 @@ public class TestServiceModule {
     @Provides
     @Singleton
     public UploadWorkModel provideUploadWorkModel() {
-        return new DefaultUploadWorkModel(App.getInstance());
+        return new DefaultUploadWorkModel(App.instance);
     }
 
     @Provides
     @Singleton
     public SharedPreferencesModel provideSharedPreferenceModel() {
-        return new DefaultSharedPreferencesModel(App.getInstance());
+        return new DefaultSharedPreferencesModel(App.instance);
     }
 
     @Provides
